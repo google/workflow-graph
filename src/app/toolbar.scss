@@ -98,6 +98,6 @@ $toolbar-color: #5f6368;
   }
 }
 
-:host ::ng-deep .custom-toolbar-toggle .mat-slide-toggle-content {
+:host ::ng-deep .custom-toolbar-toggle .mat-mdc-slide-toggle label {
   min-width: max-content;
 }
