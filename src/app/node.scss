@@ -1,0 +1,246 @@
+/*
+ * Dag node base style definitions
+ */
+
+/* Mixin and deps imports */
+@import './mixins.scss';
+
+/* stylelint-disable no-unknown-animations -- All of the animations are imported from mixins.scss */
+
+:host {
+  cursor: pointer;
+  transition: top 0.25s, left 0.25s;
+
+  &:focus-visible {
+    outline: none;
+    .node-main {
+      border-color: $active-color;
+    }
+    .node-main:after {
+      content: '';
+      pointer-events: none;
+      background-color: transparentize($color: $active-color, $amount: 0.88);
+      display: block;
+      border-radius: 6px;
+      @include fullbleed;
+      animation: pulse 1.5s infinite;
+    }
+  }
+
+  > * {
+    box-sizing: border-box;
+  }
+  &.selected-node .node-main {
+    border: 3px solid $active-color;
+  }
+  &[runtime='static'] .node-main .icon-space.state {
+    // stylelint-disable-next-line declaration-no-important -- This needs to be
+    // there to allow proper styling of conditional icons (that are injected via
+    // JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
+    color: #bdc1c6 !important;
+  }
+  &[state='pending'],
+  &[runtime='static'] .node-main {
+    .node-title {
+      color: #8a8f94;
+    }
+    .icon-space.node-type {
+      &.inverted {
+        // stylelint-disable-next-line declaration-no-important -- This needs to
+        // be there to allow proper styling of icon colors (that are injected
+        // via JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
+        background: #e8eaed !important;
+        .icon.left {
+          color: #9ba1a7;
+        }
+      }
+      .icon.left {
+        color: #bdc1c6;
+      }
+    }
+  }
+
+  &[type='execution'][runtime='static'] .node-main {
+    background: #f7f7f7;
+  }
+
+  &[type='artifact'][runtime='static'] .node-main {
+    @include elevate(0);
+  }
+  &.kill-bottom-border {
+    .node-main {
+      border-bottom: 0;
+    }
+    .node-main {
+      border-radius: 6px 6px 0 0;
+    }
+  }
+  &[modifiers*='deleted'] {
+    .node-main {
+      border-style: dashed;
+      border-width: 2px;
+    }
+    &.selected-node:focus-visible .node-main {
+      border-width: 4px;
+    }
+  }
+  .node-main {
+    background: white;
+    border: 1px solid $node-border-color;
+    border-radius: 6px;
+    box-sizing: content-box;
+    user-select: none;
+    display: flex;
+    overflow: hidden;
+    transition: border 0.08s, background 0.25s, box-shadow 0.25s, height 0.25s;
+    @include elevate(1);
+
+    &:hover,
+    &:active {
+      user-select: text;
+    }
+
+    > * {
+      display: flex;
+      justify-content: center;
+    }
+    .text-area {
+      position: relative;
+      transition: width 0.25s;
+      flex-direction: column;
+      .inner {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0 10px;
+        max-width: 100%;
+        > * {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+        .node-title {
+          color: #3c4043;
+          font-weight: $ace-font-weight-medium;
+          font-size: 14px;
+          line-height: 1.4;
+          transition: color 0.25s;
+        }
+        .description-text {
+          color: #6a727c;
+          font-size: 12px;
+          line-height: 1.3;
+        }
+      }
+    }
+    .icon-space {
+      align-items: center;
+      width: 0;
+      // Required for nodes that also contain the conditional icon
+      justify-content: space-evenly;
+      transition: background 0.25s;
+    }
+    .icon {
+      overflow: 'visible';
+      transition: color 0.25s;
+      &.left {
+        transition: color 0.25s, transform 0.25s;
+        &.text {
+          font-family: 'Roboto Mono', monospace;
+          font-weight: $ace-font-weight-bold;
+          font-size: 14px;
+          letter-spacing: 0.05em;
+        }
+      }
+      div,
+      div .cfc-icon,
+      div .cfc-icon mat-icon {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        margin-top: 0;
+        display: block;
+      }
+    }
+    .callout {
+      font-size: 0;
+      transition: font-size 0.25s ease 0s, border-radius 0.25s ease 0.25s,
+        bottom 0.25s ease 0.25s, right 0.25s ease 0.25s, color 0.25s ease 0.25s,
+        background 0.25s ease 0.25s;
+      max-width: 100%;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      padding: 0 0.5em;
+      border-radius: 50px;
+      min-width: 10px;
+      min-height: 10px;
+    }
+    &.query-node.time-critical {
+      background: #fedfc8;
+    }
+    &.query-node.processing-critical {
+      background: #feefc3;
+    }
+    &.query-node.time-critical.processing-critical {
+      background: #fdd5a0;
+    }
+  }
+  .node-ref-area {
+    position: absolute;
+    top: 0;
+    .node-ref {
+      position: absolute;
+      top: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+:not(:host(.hovered)) .text-area .callout {
+  // stylelint-disable-next-line declaration-no-important -- This needs to
+  // be there to allow proper styling of callout colors (that are injected
+  // via JavaScript).
+  color: transparent !important;
+}
+
+:host(.hovered) .text-area .callout {
+  transition: font-size 0.25s ease 0.25s, border-radius 0.25s ease 0s,
+    bottom 0.25s ease 0s, right 0.25s ease 0s, color 0.25s ease 0s,
+    background 0.25s ease 0s;
+  border-radius: 0;
+  border-top-left-radius: 6px;
+  font-size: 12px;
+  bottom: 0;
+  right: 0;
+}
+
+:host([type='artifact'].collapses) {
+  &:not(.hovered) .text-area .callout {
+    border-radius: 0;
+    border-top-left-radius: 6px;
+    bottom: 0;
+    right: 0;
+  }
+  &.hovered,
+  &:focus-visible,
+  &.selected-node.persist-expansion {
+    z-index: 1;
+    .icon.left {
+      transform: initial;
+    }
+  }
+  .icon.left {
+    transform: scale(calc(24 / 32));
+  }
+}
+
+* {
+  box-sizing: border-box;
+}

@@ -1,0 +1,93 @@
+<ng-container *ngIf="node">
+  <header class="node-main" [style.height.px]="hoverDims(node, 'height')">
+    <header
+      class="icon-space node-type"
+      [class.inverted]="node.icon.iconColors === 'inverted'"
+      [style.minWidth.px]="hoverDims(node, 'leftIcon')"
+      [attr.title]="node.getIconTitle()"
+      [style.background]="fetchIcon(node.icon, 'bg', node.type)"
+      [style.color]="fetchIcon(node.icon, 'color', node.type)"
+    >
+      <span
+        *ngIf="!isTextIcon(node.icon)"
+        class="icon-wrap"
+        [style.transform]="iconRescale(node.icon, 'large')"
+      >
+        <workflow-graph-icon
+          class="icon left"
+          [icon]="fetchIcon(node.icon, 'name', node.type)"
+          [iconset]="fetchIcon(node.icon, 'iconset', node.type)"
+          [size]="fetchIcon(node.icon, 'size', node.type)"
+        ></workflow-graph-icon>
+      </span>
+      <span *ngIf="isTextIcon(node.icon)" class="icon text left">{{
+        fetchIcon(node.icon, "text", node.type)
+      }}</span>
+    </header>
+    <article class="text-area" [style.width.px]="hoverDims(node, 'text')">
+      <section class="inner">
+        <header class="node-title" [title]="node.getNodeDisplayName()">
+          {{ node.getNodeDisplayName() }}
+        </header>
+        <footer
+          *ngIf="!!node.description"
+          class="description-text"
+          [title]="node.descriptionTooltip || node.description"
+        >
+          {{ node.description }}
+        </footer>
+      </section>
+      <span
+        *ngIf="!!node.callout"
+        class="callout"
+        [style.color]="getCallout(node, 'color')"
+        [style.background]="getCallout(node, 'bg')"
+        [title]="getCallout(node, 'text')"
+      >
+        {{ getCallout(node, "text") }}
+      </span>
+    </article>
+    <footer
+      *ngIf="!isNoState(node.state) || !!node.conditionalQuery"
+      class="icon-space state"
+      [ngClass]="[classNameState(node)]"
+      [class.conditional]="!!node.conditionalQuery"
+      [title]="node.stateTooltip || classNameState(node)"
+      [style.minWidth.px]="getStateIconWidth(node)"
+      [style.color]="getNodeStateColor(node)"
+      [style.background]="bgForState(node.state)"
+    >
+      <workflow-graph-icon
+        *ngIf="!!node.conditionalQuery"
+        class="conditional-indicator"
+        [title]="node.conditionalQuery"
+        icon="conditional-node"
+        iconset="cloud_ai"
+        size="medium"
+      ></workflow-graph-icon>
+
+      <span
+        *ngIf="!isNoState(node.state) && !!iconForState(node.state, theme)"
+        class="icon-wrap"
+        [style.transform]="iconRescale(iconForState(node.state, theme), 'medium')"
+      >
+        <workflow-graph-icon
+          [ngClass]="['icon', 'right', classNameState(node)]"
+          [icon]="fetchIcon(iconForState(node.state, theme), 'name')"
+          [iconset]="fetchIcon(iconForState(node.state, theme), 'iconset')"
+          [size]="fetchIcon(iconForState(node.state, theme), 'size')"
+        ></workflow-graph-icon>
+      </span>
+    </footer>
+  </header>
+  <ng-content select="ai-dag-iteration-selector"></ng-content>
+  <footer
+    class="node-ref-area"
+    [style.left.px]="hoverDims(node, 'leftIcon')"
+    [style.width.px]="hoverDims(node, 'text')"
+  >
+    <footer class="node-ref">
+      <ng-content select="ai-dag-node-ref-badge"></ng-content>
+    </footer>
+  </footer>
+</ng-container>

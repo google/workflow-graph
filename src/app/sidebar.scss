@@ -1,0 +1,30 @@
+@import './mixins';
+
+:host {
+  background: transparent;
+  height: 100%;
+  overflow: hidden;
+  display: block;
+  pointer-events: none;
+}
+
+:host(.ui-disabled) .ai-dag-sidebar .ai-dag-sidebar-content {
+  pointer-events: none;
+}
+
+.ai-dag-sidebar {
+  display: flex;
+  justify-content: flex-end;
+  max-height: 100%;
+
+  .ai-dag-sidebar-content {
+    pointer-events: all;
+    padding: 12px;
+    max-height: 100%;
+    overflow: auto;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}

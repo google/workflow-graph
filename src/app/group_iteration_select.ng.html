@@ -1,0 +1,46 @@
+<mat-select
+  [aria-label]="getA11yLabelFor('button')"
+  [value]="softIteration"
+  (selectionChange)="updateValue($event)"
+  [attr.tabindex]="unTabbable ? -1 : 0"
+  (click)="$event.stopPropagation()"
+>
+  <mat-select-trigger>
+    <span class="focus-animator"></span>
+    <div class="content-wrap">
+      <ng-container *ngIf="!!softIteration">
+        <div *ngIf="getStateIcon(selectedIteration) as icon" class="icon-wrap">
+          <workflow-graph-icon
+            [title]="'State: ' + selectedIteration.state.toLowerCase()"
+            [icon]="fetchIcon(icon, 'name')"
+            [iconset]="fetchIcon(icon, 'iconset')"
+            [style.color]="fetchIcon(icon, 'color')"
+          >
+          </workflow-graph-icon>
+        </div>
+        <div class="text" [title]="selectedIteration?.getNodeDisplayName()">
+          {{ selectedIteration?.getNodeDisplayName() }}
+        </div>
+      </ng-container>
+      <span *ngIf="!softIteration" class="empty-state"> Please select an iteration </span>
+    </div>
+  </mat-select-trigger>
+  <mat-optgroup [label]="labels.failedIters">
+    <mat-option *ngFor="let i of badIters" [value]="i.id">
+      <ng-container  *ngIf="getStateIcon(i) as icon">
+        <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
+      [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
+      <span [style.color]="icon && fetchIcon(icon, 'color')">{{ i.getNodeDisplayName() }}</span>
+      </ng-container>
+    </mat-option>
+  </mat-optgroup>
+  <mat-optgroup [label]="labels.otherIters">
+    <mat-option *ngFor="let i of goodIters" [value]="i.id">
+      <ng-container  *ngIf="getStateIcon(i) as icon">
+        <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
+      [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
+      <span [style.color]="icon && fetchIcon(icon, 'color')">{{ i.getNodeDisplayName() }}</span>
+      </ng-container>
+    </mat-option>
+  </mat-optgroup>
+</mat-select>

@@ -1,0 +1,89 @@
+/*
+ * Dag node base style definitions
+ */
+
+/* Mixin and deps imports */
+@import './mixins.scss';
+
+/* stylelint-disable no-unknown-animations -- All of the animations are imported from mixins.scss */
+
+:host {
+  cursor: pointer;
+  width: 100%;
+  display: inline-block;
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  color: #3c4043;
+  transform: translateY(100%);
+  transition: height 0.25s, border-color 0.25s;
+
+  &.untab {
+    overflow: hidden;
+    > .hidden {
+      display: none;
+    }
+  }
+  &.selected > mat-select {
+    border: 3px solid $active-color;
+    border-top: 1px solid $node-border-color;
+  }
+
+  mat-select {
+    width: 100%;
+    background: white;
+    height: 100%;
+    border-top: 0;
+    border: 1px solid $node-border-color;
+    border-radius: 0 0 6px 6px;
+    transition: border-color 0.25s;
+    padding: 4px;
+    @include elevate(1);
+
+    &:focus-visible {
+      .focus-animator {
+        content: '';
+        display: block;
+        @include fullbleed;
+        border-radius: 0 0 6px 6px;
+        animation: pulse 1.5s infinite;
+      }
+    }
+
+    > div {
+      height: 100%;
+    }
+
+    .content-wrap {
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+
+      .icon-wrap {
+        width: 50px;
+        text-align: center;
+        &.arrow > * {
+          transform: scale(1.3);
+        }
+        &:not(.arrow) > * {
+          transition: color 0.25s;
+        }
+      }
+      .text {
+        flex: 1 1 0%;
+        font-weight: $ace-font-weight-medium;
+        font-size: 14px;
+      }
+      .empty-state {
+        margin-left: 1em;
+        font-weight: $ace-font-weight-medium;
+        font-size: 14px;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+* {
+  box-sizing: border-box;
+}

@@ -1,0 +1,16 @@
+.ai-dag-node-state-badge {
+  align-items: center;
+  border-radius: 12px;
+  display: inline-flex;
+  font-size: 12px;
+  height: 28px;
+
+  .icon {
+    padding: 0 4px;
+  }
+
+  .label {
+    padding-left: 6px;
+    padding-right: 12px;
+  }
+}

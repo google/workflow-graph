@@ -1,0 +1,201 @@
+/*
+ * Dag renderer base style definitions
+ */
+
+/* Mixin and deps imports */
+@import './mixins.scss';
+
+:host {
+  flex: 1 1 0%;
+  display: inline-block;
+  position: relative;
+  &:not(.no-flex) {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* General Styles for internal components */
+.empty-space-alloc {
+  display: block;
+  min-width: 100%;
+  min-height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  transition: width $graph-change-speed, height $graph-change-speed;
+}
+
+.panning-slider {
+  position: absolute;
+  user-select: none;
+  &.debug {
+    background: transparentize($color: orange, $amount: 0.7);
+  }
+  &:active {
+    cursor: grabbing;
+  }
+  cursor: grab;
+}
+
+.dag-wrapper {
+  @include fullbleed;
+  overflow: hidden;
+  margin: 0;
+  .background-grid {
+    @include fullbleed;
+
+    .grid-dots {
+      fill: #e0e0e0;
+    }
+  }
+  ai-dag-raw {
+    transition: transform 0.08s;
+    &.minimap-focused {
+      transition: transform 0.08s, left 0.25s, top 0.25s;
+    }
+    &.animate-movement {
+      transition: transform 0.08s, left 1s, top 1s;
+    }
+  }
+}
+
+.minimap-wrapper {
+  &.panning {
+    &.preview-on-pan {
+      opacity: 0.5;
+    }
+    .minimap {
+      pointer-events: none;
+    }
+  }
+  &[minimap-position='top'] {
+    top: 0;
+  }
+  &[minimap-position='bottom'] {
+    top: 100%;
+    transform: translateY(-100%);
+  }
+  transition: opacity $graph-change-speed, top 0.08s, transform 0.04s;
+  transition-delay: 0, 0, 0.04s;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  padding: 1em;
+  pointer-events: none;
+  display: flex;
+  &:before {
+    content: '';
+    display: block;
+    flex: 1 1 0%;
+  }
+  .minimap {
+    pointer-events: all;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(#000, 0.005),
+        rgba(#000, 0.005) 5px,
+        rgba(#000, 0.05) 5px,
+        rgba(#000, 0.05) 10px
+      )
+      white;
+    border: 1px solid $minimap-primary-color;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    transition: width 0.08s, height 0.08s;
+    .bounds {
+      width: 100%;
+      background: white;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: min-height 0.08s;
+      overflow: hidden;
+      .dag-preview {
+        position: absolute;
+        pointer-events: none;
+        top: 0;
+        left: 0;
+        transition: transform 0.08s;
+        transform-origin: 0 0;
+        /* This property is overriden by UI */
+        transform: scale(0.08);
+        .dag {
+          position: absolute;
+          top: 0;
+          left: 0;
+          transition: transform 0.08s;
+          /* This property is overriden by UI */
+          transform: scale(0.5);
+          ::ng-deep {
+            .node {
+              position: absolute;
+              // The 4px is a ghost offset, I am not sure why it exists
+              transform: translate(-50%, calc(-50% - 4px));
+              background: #607d8b;
+              transition: width 0.08s, height 0.08s;
+              &.artifact {
+                border: 10px solid #607d8b;
+                background: transparent;
+              }
+              &.group {
+                border: 40px double #607d8b;
+                background: transparent;
+                filter: blur(6px);
+              }
+              &.query-minimap-node.time-critical {
+                border: #607d8b 10px solid;
+                background: #fedfc8;
+              }
+              &.query-minimap-node.processing-critical {
+                border: #607d8b 10px solid;
+                background: #feefc3;
+              }
+              &.query-minimap-node.time-critical.processing-critical {
+                border: #607d8b 10px solid;
+                background: #fdd5a0;
+              }
+            }
+          }
+        }
+      }
+    }
+    .view-window {
+      color: $minimap-primary-color;
+      cursor: move;
+      background: currentColor;
+      opacity: 0.2;
+      transition: width 0.08s, height 0.08s, opacity $graph-change-speed,
+        transform 0.08s;
+      position: absolute;
+      border: 0;
+      &:active {
+        transition: width 0.08s, height 0.08s, opacity $graph-change-speed;
+      }
+      &:not(.no-animations) {
+        &:hover {
+          opacity: 0.27;
+        }
+        &:active {
+          opacity: 0.35;
+        }
+      }
+      &:focus-visible {
+        opacity: 0.35;
+      }
+    }
+  }
+}
+
+.sidebar-wrapper {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  transition: top $graph-change-speed, bottom $graph-change-speed;
+}
+
+* {
+  box-sizing: border-box;
+}

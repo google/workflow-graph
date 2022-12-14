@@ -1,0 +1,464 @@
+load("@io_bazel_rules_sass//:defs.bzl", "npm_sass_library", "sass_binary", "sass_library")
+load("//src:bazel_functions.bzl", "ng_ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ng_ts_project(
+    name = "node_spec",
+    srcs = [
+        "node_spec.ts",
+    ],
+    deps = [
+        ":internals",
+    ],
+)
+
+ng_ts_project(
+    name = "dag_state_service",
+    srcs = [
+        "dag-state.service.ts",
+    ],
+    deps = [
+        ":internals",
+        ":node_spec",
+        "@npm//@angular/core",
+        "@npm//@types/node",
+        "@npm//rxjs",
+    ],
+)
+
+ng_ts_project(
+    name = "internals",
+    srcs = [
+        "data_types_internal.ts",
+    ],
+    deps = [
+        "@npm//@angular/core",
+        "@npm//@angular/platform-browser",
+    ],
+)
+
+ng_ts_project(
+    name = "icons_module",
+    srcs = [
+        "icons_module.ts",
+    ],
+    deps = [
+        ":internals",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//@angular/material",
+        "@npm//@angular/platform-browser",
+        "@npm//@types/node",
+        "@npm//@types/trusted-types",
+        "@npm//safevalues",
+    ],
+)
+
+ng_ts_project(
+    name = "icon_util",
+    srcs = [
+        "icon_util.ts",
+    ],
+    deps = [
+        ":i18n",
+        ":icons_module",
+        ":internals",
+        ":node_spec",
+    ],
+)
+
+ng_ts_project(
+    name = "icon_wrapper",
+    srcs = [
+        "icon_wrapper.ts",
+    ],
+    assets = [
+        "icon_wrapper.ng.html",
+        ":icon_wrapper_sass",
+    ],
+    deps = [
+        "@npm//@angular/material",
+        "@npm//@types/node",
+    ],
+)
+
+sass_binary(
+    name = "icon_wrapper_sass",
+    src = "icon_wrapper.scss",
+    output_name = "icon_wrapper.css",
+    sourcemap = False,
+    deps = [],
+)
+
+ng_ts_project(
+    name = "node",
+    srcs = [
+        "node.ts",
+    ],
+    assets = [
+        "node.ng.html",
+        ":node_sass",
+    ],
+    deps = [
+        ":dag_state_service",
+        ":group_iteration_select",
+        ":icon_util",
+        ":icon_wrapper",
+        ":icons_module",
+        ":internals",
+        ":node_ref_badge",
+        ":node_spec",
+        "@npm//@angular/material",
+        "@npm//lodash",
+        "@npm//rxjs",
+    ],
+)
+
+sass_binary(
+    name = "node_sass",
+    src = "node.scss",
+    output_name = "node.css",
+    sourcemap = False,
+    deps = [":mixins"],
+)
+
+ng_ts_project(
+    name = "ng_var_directive",
+    srcs = [
+        "ng_var_directive.ts",
+    ],
+    deps = [
+        "@npm//@angular/core",
+    ],
+)
+
+ng_ts_project(
+    name = "resize_monitor",
+    srcs = [
+        "resize_monitor_directive.ts",
+    ],
+    deps = [
+        "@npm//@angular/core",
+        "@npm//@types/node",
+        "@npm//rxjs",
+    ],
+)
+
+ng_ts_project(
+    name = "toolbar",
+    srcs = [
+        "toolbar.ts",
+    ],
+    assets = [
+        "toolbar.ng.html",
+        ":toolbar_sass",
+    ],
+    deps = [
+        ":icon_util",
+        ":icon_wrapper",
+        ":icons_module",
+        ":internals",
+        ":ng_var_directive",
+        ":node_spec",
+        "//src/app/logger",
+        "@npm//@angular/forms",
+        "@npm//@angular/material",
+        "@npm//lodash",
+    ],
+)
+
+sass_binary(
+    name = "toolbar_sass",
+    src = "toolbar.scss",
+    output_name = "toolbar.css",
+    sourcemap = False,
+    deps = [":mixins"],
+)
+
+ng_ts_project(
+    name = "scaffold",
+    srcs = [
+        "scaffold.ts",
+    ],
+    assets = [
+        "scaffold.ng.html",
+        ":scaffold_sass",
+    ],
+    deps = [
+        ":directed_acyclic_graph",
+        ":internals",
+        ":toolbar",
+        "//src/app/logger",
+    ],
+)
+
+sass_binary(
+    name = "scaffold_sass",
+    src = "scaffold.scss",
+    output_name = "scaffold.css",
+    sourcemap = False,
+)
+
+ng_ts_project(
+    name = "sidebar",
+    srcs = [
+        "sidebar.ts",
+    ],
+    assets = [
+        "sidebar.ng.html",
+        ":sidebar_sass",
+    ],
+    deps = [
+        ":internals",
+        "@npm//@angular/core",
+        "@npm//@types/node",
+    ],
+)
+
+sass_binary(
+    name = "sidebar_sass",
+    src = "sidebar.scss",
+    output_name = "sidebar.css",
+    sourcemap = False,
+    deps = [
+        ":mixins",
+    ],
+)
+
+ng_ts_project(
+    name = "workflow_graph_wrapper",
+    srcs = [
+        "workflow_graph_wrapper.ts",
+    ],
+    assets = [
+    ],
+    deps = [
+        ":directed_acyclic_graph",
+        ":node_spec",
+        ":scaffold",
+        ":toolbar",
+        "//src/app/logger",
+        "@npm//@angular/common",
+    ],
+)
+
+npm_sass_library(
+    name = "angular_material_sass_deps",
+    deps = ["@npm//@angular/material"],
+)
+
+sass_binary(
+    name = "material_theme_npm_sass",
+    src = "material_theme_npm.scss",
+    include_paths = [
+        "external/npm/node_modules",
+    ],
+    output_name = "material_theme_npm.css",
+    sourcemap = False,
+    deps = [":angular_material_sass_deps"],
+)
+
+ng_ts_project(
+    name = "app",
+    srcs = [
+        "app.component.ts",
+        "app.module.opensource.ts",
+    ],
+    assets = [
+    ],
+    deps = [
+        ":internals",
+        ":url_sanitizer",
+        ":workflow_graph_wrapper",
+        "//src/app/test_resources",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//@angular/elements",
+        "@npm//@angular/platform-browser",
+        "@npm//@types/node",
+        "@npm//rxjs",
+    ],
+)
+
+ng_ts_project(
+    name = "url_sanitizer",
+    srcs = [
+        "url_sanitizer.opensource.ts",
+    ],
+    deps = [
+        ":internals",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//@angular/platform-browser",
+    ],
+)
+
+ng_ts_project(
+    name = "i18n",
+    srcs = [
+        "i18n.ts",
+    ],
+    deps = [],
+)
+
+ng_ts_project(
+    name = "directed_acyclic_graph",
+    srcs = [
+        "directed_acyclic_graph.ts",
+    ],
+    assets = [
+        "directed_acyclic_graph.ng.html",
+        ":directed_acyclic_graph_sass",
+    ],
+    deps = [
+        ":dag_state_service",
+        ":directed_acyclic_graph_raw",
+        ":icons_module",
+        ":internals",
+        ":node_spec",
+        ":resize_monitor",
+        ":sidebar",
+        "//src/app/logger",
+        "@npm//@angular/cdk",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//@types/dagre",
+        "@npm//dagre",
+        "@npm//lodash",
+        "@npm//rxjs",
+    ],
+)
+
+sass_binary(
+    name = "directed_acyclic_graph_sass",
+    src = "directed_acyclic_graph.scss",
+    output_name = "directed_acyclic_graph.css",
+    sourcemap = False,
+    deps = [":mixins"],
+)
+
+ng_ts_project(
+    name = "directed_acyclic_graph_raw",
+    srcs = [
+        "directed_acyclic_graph_raw.ts",
+    ],
+    assets = [
+        "directed_acyclic_graph_raw.ng.html",
+        ":directed_acyclic_graph_raw_sass",
+    ],
+    deps = [
+        ":dag_state_service",
+        ":group_iteration_select",
+        ":icon_util",
+        ":icon_wrapper",
+        ":icons_module",
+        ":internals",
+        ":node",
+        ":node_ref_badge",
+        ":node_spec",
+        "@npm//@angular/cdk",
+        "@npm//@angular/common",
+        "@npm//@angular/core",
+        "@npm//@types/dagre",
+        "@npm//dagre",
+        "@npm//lodash",
+        "@npm//rxjs",
+    ],
+)
+
+sass_binary(
+    name = "directed_acyclic_graph_raw_sass",
+    src = "directed_acyclic_graph_raw.scss",
+    output_name = "directed_acyclic_graph_raw.css",
+    sourcemap = False,
+    deps = [":mixins"],
+)
+
+sass_library(
+    name = "mixins",
+    srcs = ["mixins.scss"],
+    visibility = ["//visibility:public"],
+)
+
+ng_ts_project(
+    name = "node_state_badge",
+    srcs = [
+        "node_state_badge.ts",
+    ],
+    assets = [
+        "node_state_badge.ng.html",
+        ":node_state_badge_sass",
+    ],
+    deps = [
+        ":icon_util",
+        ":icon_wrapper",
+        ":internals",
+    ],
+)
+
+sass_binary(
+    name = "node_state_badge_sass",
+    src = "node_state_badge.scss",
+    output_name = "node_state_badge.css",
+    sourcemap = False,
+)
+
+ng_ts_project(
+    name = "node_ref_badge",
+    srcs = [
+        "node_ref_badge.ts",
+    ],
+    assets = [
+        "node_ref_badge.ng.html",
+        ":node_ref_badge_sass",
+    ],
+    deps = [
+        ":dag_state_service",
+        ":icon_util",
+        ":icon_wrapper",
+        ":icons_module",
+        ":internals",
+        ":node_spec",
+        "@npm//rxjs",
+    ],
+)
+
+sass_binary(
+    name = "node_ref_badge_sass",
+    src = "node_ref_badge.scss",
+    output_name = "node_ref_badge.css",
+    sourcemap = False,
+    deps = [":mixins"],
+)
+
+ng_ts_project(
+    name = "group_iteration_select",
+    srcs = [
+        "group_iteration_select.ts",
+    ],
+    assets = [
+        "group_iteration_select.ng.html",
+        ":group_iteration_select_sass",
+    ],
+    deps = [
+        ":dag_state_service",
+        ":i18n",
+        ":icon_util",
+        ":icon_wrapper",
+        ":icons_module",
+        ":internals",
+        ":node_spec",
+        "@npm//@angular/material",
+        "@npm//@angular/platform-browser",
+        "@npm//rxjs",
+    ],
+)
+
+sass_binary(
+    name = "group_iteration_select_sass",
+    src = "group_iteration_select.scss",
+    output_name = "group_iteration_select.css",
+    sourcemap = False,
+    deps = [":mixins"],
+)
