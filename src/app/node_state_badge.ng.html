@@ -1,0 +1,18 @@
+<span
+  *ngIf="!isNoState(nodeState)"
+  class="ai-dag-node-state-badge"
+  [style.background-color]="bgForState(nodeState, theme)"
+>
+  <workflow-graph-icon
+    class="icon"
+    [style.color]="fetchIcon(iconForState(nodeState, theme)!, 'color')"
+    [icon]="fetchIcon(iconForState(nodeState, theme)!, 'name')"
+    [iconset]="fetchIcon(iconForState(nodeState, theme)!, 'iconset')"
+    [size]="'small'"
+  >
+  </workflow-graph-icon>
+
+  <span class="label">
+    {{ labelForState(nodeState) }}
+  </span>
+</span>

@@ -1,0 +1,368 @@
+/*
+ * Dag renderer base style definitions
+ */
+
+/* Mixin and deps imports */
+@import './mixins.scss';
+
+/* stylelint-disable no-unknown-animations -- All of the animations are imported from mixins.scss */
+
+:host {
+  position: relative;
+  display: inline-block;
+  text-align: left;
+  transition: transform 0.08s, left 0.08s, top 0.08s;
+  pointer-events: none;
+
+  /* These properties are used to reduce the blurry effect after the scale */
+  will-change: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-font-smoothing: subpixel-antialiased;
+  -webkit-filter: blur(0.000001px);
+}
+
+:host(.panning) .dag-component {
+  ai-dag-node,
+  ai-dag-iteration-selector,
+  .custom-node,
+  .edge-label,
+  > .group > .expand-toggle,
+  > .group > .sub-dag > .collapsed-expand-click-area,
+  .faux-node-outline .node-ref-area .node-ref > * {
+    pointer-events: none;
+  }
+}
+
+.empty-space-alloc {
+  pointer-events: none;
+}
+
+.dag-component {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  /* This property is overriden in the HTML */
+  transform: scale(1);
+  transition: width $graph-change-speed, height $graph-change-speed;
+  .canvas {
+    @include fullbleed;
+    &.edge .edge-group {
+      transition: top $graph-change-speed, left $graph-change-speed;
+      &.pending-or-static .line {
+        stroke: #9ba1a7;
+      }
+      &.animated .line {
+        stroke-dasharray: 5;
+        animation: live-move 0.5s linear infinite;
+      }
+      .line {
+        /* This property is overriden in the HTML */
+        // stroke: $active-color;
+        fill: none;
+        transition: d $graph-change-speed, stroke 0.25s, stroke-width 0.25s,
+          stroke-dasharray 0.25s;
+      }
+    }
+    &.marker {
+      pointer-events: none;
+
+      .pending-or-static {
+        .inner-circle {
+          fill: #fff;
+          display: initial;
+        }
+        .outer-circle {
+          fill: $pending-or-static-color;
+        }
+      }
+
+      .artifact,
+      .custom-node-type {
+        opacity: 1;
+        transition: opacity $graph-change-speed;
+        &.hidden {
+          opacity: 0;
+        }
+      }
+
+      .inner-circle,
+      .outer-circle {
+        transition: cx $graph-change-speed, cy $graph-change-speed;
+      }
+      .outer-circle {
+        /* This property is overriden in the HTML */
+        // fill: $active-color;
+        color: currentColor;
+      }
+      .inner-circle {
+        display: none;
+      }
+    }
+  }
+
+  .custom-node-error {
+    font-weight: bold;
+    padding: 0.5em;
+    overflow: auto;
+    background-color: #f44336;
+    color: white;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    @include fullbleed;
+    code {
+      padding: 0.2em 0.4em;
+      background: rgb(0 0 0 / 29%);
+      border-radius: 6px;
+    }
+  }
+
+  ai-dag-node,
+  .custom-node {
+    animation: fade-in 0.25s;
+    position: absolute;
+    pointer-events: all;
+    &.custom-node {
+      transition: width $graph-change-speed, height $graph-change-speed,
+        top $graph-change-speed, left $graph-change-speed;
+    }
+    &:not(.control-node) {
+      @include offsetCenter;
+    }
+  }
+
+  .faux-node-outline {
+    transition: left $graph-change-speed, top $graph-change-speed;
+    position: absolute;
+    z-index: 2;
+    @include offsetCenter;
+    .node-ref-area {
+      position: absolute;
+      top: 0;
+      .node-ref {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        > * {
+          pointer-events: all;
+        }
+      }
+    }
+  }
+
+  > .group-border,
+  > .group {
+    position: absolute;
+    @include offsetCenter;
+    border: 2px dashed;
+    border-radius: 17px;
+    color: #bdc1c6;
+    transition: width $graph-change-speed, height $graph-change-speed,
+      color 0.25s, top $graph-change-speed, left $graph-change-speed;
+    &:hover,
+    &.expanded {
+      color: $minimap-primary-color;
+    }
+  }
+  > .group {
+    &:not(.expanded) > .sub-dag > ai-dag-raw {
+      display: none;
+    }
+    &:hover,
+    &.expanded {
+      > .expand-toggle {
+        opacity: 1;
+      }
+    }
+    // We have to be very explicit with direct descendants as Angular CSS
+    // encapsulation really fails us here (ends up targeting elements in
+    // child `ai-dag-raw`
+    &.expanded {
+      z-index: 0;
+      > .control-node-scaffold {
+        top: 0;
+        transition: top $graph-change-speed;
+        transition-delay: 0s;
+        > .control-node-shadow {
+          opacity: 0;
+          transform: translateY(100px);
+          transition: opacity 0.25s, transform 0.25s;
+          transition-delay: 0s;
+        }
+      }
+      > .sub-dag > .collapsed-expand-click-area {
+        opacity: 0;
+        pointer-events: none;
+      }
+      > span > .iteration-counter {
+        opacity: 0;
+        transition-delay: 0s;
+        animation: none;
+      }
+      > .expand-toggle .caret {
+        &:nth-child(1) {
+          top: calc(50% + #{$caret-space});
+        }
+        &:nth-child(2) {
+          top: calc(50% - #{$caret-space});
+        }
+      }
+    }
+    border-color: transparent;
+    z-index: 1;
+    user-select: none;
+    pointer-events: none;
+    position: absolute;
+    @include offsetCenter;
+    > .control-node-scaffold {
+      transition: top 0.25s;
+      transition-delay: $graph-change-speed;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      box-sizing: content-box;
+      @include offsetCenter;
+
+      // Space allocated for shadow
+      padding: 0 7px 6px 0;
+      > .control-node {
+        position: absolute;
+        top: 0;
+        /* This property is overriden in the HTML */
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      > .control-node-shadow {
+        content: '';
+        display: block;
+        border-radius: 6px;
+        background-color: #fff;
+        border: 1px solid $node-border-color;
+        bottom: 0;
+        right: 0;
+        position: absolute;
+        @include elevate(1);
+        transition: opacity 0.5s, transform 0.25s;
+        transition-delay: $graph-change-speed;
+      }
+    }
+    > .sub-dag {
+      color: initial;
+      text-align: center;
+      @include fullbleed;
+      overflow: hidden;
+      > .collapsed-expand-click-area {
+        @include fullbleed;
+        pointer-events: all;
+        border: 0;
+        border-radius: 15px;
+        background-color: transparent;
+        transition: background-color 0.25s;
+        cursor: pointer;
+        &:hover,
+        &:focus-visible {
+          background-color: transparentize(
+            $color: $minimap-primary-color,
+            $amount: 0.95
+          );
+        }
+        &:focus-visible {
+          outline: none;
+          animation: pulse-inset 1.5s infinite;
+        }
+      }
+      > ai-dag-raw {
+        animation: fade-in ease 0.5s;
+      }
+    }
+    > span > .iteration-counter {
+      font-size: 11px;
+      border-radius: 50px;
+      padding: 0.25em 0.75em;
+      position: absolute;
+      top: 0;
+      left: 2%;
+      transform: translateY(-50%);
+      /* This color is needed to maintain GAR level contrast with #fff text */
+      background: #1a73e8;
+      color: white;
+      opacity: 1;
+      transition: opacity $graph-change-speed;
+      transition-delay: calc(2 * #{$graph-change-speed});
+    }
+    > .expand-toggle {
+      &:focus-visible {
+        opacity: 1;
+        animation: pulse 1.5s infinite;
+        outline: none;
+      }
+      cursor: pointer;
+      color: $minimap-primary-color;
+      pointer-events: all;
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      top: 50%;
+      right: 0;
+      transform: translate(50%, -50%);
+      border: 2px solid;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0;
+      transition: border-color 0.25s, color 0.25s, opacity 0.25s;
+      > .caret {
+        position: absolute;
+        transition: top 0.25s;
+        @include offsetCenter;
+        top: 50%;
+        left: 50%;
+        // This is needed because `cfc-icon` has a random negative margin
+        margin: 0;
+
+        &:nth-child(1) {
+          top: calc(50% - #{$caret-space});
+        }
+        &:nth-child(2) {
+          top: calc(50% + #{$caret-space});
+        }
+      }
+    }
+  }
+
+  // This is not marked as a direct descendant because it can exist inside
+  // `.group` as a control node
+
+  &.collapse .canvas.marker .artifact {
+    opacity: 0;
+  }
+
+  .edge-label {
+    transition: top $graph-change-speed, left $graph-change-speed;
+    position: absolute;
+    font-size: 14px;
+    max-width: 12em;
+    @include offsetCenter;
+    display: inline-block;
+    padding: 1px 2px;
+    background: white;
+    border-radius: 20px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    pointer-events: all;
+    user-select: none;
+    &:hover {
+      z-index: 1;
+    }
+  }
+}
+
+* {
+  box-sizing: border-box;
+}

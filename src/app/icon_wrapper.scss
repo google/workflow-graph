@@ -1,0 +1,81 @@
+$size-icon-small: 18px;
+$size-icon-medium: 24px;
+$size-icon-large: 32px;
+
+.workflow-graph-icon {
+  display: inline-block;
+  line-height: 0;
+  vertical-align: middle;
+
+  // Some context into why we do this:
+  //
+  // `vertical-align: middle` aligns the middle of the icon with the baseline
+  // plus half of the parent's x-height. This means that the icon will appear
+  // vertically centered adjacent to a lowercase 'x'.
+  //
+  // However, given icons are typically adjacent to capital letters, we want to
+  // move the icon up half the difference of the x-height from the cap height.
+  // ACE icons are typically used besides 13px 'Roboto' font (default ACE font).
+  // The x-height for this font is 6px and the cap height is 10px. Thus, icons
+  // should be moved up (10px - 6px) / 2 = 2px.
+  margin-top: -2px;
+
+  // Chrome's user-agent stylesheet sets this value to 'none' for svg elements,
+  // effectively resulting in them being invisible in different Windows High
+  // Contrast Mode color schemes.  Here we override the value and allow icons
+  // to use the system colors that are passed in.
+  svg {
+    forced-color-adjust: auto;
+  }
+
+  &.workflow-graph-icon-size-small mat-icon {
+    height: $size-icon-small;
+    width: $size-icon-small;
+  }
+
+  // For cases where small icons need to be resized as medium.
+  &.workflow-graph-icon-size-medium.workflow-graph-icon-size-small mat-icon {
+    height: $size-icon-medium;
+    width: $size-icon-medium;
+  }
+
+  // For cases where small icons need to be resized as medium.
+  &.workflow-graph-icon-size-medium.workflow-graph-icon-size-small mat-icon {
+    height: $size-icon-medium;
+    width: $size-icon-medium;
+  }
+
+  // For cases where small icons need to be resized as medium.
+  &.workflow-graph-icon-size-medium.workflow-graph-icon-size-small mat-icon {
+    height: $size-icon-medium;
+    width: $size-icon-medium;
+  }
+
+  &.workflow-graph-icon-size-medium mat-icon {
+    height: $size-icon-medium;
+    width: $size-icon-medium;
+  }
+
+  &.workflow-graph-icon-size-large mat-icon {
+    height: $size-icon-large;
+    width: $size-icon-large;
+  }
+
+  // Update ligature icon sizes using font-size.
+
+  &.workflow-graph-icon-size-small .material-icons {
+    font-size: $size-icon-small;
+  }
+
+  &.workflow-graph-icon-size-medium .material-icons {
+    font-size: $size-icon-medium;
+  }
+
+  &.workflow-graph-icon-size-large .material-icons {
+    font-size: $size-icon-large;
+  }
+
+  .mat-icon {
+    overflow: visible;
+  }
+}

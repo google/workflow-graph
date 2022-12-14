@@ -1,0 +1,17 @@
+load("//src:bazel_functions.bzl", "ng_ts_project")
+
+package(
+    default_visibility = [
+        "//visibility:public",
+    ],
+)
+
+ng_ts_project(
+    name = "test_resources",
+    srcs = [
+        "fake_data.ts",
+    ],
+    deps = [
+        "//src/app:node_spec",
+    ],
+)

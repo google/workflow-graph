@@ -1,0 +1,137 @@
+<section [ngClass]="['toolbar', graphState]">
+  <ng-container *ngVar="labelGenerator(this, 'graphState') as label">
+    <article class="cell state" *ngIf="label !== false">
+      <workflow-graph-icon icon="info"></workflow-graph-icon>
+      <ng-container *ngIf="!!label">{{ label }}</ng-container>
+      <ng-container *ngIf="!label"> {{ graphState }} Graph </ng-container>
+    </article>
+  </ng-container>
+  <article class="cell progress" *ngIf="graphState === 'Runtime'">
+    <workflow-graph-icon
+      *ngIf="!!icon"
+      [title]="'State: ' + finalState.toLowerCase()"
+      [icon]="fetchIcon(icon, 'name')"
+      [iconset]="fetchIcon(icon, 'iconset')"
+      [style.color]="fetchIcon(icon, 'color')"
+    ></workflow-graph-icon>
+
+    <ng-container *ngVar="labelGenerator(this, 'stepsCompleted') as label">
+      <ng-container *ngIf="!!label">{{ label }}</ng-container>
+      <ng-container *ngIf="!label">
+        {{ completedSteps }}/{{ totalSteps }} steps completed
+      </ng-container>
+    </ng-container>
+  </article>
+  <article class="cell toggler" *ngIf="features.collapsibleNodes">
+    <mat-slide-toggle
+      id="dag-toggle"
+      [disabled]="disableToggle"
+      [(ngModel)]="expandedMode"
+      [ngModelOptions]="{standalone: true}"
+    >
+      <span class="text">
+        <ng-container *ngVar="labelGenerator(this, 'expansionLabel') as label">
+          <ng-container *ngIf="!!label">{{ label }}</ng-container>
+          <ng-container *ngIf="!label"> Expand Artifacts </ng-container>
+        </ng-container>
+      </span>
+    </mat-slide-toggle>
+  </article>
+  <article class="cell zoom" *ngIf="features.zoomControls">
+    <span
+      *ngIf="!features.disableZoomPercentageLabel"
+      class="value"
+      [title]="'Zoom Level: ' + round(zoomVal * 100) + '%'"
+    >
+      {{ round(zoomVal * 100) + "%" }}
+    </span>
+    <button
+      mat-icon-button
+      class="icon-btn in"
+      (click)="zoomIn()"
+      [color]="fetchIcon(zoomIcons.in, 'color')"
+      [disabled]="zoomInDisabled"
+      matTooltip="Zoom in"
+    >
+      <workflow-graph-icon
+        [icon]="fetchIcon(zoomIcons.in, 'name')"
+        [iconset]="fetchIcon(zoomIcons.in, 'iconset')"
+      ></workflow-graph-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="icon-btn out"
+      (click)="zoomOut()"
+      [color]="fetchIcon(zoomIcons.out, 'color')"
+      [disabled]="zoomOutDisabled"
+      matTooltip="Zoom out"
+    >
+      <workflow-graph-icon
+        [icon]="fetchIcon(zoomIcons.out, 'name')"
+        [iconset]="fetchIcon(zoomIcons.out, 'iconset')"
+      ></workflow-graph-icon>
+    </button>
+    <button
+      mat-icon-button
+      class="icon-btn reset"
+      (click)="zoomReset()"
+      [color]="fetchIcon(zoomIcons.reset, 'color')"
+      matTooltip="Zoom reset"
+    >
+      <workflow-graph-icon
+        [icon]="fetchIcon(zoomIcons.reset, 'name')"
+        [iconset]="fetchIcon(zoomIcons.reset, 'iconset')"
+      ></workflow-graph-icon>
+    </button>
+  </article>
+  <article class="cell toggler" *ngIf="features.fullscreenToggle">
+    <button
+      mat-icon-button
+      *ngIf="!enableFullscreen"
+      class="icon-btn reset"
+      (click)="toggleFullscreen()"
+      [color]="fetchIcon(fullscreenIcon.open, 'color')"
+      matTooltip="Full screen"
+    >
+      <workflow-graph-icon
+        [icon]="fetchIcon(fullscreenIcon.open, 'name')"
+        [iconset]="fetchIcon(fullscreenIcon.open, 'iconset')"
+      ></workflow-graph-icon>
+    </button>
+    <button
+      mat-icon-button
+      *ngIf="enableFullscreen"
+      class="icon-btn"
+      (click)="toggleFullscreen()"
+      [color]="fetchIcon(fullscreenIcon.close, 'color')"
+      matTooltip="Exit full screen"
+    >
+      <workflow-graph-icon
+        [icon]="fetchIcon(fullscreenIcon.close, 'name')"
+        [iconset]="fetchIcon(fullscreenIcon.close, 'iconset')"
+      ></workflow-graph-icon>
+    </button>
+  </article>
+  <ng-container *ngFor="let customToggleTemplate of customToolbarToggleTemplates">
+    <article class="cell toggler">
+      <ng-container
+        *ngTemplateOutlet="customToggleTemplate; context: {
+          nodes,
+          groups
+         }"
+      ></ng-container>
+    </article>
+  </ng-container>
+  <div class="flex"></div>
+  <article class="cell right minimap" *ngIf="features.minimapToolbarToggle">
+    <button
+      mat-icon-button
+      class="icon-btn minimap"
+      [style.color]="colorForMinimap(enableMinimap)"
+      (click)="toggleMinimapVisibility()"
+      matTooltip="Show / Hide Minimap"
+    >
+      <workflow-graph-icon icon="minimap" iconset="cloud_ai"></workflow-graph-icon>
+    </button>
+  </article>
+</section>

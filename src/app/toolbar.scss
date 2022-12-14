@@ -1,0 +1,103 @@
+/*
+ * Dag toolbar base style definitions
+ */
+
+/* Mixin and deps imports */
+@import './mixins';
+
+$toolbar-color: #5f6368;
+
+@mixin text-styles {
+  font-size: 12.5px;
+  font-weight: $ace-font-weight-medium;
+  color: $toolbar-color;
+}
+
+@mixin disable-selection {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+// allow the toolbar to scroll at high zoom levels
+.ai-dag-toolbar {
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.toolbar {
+  width: 100%;
+  display: flex;
+  padding: 0.25em;
+  height: $toolbar-height;
+  font-size: 1em;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  z-index: 1;
+  .flex {
+    flex: 1 0 0%;
+  }
+}
+
+.toolbar .cell {
+  @include text-styles;
+  padding: 0 1em;
+  min-height: 2em;
+  min-width: fit-content;
+  display: flex;
+  align-items: center;
+  &:not(.right) {
+    border-right: 1px solid #dbdde1;
+  }
+  &.right {
+    border-left: 1px solid #dbdde1;
+  }
+  > workflow-graph-icon {
+    color: #80868b;
+    transition: color 0.25s;
+    margin: 0 0.25em 0 0;
+  }
+
+  &.toggler > * {
+    margin: 0;
+    .text {
+      padding-top: 1px;
+      @include text-styles;
+    }
+  }
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    color: $toolbar-color;
+  }
+}
+
+.toolbar .zoom {
+  @include disable-selection;
+  @include text-styles;
+  .value {
+    margin-right: 0.5em;
+    display: inline-block;
+    min-width: 2.8em;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.custom-toolbar-toggle {
+  margin: 0;
+  .text {
+    padding-top: 1px;
+    @include text-styles;
+  }
+}
+
+:host ::ng-deep .custom-toolbar-toggle .mat-slide-toggle-content {
+  min-width: max-content;
+}

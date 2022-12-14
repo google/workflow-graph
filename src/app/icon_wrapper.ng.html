@@ -1,0 +1,16 @@
+<ng-container *ngIf="iconSpec">
+  <ng-container *ngIf="iconSpec.kind === 'mat-icon'">
+    <mat-icon svgIcon="{{ iconSpec.iconset }}-{{ iconSpec.size }}:{{ iconSpec.icon }}"></mat-icon>
+  </ng-container>
+
+  <ng-container *ngIf="iconSpec.kind === 'mat-spinner'">
+    <mat-spinner
+      color="primary"
+      aria-label="Loading"
+      i18n-aria-label="Loading spinner label"
+      [diameter]="iconSpec.sizePx"
+      [strokeWidth]="iconSpec.sizePx / 10"
+    >
+    </mat-spinner>
+  </ng-container>
+</ng-container>

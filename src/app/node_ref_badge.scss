@@ -1,0 +1,98 @@
+/*
+ * Dag node base style definitions
+ */
+
+/* Mixin and deps imports */
+@import './mixins.scss';
+
+/* stylelint-disable no-unknown-animations -- All of the animations are imported from mixins.scss */
+
+:host {
+  &:focus-visible {
+    outline: none;
+    &::before {
+      content: '';
+      display: block;
+      @include fullbleed;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+  }
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  margin: 0 3px;
+  transition: width 0.25s, height 0.25s;
+
+  .scale-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    @include offsetCenter;
+    display: flex;
+    overflow: hidden;
+    background: white;
+    border-radius: 50px;
+    align-items: center;
+    justify-content: center;
+    padding: 9px;
+    border: 3px solid transparent;
+    transition: color 0.08s, background 0.25s, box-shadow 0.25s, transform 0.25s,
+      border-color 0.25s;
+    @include elevate(1);
+  }
+  &[state='pending'],
+  &[runtime='static'] .scale-wrap {
+    // stylelint-disable-next-line declaration-no-important -- This needs to
+    // be there to allow proper styling of icon colors (that are injected
+    // via JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
+    background: #e8eaed !important;
+    // stylelint-disable-next-line declaration-no-important -- This needs to
+    // be there to allow proper styling of icon colors (that are injected
+    // via JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
+    color: #9ba1a7 !important;
+    border-color: $node-border-color;
+  }
+
+  &[type='execution'][runtime='static'] .scale-wrap {
+    background: #f7f7f7;
+  }
+
+  &[type='artifact'][runtime='static'] .scale-wrap {
+    @include elevate(0);
+  }
+
+  &.selected .scale-wrap {
+    border-color: #3b78e7;
+  }
+
+  .scale-wrap .icon {
+    opacity: 1;
+    transition: opacity 0.25s;
+    &.text {
+      font-family: 'Roboto Mono', monospace;
+      font-weight: $ace-font-weight-bold;
+      font-size: 14px;
+      letter-spacing: 0.05em;
+    }
+    div,
+    div .cfc-icon,
+    div .cfc-icon mat-icon {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin-top: 0;
+      display: block;
+    }
+  }
+}
+
+:host {
+  &.collapsed .scale-wrap .icon {
+    opacity: 0;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
