@@ -57,7 +57,7 @@ Coming soon...
 ```
 
 #### Web Component integration in any framework
-This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here]('./src/example/index.html').
+This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here](https://github.com/google/workflow-graph/blob/main/src/example/index.html).
 
 ## Next steps
 - [ ] Create a release script and deploy Web Component artifacts (bundle, CSS, typings) to NPM.
