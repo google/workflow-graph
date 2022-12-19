@@ -1,7 +1,7 @@
 # Workflow Graph Component (DAG)
 Common component for rendering dag or tree like objects:
 
-<p align=center><img src="https://github.com/google/workflow-graph/images/Axsm55JovRK.png" width=70%></p>
+<p align=center><img src="/images/Axsm55JovRK.png" width=70%></p>
 
 
 ## Components
@@ -9,10 +9,10 @@ There are a few components that help with your DAG Needs
 
 Component | Img | Description
 --- | --- | ---
-[Renderer](./src/app/directed_acyclic_graph.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/GGOUFUntfz9.png" width=300px></p> | The Dag Component you can use to render a Graph on page
-[Toolbar](./src/app/toolbar.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/xUcvLY7Jwey.png" width=300px></p> | A toolbar that provides a `collapsability` toggle along with task status for the graph
-[Scaffold](./src/app/scaffold.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/JLEFoHk8s0R.png" width=300px></p> | A parent element that can position the toolbar to be sticky above the graph while flexing within its parent to allow for CSS-less page design
-[StateBadge](./src/app/node_state_badge.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/K75aYHeAaPi.png" width=300px></p> | Status icon badges for each state that an `execution` node can exist in
+[Renderer](./src/app/directed_acyclic_graph.ts) | <p align=center><img src="/images/GGOUFUntfz9.png" width=300px></p> | The Dag Component you can use to render a Graph on page
+[Toolbar](./src/app/toolbar.ts) | <p align=center><img src="/images/xUcvLY7Jwey.png" width=300px></p> | A toolbar that provides a `collapsability` toggle along with task status for the graph
+[Scaffold](./src/app/scaffold.ts) | <p align=center><img src="/images/JLEFoHk8s0R.png" width=300px></p> | A parent element that can position the toolbar to be sticky above the graph while flexing within its parent to allow for CSS-less page design
+[StateBadge](./src/app/node_state_badge.ts) | <p align=center><img src="/images/K75aYHeAaPi.png" width=300px></p> | Status icon badges for each state that an `execution` node can exist in
 
 ## Helper Classes
 
