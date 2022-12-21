@@ -31,6 +31,26 @@ declare interface DagSpec {
 }
 
 /**
+ * Interface for the inputs and outputs of the WebComponent wrapper of the
+ * Workflow Graph.
+ */
+export interface WorkflowGraphProps {
+  enableToolbar: boolean;
+  enableMinimap: boolean;
+  expandedMode: boolean;
+  loading: boolean;
+  optimizeForOrm: boolean;
+  dagSpec: DagSpec;
+  selectedNode: NodeRef|null;
+  followNode: NodeRef|null;
+  hoveredEdge?: DagEdge;
+  layout?: DagreOptions;
+  logger?: Logger;
+  zoom: number;
+  selectedNodeChange: EventEmitter<SelectedNode|null>;
+}
+
+/**
  * Wrapper for DirectedAcyclicGraph.
  */
 @Component({
@@ -63,7 +83,7 @@ declare interface DagSpec {
   </ai-dag-scaffold>
 `
 })
-export class WorkflowGraphWrapper {
+export class WorkflowGraphWrapper implements WorkflowGraphProps {
   graphSpec: GraphSpec = {
     nodes: [],
     edges: [],

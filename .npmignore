@@ -1,0 +1,7 @@
+lib/bundle-es2015/
+lib/bundle-es5/
+lib/prodapp/
+lib/_prodapp/
+lib/**/*module_mappings.json
+lib/**/*.optionsvalid.d.ts
+lib/**/*-0.params

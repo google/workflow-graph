@@ -1,0 +1,6 @@
+bazel-bin/
+bazel-out/
+bazel-testlogs/
+bazel-workflow-graph/
+node_modules/
+dist/
