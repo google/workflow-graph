@@ -35,6 +35,8 @@ Spec | Description
 ## Development, building and re-use
 ### Local developer environment
 This app is built with [Bazel]('https://bazel.build/'). After cloning the repo, start a local development environment by running `bazel run src:devserver` or `ng serve`. This will spin up a local `history-server` and use the Web Component version of the app, injected into a local HTML file.
+
+
 ### Building, bundling
 To build a reusable Web Component bundle, run `bazel build src:prodapp` or `ng build`. This will create a bundle in your Bazel output directory which can be included in an HTML file to load the component.
 ### Use as an Angular component
