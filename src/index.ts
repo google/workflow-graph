@@ -16,7 +16,7 @@
  */
 
 export {AppModule} from './app/app.module.opensource';
-export {RankAlignment, RankDirection, RankerAlgorithim} from './app/data_types_internal';
+export {DagTheme, FeatureToggleOptions, IconConfig, LayoutOptions, NodeState, RankAlignment, RankDirection, RankerAlgorithim, RuntimeState, ZoomConfig} from './app/data_types_internal';
 export {DagreOptions} from './app/directed_acyclic_graph';
 export {Logger} from './app/logger/dag_logger';
 export {WorkflowGraphProps} from './app/workflow_graph_wrapper';

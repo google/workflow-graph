@@ -5,8 +5,15 @@
     <title>Workflow Graph</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="UTF-8" />
+    <style>
+      ai-dag-scaffold {
+        width: 1200px;
+        height: 800px;
+      }
+    </style>
   </head>
   <body>
+    <div id="graph-component-wrapper"></div>
     <script>
       /** Default Node Vertical Spacing */
       const NODE_VERTICAL_SPACING = 60;
@@ -58,7 +65,8 @@
         console.log(event)
       );
 
-      document.body.appendChild(element);
+      const wrapper = document.querySelector("#graph-component-wrapper");
+      wrapper.appendChild(element);
     </script>
   </body>
 </html>

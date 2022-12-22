@@ -73,8 +73,14 @@ function copyConfigFilesToDist() {
   fse.writeJsonSync(
       path.join(distDirectoryPath, 'package.json'), webComponentPackageJson);
 
-  // Copy .npmignore to /dist
-  fse.copySync(path.join(__dirname, '.npmignore'), path.join(distDirectoryPath, '.npmignore'));
+  fse.copySync(
+      path.join(__dirname, '.npmignore'),
+      path.join(distDirectoryPath, '.npmignore'));
+  fse.copySync(
+      path.join(__dirname, 'README.md'),
+      path.join(distDirectoryPath, 'README.md'));
+  fse.copySync(
+      path.join(__dirname, 'LICENSE'), path.join(distDirectoryPath, 'LICENSE'));
 }
 
 (function main() {

@@ -1,5 +1,7 @@
 lib/bundle-es2015/
+lib/bundle-es2015.min/
 lib/bundle-es5/
+lib/bundle-es5.min/
 lib/prodapp/
 lib/_prodapp/
 lib/**/*module_mappings.json

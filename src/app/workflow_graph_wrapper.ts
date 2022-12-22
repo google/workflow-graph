@@ -47,7 +47,6 @@ export interface WorkflowGraphProps {
   layout?: DagreOptions;
   logger?: Logger;
   zoom: number;
-  selectedNodeChange: EventEmitter<SelectedNode|null>;
 }
 
 /**
