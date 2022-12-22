@@ -1,7 +1,7 @@
 # Workflow Graph Component (DAG)
 Common component for rendering dag or tree like objects:
 
-<p align=center><img src="https://github.com/google/workflow-graph/images/Axsm55JovRK.png" width=70%></p>
+<p align=center><img src="https://raw.githubusercontent.com/google/workflow-graph/main/images/Axsm55JovRK.png" width="70%" ></p>
 
 
 ## Components
