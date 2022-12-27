@@ -20,6 +20,7 @@ const commonjs = require('@rollup/plugin-commonjs');
 const replace = require('@rollup/plugin-replace');
 
 module.exports = {
+  inlineDynamicImports: true,
   plugins :
           [
             nodeResolve({
