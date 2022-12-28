@@ -18,7 +18,7 @@
 import {Inject, NgModule} from '@angular/core';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 
-import {URL_SANITIZER, UrlSanitizer} from './data_types_internal';
+import {URL_SANITIZER, UrlSanitizer} from './url_sanitizer_types';
 
 /**
  * Variables from common constants, re-declared here for OSS.

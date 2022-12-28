@@ -18,7 +18,7 @@
 import {Injectable} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
-import {UrlSanitizer} from './data_types_internal';
+import {UrlSanitizer} from './url_sanitizer_types';
 // Used in the open-source version only
 // tslint:enable:deprecation
 

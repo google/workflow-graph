@@ -32,10 +32,7 @@ ng_ts_project(
     srcs = [
         "data_types_internal.ts",
     ],
-    deps = [
-        "@npm//@angular/core",
-        "@npm//@angular/platform-browser",
-    ],
+    deps = [],
 )
 
 ng_ts_project(
@@ -44,7 +41,7 @@ ng_ts_project(
         "icons_module.ts",
     ],
     deps = [
-        ":internals",
+        ":url_sanitizer",
         "@npm//@angular/common",
         "@npm//@angular/core",
         "@npm//@angular/material",
@@ -285,9 +282,9 @@ ng_ts_project(
     name = "url_sanitizer",
     srcs = [
         "url_sanitizer.opensource.ts",
+        "url_sanitizer_types.ts",
     ],
     deps = [
-        ":internals",
         "@npm//@angular/common",
         "@npm//@angular/core",
         "@npm//@angular/platform-browser",

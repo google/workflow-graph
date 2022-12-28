@@ -15,17 +15,20 @@
  * limitations under the License.
  */
 
-import {MatIconTestingModule} from '@angular/material/icon/testing';
-import {provideNoopAnimations} from '@angular/platform-browser/animations';
+import {InjectionToken} from '@angular/core';
+import {SafeResourceUrl} from '@angular/platform-browser';
 
-import {UrlSanitizerInternal} from './url_sanitizer';
-import {URL_SANITIZER} from './url_sanitizer_types';
+/**
+ * Interface of URL sanitizer service that differs between internal vs.
+ * open-source.
+ */
+export abstract class UrlSanitizer {
+  abstract sanitizeUrl(iconset: string, size: string, version: number):
+      SafeResourceUrl;
+}
 
-export const TEST_PROVIDERS = [
-  {provide: URL_SANITIZER, useClass: UrlSanitizerInternal},
-  provideNoopAnimations(),
-];
-
-export const TEST_IMPORTS = [
-  MatIconTestingModule,
-];
+/**
+ * Injection token used to replace the sanitizer between internal and
+ * open-source versions.
+ */
+export const URL_SANITIZER = new InjectionToken<UrlSanitizer>('title');

@@ -32,12 +32,12 @@
  * limitations under the License.
  */
 
- import {NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
-import {URL_SANITIZER} from './data_types_internal';
 import {UrlSanitizerInternal} from './url_sanitizer';
+import {URL_SANITIZER} from './url_sanitizer_types';
 import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 
 @NgModule({

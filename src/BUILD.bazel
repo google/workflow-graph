@@ -21,6 +21,7 @@ ng_ts_project(
   ],
   deps = [
     "//src/app",
+    "//src/app:internals",
     "//src/app:workflow_graph_wrapper",
     "//src/app:directed_acyclic_graph",
     "//src/app/logger",

@@ -20,8 +20,8 @@ import {createCustomElement} from '@angular/elements';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
-import {URL_SANITIZER} from './data_types_internal';
 import {UrlSanitizerOpenSource} from './url_sanitizer.opensource';
+import {URL_SANITIZER} from './url_sanitizer_types';
 import {WorkflowGraphWrapper, WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 
 @NgModule({

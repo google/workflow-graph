@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-import {InjectionToken} from '@angular/core';
-import {SafeResourceUrl} from '@angular/platform-browser';
-
 /**
  * The internal data interfaces, classes and types required for DAG Renderer
  */
@@ -678,14 +675,3 @@ export function assert(condition: any, msg?: string): asserts condition {
     throw new AssertionError(msg);
   }
 }
-
-/**
- * Interface of URL sanitizer service that differs between internal vs.
- * open-source.
- */
-export abstract class UrlSanitizer {
-  abstract sanitizeUrl(iconset: string, size: string, version: number):
-      SafeResourceUrl;
-}
-
-export const URL_SANITIZER = new InjectionToken<UrlSanitizer>('title');
