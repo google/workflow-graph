@@ -1,7 +1,7 @@
 # Workflow Graph Component (DAG)
 Common component for rendering dag or tree like objects:
 
-<p align=center><img src="https://github.com/google/workflow-graph/images/Axsm55JovRK.png" width=70%></p>
+<p align=center><img src="/images/Axsm55JovRK.png" width=70%></p>
 
 
 ## Components
@@ -9,28 +9,28 @@ There are a few components that help with your DAG Needs
 
 Component | Img | Description
 --- | --- | ---
-[Renderer](./src/app/directed_acyclic_graph.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/GGOUFUntfz9.png" width=300px></p> | The Dag Component you can use to render a Graph on page
-[Toolbar](./src/app/toolbar.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/xUcvLY7Jwey.png" width=300px></p> | A toolbar that provides a `collapsability` toggle along with task status for the graph
-[Scaffold](./src/app/scaffold.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/JLEFoHk8s0R.png" width=300px></p> | A parent element that can position the toolbar to be sticky above the graph while flexing within its parent to allow for CSS-less page design
-[StateBadge](./src/app/node_state_badge.ts) | <p align=center><img src="https://github.com/google/workflow-graph/images/K75aYHeAaPi.png" width=300px></p> | Status icon badges for each state that an `execution` node can exist in
+[Renderer](/src/app/directed_acyclic_graph.ts) | <p align=center><img src="/images/GGOUFUntfz9.png" width=300px></p> | The Dag Component you can use to render a Graph on page
+[Toolbar](/src/app/toolbar.ts) | <p align=center><img src="/images/xUcvLY7Jwey.png" width=300px></p> | A toolbar that provides a `collapsability` toggle along with task status for the graph
+[Scaffold](/src/app/scaffold.ts) | <p align=center><img src="/images/JLEFoHk8s0R.png" width=300px></p> | A parent element that can position the toolbar to be sticky above the graph while flexing within its parent to allow for CSS-less page design
+[StateBadge](/src/app/node_state_badge.ts) | <p align=center><img src="/images/K75aYHeAaPi.png" width=300px></p> | Status icon badges for each state that an `execution` node can exist in
 
 ## Helper Classes
 
-### [DAG Node](./src/app/node_spec.ts)
+### [DAG Node](/src/app/node_spec.ts)
 
 This file contains the `Node` object that's passed to the Renderer and Toolbar
 components. It also allows for rapid construction of the
-[`GraphSpec`](./src/app/directed_acyclic_graph_node.ts)
+[`GraphSpec`](/src/app/directed_acyclic_graph_node.ts)
 via static helper methods
 
 Spec | Description
 --- | ---
-[DagNode](./src/app/directed_acyclic_graph_node.ts) | The Node **class** that holds all information for a single node on the graph. Superset of `DagNodeMeta`
-[DagEdge](./src/app/directed_acyclic_graph_node.ts) | An edge **class** that holds `from` and `to` relationship as well as relevant edge information
-[GraphSpec](./src/app/directed_acyclic_graph_node.ts) | A helper **interface** that holds `nodes`, `edges` and `nodeMap`
-[DagNodeMeta](./src/app/directed_acyclic_graph_node.ts) | An **interface** that represents all meta information for a node
-[DagNodeSkeleton](./src/app/directed_acyclic_graph_node.ts) | An **interface** that allows a user to write a bare-bone skeleton for a node graph / tree. This is consumed by the static [`Node.createFromSkeleton()`](./src/app/directed_acyclic_graph_node.ts) method to construct a graph.
-[DagNodeLinked](./src/app/directed_acyclic_graph_node.ts) [Abandoned] | A ***`DagNode`*** implementation that has ancestry baked in within the **class** and allows child <-> parent traversal
+[DagNode](/src/app/directed_acyclic_graph_node.ts) | The Node **class** that holds all information for a single node on the graph. Superset of `DagNodeMeta`
+[DagEdge](/src/app/directed_acyclic_graph_node.ts) | An edge **class** that holds `from` and `to` relationship as well as relevant edge information
+[GraphSpec](/src/app/directed_acyclic_graph_node.ts) | A helper **interface** that holds `nodes`, `edges` and `nodeMap`
+[DagNodeMeta](/src/app/directed_acyclic_graph_node.ts) | An **interface** that represents all meta information for a node
+[DagNodeSkeleton](/src/app/directed_acyclic_graph_node.ts) | An **interface** that allows a user to write a bare-bone skeleton for a node graph / tree. This is consumed by the static [`Node.createFromSkeleton()`](/src/app/directed_acyclic_graph_node.ts) method to construct a graph.
+[DagNodeLinked](/src/app/directed_acyclic_graph_node.ts) [Abandoned] | A ***`DagNode`*** implementation that has ancestry baked in within the **class** and allows child <-> parent traversal
 
 ## Development, building and re-use
 ### Local developer environment
@@ -59,7 +59,7 @@ Coming soon...
 ```
 
 #### Web Component integration in any framework
-This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here]('./src/example/index.html').
+This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here](/src/example/index.html).
 
 ## Next steps
 - [ ] Create a release script and deploy Web Component artifacts (bundle, CSS, typings) to NPM.
