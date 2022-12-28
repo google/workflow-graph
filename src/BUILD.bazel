@@ -24,6 +24,7 @@ ng_ts_project(
     "//src/app:internals",
     "//src/app:workflow_graph_wrapper",
     "//src/app:directed_acyclic_graph",
+    "//src/app:node_spec",
     "//src/app/logger",
   ]
 )

@@ -1,6 +1,6 @@
 {
   "name": "@google/workflow-graph",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Component for visualizing workflow graphs (directed-acyclic-graphs). Built with Angular, distributed as a Web Component. [WIP]",
   "author": "Google LLC",
   "private": false,
@@ -59,6 +59,7 @@
       "@angular/cdk": "^12.2.7",
       "@angular/common": "^12.2.7",
       "@angular/core": "^12.2.7",
+      "@angular/elements": "^12.2.7",
       "@angular/forms": "^12.2.7",
       "@angular/material": "^12.2.7",
       "@angular/platform-browser": "^12.2.7",
