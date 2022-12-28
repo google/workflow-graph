@@ -17,7 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
-import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, NgModule, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 
 import {DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
 import {Logger} from './logger/dag_logger';
@@ -54,6 +54,10 @@ export interface WorkflowGraphProps {
  */
 @Component({
   selector: 'workflow-graph',
+  // This is a .css file generated during build (difference between OSS and
+  // internal)
+  styleUrls: ['./material_theme.css'],
+  encapsulation: ViewEncapsulation.None,
   template: `
 <ai-dag-scaffold>
     <ai-dag-toolbar

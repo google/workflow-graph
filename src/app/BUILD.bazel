@@ -229,6 +229,7 @@ ng_ts_project(
         "workflow_graph_wrapper.ts",
     ],
     assets = [
+      ":material_theme"
     ],
     deps = [
         ":directed_acyclic_graph",
@@ -246,12 +247,12 @@ npm_sass_library(
 )
 
 sass_binary(
-    name = "material_theme_npm_sass",
+    name = "material_theme",
     src = "material_theme_npm.scss",
     include_paths = [
         "external/npm/node_modules",
     ],
-    output_name = "material_theme_npm.css",
+    output_name = "material_theme.css",
     sourcemap = False,
     deps = [":angular_material_sass_deps"],
 )

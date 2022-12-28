@@ -50,7 +50,6 @@ _ASSETS = [
     # Also it's tricky to configure dead code elimination to understand that
     # zone.js is used, given that we don't have any import statement that
     # imports from it.
-    "//src/app:material_theme_npm.css",
     "@npm//:node_modules/zone.js/dist/zone.min.js",
 ]
 

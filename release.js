@@ -44,16 +44,9 @@ function ensureDirectoriesExist() {
 function copyBundleToDist() {
   const pathToMinifiedBundles =
       path.join(bazelBinDirectoryPath, 'src', 'prodapp', 'bundle-es2015.min');
-  const destinationPath = path.join(webComponentDistDirectoryPath, 'bundle');
-  fse.copySync(pathToMinifiedBundles, destinationPath, {dereference: true});
-}
-
-/** Copy resource files (.css) to /dist */
-function copyResourcesToDist() {
-  const pathToMinifiedBundles =
-      path.join(bazelBinDirectoryPath, 'src', 'prodapp', 'app');
-  const destinationPath = path.join(webComponentDistDirectoryPath, 'resources');
-  fse.copySync(pathToMinifiedBundles, destinationPath, {dereference: true});
+  fse.copySync(
+      pathToMinifiedBundles, webComponentDistDirectoryPath,
+      {dereference: true});
 }
 
 /** Copies source files to the /lib directory within /dist */
@@ -91,9 +84,6 @@ function copyConfigFilesToDist() {
 
   console.log('Copying bundles to /dist...');
   copyBundleToDist();
-
-  console.log('Copying resources to /dist...');
-  copyResourcesToDist();
 
   console.log('Copying compiled library to /dist...');
   copyCompiledLibrary();
