@@ -20,21 +20,21 @@ Component | Img | Description
 
 This file contains the `Node` object that's passed to the Renderer and Toolbar
 components. It also allows for rapid construction of the
-[`GraphSpec`](/src/app/directed_acyclic_graph_node.ts)
+[`GraphSpec`](/src/app/node_spec.ts)
 via static helper methods
 
 Spec | Description
 --- | ---
-[DagNode](/src/app/directed_acyclic_graph_node.ts) | The Node **class** that holds all information for a single node on the graph. Superset of `DagNodeMeta`
-[DagEdge](/src/app/directed_acyclic_graph_node.ts) | An edge **class** that holds `from` and `to` relationship as well as relevant edge information
-[GraphSpec](/src/app/directed_acyclic_graph_node.ts) | A helper **interface** that holds `nodes`, `edges` and `nodeMap`
-[DagNodeMeta](/src/app/directed_acyclic_graph_node.ts) | An **interface** that represents all meta information for a node
-[DagNodeSkeleton](/src/app/directed_acyclic_graph_node.ts) | An **interface** that allows a user to write a bare-bone skeleton for a node graph / tree. This is consumed by the static [`Node.createFromSkeleton()`](/src/app/directed_acyclic_graph_node.ts) method to construct a graph.
-[DagNodeLinked](/src/app/directed_acyclic_graph_node.ts) [Abandoned] | A ***`DagNode`*** implementation that has ancestry baked in within the **class** and allows child <-> parent traversal
+[DagNode](/src/app/node_spec.ts) | The Node **class** that holds all information for a single node on the graph. Superset of `DagNodeMeta`
+[DagEdge](/src/app/node_spec.ts) | An edge **class** that holds `from` and `to` relationship as well as relevant edge information
+[GraphSpec](/src/app/node_spec.ts) | A helper **interface** that holds `nodes`, `edges` and `nodeMap`
+[DagNodeMeta](/src/app/node_spec.ts) | An **interface** that represents all meta information for a node
+[DagNodeSkeleton](/src/app/node_spec.ts) | An **interface** that allows a user to write a bare-bone skeleton for a node graph / tree. This is consumed by the static [`Node.createFromSkeleton()`](/src/app/node_spec.ts) method to construct a graph.
+[DagNodeLinked](/src/app/node_spec.ts) [Abandoned] | A ***`DagNode`*** implementation that has ancestry baked in within the **class** and allows child <-> parent traversal
 
 ## Development, building and re-use
 ### Local developer environment
-This app is built with [Bazel]('https://bazel.build/'). After cloning the repo, start a local development environment by running `bazel run src:devserver` or `ng serve`. This will spin up a local `history-server` and use the Web Component version of the app, injected into a local HTML file.
+This app is built with [Bazel](https://bazel.build/). After cloning the repo, start a local development environment by running `bazel run src:devserver` or `ng serve`. This will spin up a local `history-server` and use the Web Component version of the app, injected into a local HTML file.
 
 
 ### Building, bundling
@@ -62,7 +62,7 @@ Coming soon...
 This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here](/src/example/index.html).
 
 ## Next steps
-- [ ] Create a release script and deploy Web Component artifacts (bundle, CSS, typings) to NPM.
+- [x] Create a release script and deploy Web Component artifacts (bundle, CSS, typings) to NPM.
 - [ ] Validate usage as an Angular library, improve documentation
 - [ ] Improve code structure
 - [ ] Bump Angular and Angular Material versions to latest
