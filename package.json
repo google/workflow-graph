@@ -1,6 +1,6 @@
 {
   "name": "@google/workflow-graph",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Component for visualizing workflow graphs (directed-acyclic-graphs). Built with Angular, distributed as a Web Component. [WIP]",
   "author": "Google LLC",
   "private": false,
@@ -13,7 +13,7 @@
   "scripts": {
     "build": "bazel build //:bundle",
     "serve": "bazel run :devserver",
-    "postinstall": "node_modules/.bin/ngcc --async --properties fesm2015",
+    "run-ngcc": "node_modules/.bin/ngcc --async --properties fesm2015",
     "prepare-release": "node release.js"
   },
   "engines": {

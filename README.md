@@ -1,7 +1,7 @@
 # Workflow Graph Component (DAG)
 Common component for rendering dag or tree like objects:
 
-<p align=center><img src="/images/Axsm55JovRK.png" width=70%></p>
+<p align=center><img src="https://raw.githubusercontent.com/google/workflow-graph/main/images/Axsm55JovRK.png" width=70%></p>
 
 
 ## Components
@@ -9,10 +9,10 @@ There are a few components that help with your DAG Needs
 
 Component | Img | Description
 --- | --- | ---
-[Renderer](/src/app/directed_acyclic_graph.ts) | <p align=center><img src="/images/GGOUFUntfz9.png" width=300px></p> | The Dag Component you can use to render a Graph on page
-[Toolbar](/src/app/toolbar.ts) | <p align=center><img src="/images/xUcvLY7Jwey.png" width=300px></p> | A toolbar that provides a `collapsability` toggle along with task status for the graph
-[Scaffold](/src/app/scaffold.ts) | <p align=center><img src="/images/JLEFoHk8s0R.png" width=300px></p> | A parent element that can position the toolbar to be sticky above the graph while flexing within its parent to allow for CSS-less page design
-[StateBadge](/src/app/node_state_badge.ts) | <p align=center><img src="/images/K75aYHeAaPi.png" width=300px></p> | Status icon badges for each state that an `execution` node can exist in
+[Renderer](/src/app/directed_acyclic_graph.ts) | <p align=center><img src="https://raw.githubusercontent.com/google/workflow-graph/main/images/GGOUFUntfz9.png" width=300px></p> | The Dag Component you can use to render a Graph on page
+[Toolbar](/src/app/toolbar.ts) | <p align=center><img src="https://raw.githubusercontent.com/google/workflow-graph/main/images/xUcvLY7Jwey.png" width=300px></p> | A toolbar that provides a `collapsability` toggle along with task status for the graph
+[Scaffold](/src/app/scaffold.ts) | <p align=center><img src="https://raw.githubusercontent.com/google/workflow-graph/main/images/JLEFoHk8s0R.png" width=300px></p> | A parent element that can position the toolbar to be sticky above the graph while flexing within its parent to allow for CSS-less page design
+[StateBadge](/src/app/node_state_badge.ts) | <p align=center><img src="https://raw.githubusercontent.com/google/workflow-graph/main/images/K75aYHeAaPi.png" width=300px></p> | Status icon badges for each state that an `execution` node can exist in
 
 ## Helper Classes
 
@@ -39,10 +39,13 @@ This app is built with [Bazel](https://bazel.build/). After cloning the repo, st
 
 ### Building, bundling
 To build a reusable Web Component bundle, run `bazel build src:prodapp` or `ng build`. This will create a bundle in your Bazel output directory which can be included in an HTML file to load the component.
+
 ### Use as an Angular component
 Coming soon...
+
 ### NPM
-Coming soon...
+This component is available on npm at https://www.npmjs.com/package/@google/workflow-graph. To install it, run 
+`npm install @google/workflow-graph` or `yarn install @google/workflow-graph`.
 
 
 ## Example
@@ -59,7 +62,7 @@ Coming soon...
 ```
 
 #### Web Component integration in any framework
-This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here](/src/example/index.html).
+This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here](/src/example/index.html). An [example repo](https://github.com/biharygergo/workflow-graph-example-react) is available that shows this component can be used in React and Typescript. 
 
 ## Next steps
 - [x] Create a release script and deploy Web Component artifacts (bundle, CSS, typings) to NPM.
