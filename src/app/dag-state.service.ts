@@ -16,6 +16,7 @@
  */
 
 import {ElementRef} from '@angular/core';
+import * as lodash from 'lodash';  // from //third_party/javascript/lodash:lodash-module
 import {Observable, Subject, Subscription} from 'rxjs';
 import {distinctUntilChanged} from 'rxjs/operators';
 
@@ -170,7 +171,11 @@ export class DagStateService {
     this.selectedNodeChange$.next(v);
   }
   private listenTheme(fn: StateListener<DagStateService['theme']>) {
-    const obs = this.theme$.subscribe(v => void fn(v));
+    const obs = this.theme$
+                    .pipe(
+                        distinctUntilChanged(lodash.isEqual),
+                        )
+                    .subscribe(v => void fn(v));
     this.setTheme(this.theme);
     return obs;
   }
