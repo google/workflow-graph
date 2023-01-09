@@ -66,6 +66,10 @@ function copyConfigFilesToDist() {
   fse.writeJsonSync(
       path.join(distDirectoryPath, 'package.json'), webComponentPackageJson);
 
+  webComponentPackageJson.scripts['run-ngcc'] =
+      webComponentPackageJson.scripts['postinstall'];
+  delete webComponentPackageJson['postinstall'];
+
   fse.copySync(
       path.join(__dirname, '.npmignore'),
       path.join(distDirectoryPath, '.npmignore'));

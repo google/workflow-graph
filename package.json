@@ -13,7 +13,7 @@
   "scripts": {
     "build": "bazel build //:bundle",
     "serve": "bazel run :devserver",
-    "run-ngcc": "node_modules/.bin/ngcc --async --properties fesm2015",
+    "postinstall": "node_modules/.bin/ngcc --properties fesm2015",
     "prepare-release": "node release.js"
   },
   "engines": {
