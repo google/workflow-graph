@@ -123,6 +123,7 @@ export class DagToolbar {
   $nodes: Array<DagNode|CustomNode> = [];
   $groups: DagGroup[] = [];
   private $customToolbarToggleTemplates: ElementRef[] = [];
+  private $rightAlignedCustomToolbarToggleTemplates: ElementRef[] = [];
 
   @Input() enableMinimap = true;
   @Output() enableMinimapChange = new EventEmitter();
@@ -183,6 +184,15 @@ export class DagToolbar {
   }
   get customToolbarToggleTemplates() {
     return this.$customToolbarToggleTemplates;
+  }
+
+  @Input('rightAlignedCustomToolbarToggleTemplates')
+  set rightAlignedCustomToolbarToggleTemplates(templates: ElementRef[]) {
+    this.$rightAlignedCustomToolbarToggleTemplates = templates;
+    this.cdr.detectChanges();
+  }
+  get rightAlignedCustomToolbarToggleTemplates() {
+    return this.$rightAlignedCustomToolbarToggleTemplates;
   }
 
   constructor(

@@ -123,6 +123,14 @@
     </article>
   </ng-container>
   <div class="flex"></div>
+  <ng-container *ngFor="let customToggleTemplate of rightAlignedCustomToolbarToggleTemplates">
+    <article class="cell toggler">
+      <ng-container *ngTemplateOutlet="customToggleTemplate; context: {
+        nodes,
+        groups
+       }"></ng-container>
+    </article>
+  </ng-container>
   <article class="cell right minimap" *ngIf="features.minimapToolbarToggle">
     <button
       mat-icon-button
