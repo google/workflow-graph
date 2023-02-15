@@ -178,6 +178,11 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
   @Input() minimapPosition: MinimapPosition = 'top';
 
+  /**
+   * Hide minimap control from keyboard interaction and screen reader.
+   */
+  @Input() hideMinimapFromAssistiveTechnologies = false;
+
   @Input() loading = false;
 
   /**
