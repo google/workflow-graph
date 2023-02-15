@@ -190,35 +190,50 @@ export function bgForState(state: NodeState, theme: DagTheme): string {
 /**
  * @desc Label for an running execution that is preparing to change
  * state due to user intervention.
+ * @suppress { messageConventions }
  */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_WORKING =
     translateMessage('Working');
 
-/** @desc Label for an execution that has not started. */
+/**
+ * @desc Label for an execution that has not started.
+ * @suppress { messageConventions }
+ */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_PENDING =
     translateMessage('Pending');
 
-/** @desc Label for an execution that was stopped by the user. */
+/**
+ * @desc Label for an execution that was stopped by the user.
+ * @suppress { messageConventions }
+ */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CANCELLED =
     translateMessage('Cancelled');
 
-/** @desc Label for an execution that failed to complete. */
+/**
+ * @desc Label for an execution that failed to complete.
+ * @suppress { messageConventions }
+ */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_FAILED =
     translateMessage('Failed');
 
-/** @desc Label for an execution that is currently in progress. */
+/**
+ * @desc Label for an execution that is currently in progress.
+ * @suppress { messageConventions }
+ */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING =
     translateMessage('Running');
 
 /**
  * @desc Label for an execution that was skipped due to the step being
  * cached.
+ * @suppress { messageConventions }
  */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CACHED =
     translateMessage('Cached');
 
 /**
  * @desc Label for an execution that did not complete due to a timeout.
+ * @suppress { messageConventions }
  */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT =
     translateMessage('Timeout');
@@ -226,11 +241,15 @@ const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT =
 /**
  * @desc Label for an execution that did not run because its trigger
  * policy didn't match.
+ * @suppress { messageConventions }
  */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_NOT_TRIGGERED =
     translateMessage('Not Triggered');
 
-/** @desc Label for an execution that completed successfully. */
+/**
+ * @desc Label for an execution that completed successfully.
+ * @suppress { messageConventions }
+ */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_COMPLETED =
     translateMessage('Completed');
 

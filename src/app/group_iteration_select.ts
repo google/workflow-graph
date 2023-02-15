@@ -36,6 +36,7 @@ const cssVars = {
 /**
  * @desc Label for groups that are important for the user to see (Failures,
  * Warnings, etc)
+ * @suppress { messageConventions }
  */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS =
     translateMessage('Failed iterations');
@@ -43,6 +44,7 @@ const MSG_AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS =
 /**
  * @desc Label for groups that ran as expected and are less important for the
  * user to see (Successes, Running, Pending, Not deployed yet, etc)
+ * @suppress { messageConventions }
  */
 const MSG_AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS =
     translateMessage('Other iterations');
