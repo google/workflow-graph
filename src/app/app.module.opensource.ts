@@ -18,6 +18,7 @@
 import {DoBootstrap, Injector, NgModule} from '@angular/core';
 import {createCustomElement} from '@angular/elements';
 import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
 import {UrlSanitizerOpenSource} from './url_sanitizer.opensource';
@@ -28,6 +29,7 @@ import {WorkflowGraphWrapper, WorkflowGraphWrapperModule} from './workflow_graph
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     WorkflowGraphWrapperModule,
   ],
   providers: [{provide: URL_SANITIZER, useClass: UrlSanitizerOpenSource}],

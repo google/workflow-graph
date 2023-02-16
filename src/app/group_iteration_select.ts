@@ -18,7 +18,6 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output} from '@angular/core';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
@@ -181,7 +180,6 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
 @NgModule({
   imports: [
     CommonModule,
-    BrowserAnimationsModule,
     WorkflowGraphIconModule,
     DagIconsModule,
     MatSelectModule,

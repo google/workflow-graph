@@ -448,7 +448,6 @@ ng_ts_project(
         ":internals",
         ":node_spec",
         "@npm//@angular/material",
-        "@npm//@angular/platform-browser",
         "@npm//rxjs",
     ],
 )

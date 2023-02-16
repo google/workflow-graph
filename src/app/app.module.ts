@@ -34,6 +34,7 @@
 
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
+import {provideAnimations} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
 import {UrlSanitizerInternal} from './url_sanitizer';
@@ -43,7 +44,10 @@ import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, WorkflowGraphWrapperModule],
-  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizerInternal}],
+  providers: [
+    {provide: URL_SANITIZER, useClass: UrlSanitizerInternal},
+    provideAnimations()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
