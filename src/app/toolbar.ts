@@ -21,7 +21,7 @@ import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash:bundle
+import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash
 
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
 import {fetchIcon, iconForState} from './icon_util';
