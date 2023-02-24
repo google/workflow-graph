@@ -18,7 +18,7 @@
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
-import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash
+import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash:bundle
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';

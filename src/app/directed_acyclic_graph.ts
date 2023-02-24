@@ -20,7 +20,7 @@ import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cd
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, ViewChild} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import * as lodash from 'lodash';  // from //third_party/javascript/lodash:lodash-module
+import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash:bundle
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
