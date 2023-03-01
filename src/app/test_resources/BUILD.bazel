@@ -1,4 +1,4 @@
-load("//src:bazel_functions.bzl", "ng_ts_project")
+load("//src/tools:ng.bzl", "ng_project")
 
 package(
     default_visibility = [
@@ -6,7 +6,7 @@ package(
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "test_resources",
     srcs = [
         "fake_data.ts",

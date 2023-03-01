@@ -1,20 +1,14 @@
-load("@npm//@bazel/typescript:index.bzl", "ts_config")
-load("//src:bazel_functions.bzl", "ng_ts_project")
-load("@npm//history-server:index.bzl", "history_server")
+load("@npm//:history-server/package_json.bzl", history_server_bin = "bin")
 load("@build_bazel_rules_nodejs//:index.bzl", "pkg_web")
-load("@npm//@babel/cli:index.bzl", "babel")
-load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
-load("@npm//@bazel/terser:index.bzl", "terser_minified")
-load("@npm//html-insert-assets:index.bzl", "html_insert_assets")
+load("@aspect_rules_rollup//rollup:defs.bzl", "rollup_bundle")
+load("@npm//:html-insert-assets/package_json.bzl", html_insert_assets_bin = "bin")
+load("//src/tools:ng.bzl", "ng_project")
+load("@aspect_rules_terser//terser:defs.bzl", "terser_minified")
+
 
 package(default_visibility = ["//:__subpackages__"])
 
-ts_config(
-    name = "tsconfig",
-    src = "tsconfig.opensource.json",
-)
-
-ng_ts_project(
+ng_project(
   name = "index",
   srcs = [
     "index.ts",
@@ -29,7 +23,7 @@ ng_ts_project(
   ]
 )
 
-ng_ts_project(
+ng_project(
     name = "src",
     srcs = [
         "main.opensource.ts",
@@ -38,9 +32,9 @@ ng_ts_project(
     deps = [
         "//src/app",
         ":index",
-        "@npm//@angular/core",
-        "@npm//@angular/localize",
-        "@npm//@angular/platform-browser",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@angular/localize",
+        "//:node_modules/@angular/platform-browser",
     ],
 )
 
@@ -51,7 +45,7 @@ _ASSETS = [
     # Also it's tricky to configure dead code elimination to understand that
     # zone.js is used, given that we don't have any import statement that
     # imports from it.
-    "@npm//:node_modules/zone.js/dist/zone.min.js",
+    "//:node_modules/zone.js",
 ]
 
 rollup_bundle(
@@ -63,9 +57,9 @@ rollup_bundle(
     output_dir = True,
     deps = [
         "//src",
-        "@npm//@rollup/plugin-commonjs",
-        "@npm//@rollup/plugin-node-resolve",
-        "@npm//@rollup/plugin-replace",
+        "//:node_modules/@rollup/plugin-commonjs",
+        "//:node_modules/@rollup/plugin-node-resolve",
+        "//:node_modules/@rollup/plugin-replace",
     ],
 )
 
@@ -79,31 +73,13 @@ rollup_bundle(
     output_dir = True,
     deps = [
         "//src",
-        "@npm//@rollup/plugin-commonjs",
-        "@npm//@rollup/plugin-node-resolve",
-        "@npm//@rollup/plugin-replace",
+        "//:node_modules/@rollup/plugin-commonjs",
+        "//:node_modules/@rollup/plugin-node-resolve",
+        "//:node_modules/@rollup/plugin-replace",
     ],
 )
 
-babel(
-    name = "bundle-es5",
-    args = [
-        "$(execpath :bundle-es2015)",
-        "--no-babelrc",
-        "--source-maps",
-        "--presets=@babel/preset-env",
-        "--plugins=@babel/plugin-transform-modules-systemjs",
-        "--out-dir",
-        "$(@D)",
-    ],
-    data = [
-        ":bundle-es2015",
-        "@npm//@babel/preset-env",
-    ],
-    output_dir = True,
-)
-
-html_insert_assets(
+html_insert_assets_bin.html_insert_assets(
     name = "inject_scripts_for_dev",
     outs = ["index.html"],
     args = [
@@ -114,7 +90,7 @@ html_insert_assets(
     ] + ["$(execpath %s)" % s for s in _ASSETS] + [
         "--scripts --module $(execpath :bundle-es2015-dev)/index.dev.js",
     ],
-    data = [
+    srcs = [
         "//src:example/index.html",
         ":bundle-es2015-dev",
     ] + _ASSETS,
@@ -126,8 +102,8 @@ pkg_web(
         ":bundle-es2015-dev",
         ":inject_scripts_for_dev",
         # Include polyfills that will be requested by old browsers
-        "@npm//:node_modules/systemjs/dist/system.js",
-        "@npm//:node_modules/core-js/client/core.min.js",
+        # "//:node_modules/systemjs/dist/system.js",
+        # "//:node_modules/core-js/client/core.min.js",
     ],
     # In production mode we serve some polyfills with script tags that have hard-coded paths in the index.html
     # so we must serve them at that path, by stripping a prefix
@@ -137,23 +113,17 @@ pkg_web(
     ],
 )
 
-history_server(
+history_server_bin.history_server_binary(
     name = "devserver",
     data = [":devapp"],
-    templated_args = ["-a $$(rlocation $(rootpath :devapp))"],
 )
 
 terser_minified(
     name = "bundle-es2015.min",
-    src = ":bundle-es2015",
+    srcs = [":bundle-es2015"],
 )
 
-terser_minified(
-    name = "bundle-es5.min",
-    src = ":bundle-es5",
-)
-
-html_insert_assets(
+html_insert_assets_bin.html_insert_assets(
     name = "inject_scripts_for_prod",
     # we can't output "src/example/index.html" since that collides with the devmode file.
     # pkg_web rule will re-root paths that start with _{name} by default
@@ -167,12 +137,10 @@ html_insert_assets(
         "--assets",
     ] + ["$(execpath %s)" % s for s in _ASSETS] + [
         "--scripts --module $(execpath :bundle-es2015.min)/registerWorkflowGraphWebComponent.js",
-        "--scripts --nomodule $(execpath :bundle-es5.min)/registerWorkflowGraphWebComponent.js",
     ],
-    data = [
+    srcs = [
         "//src:example/index.html",
         ":bundle-es2015.min",
-        ":bundle-es5.min",
     ] + _ASSETS,
 )
 
@@ -180,12 +148,11 @@ pkg_web(
     name = "prodapp",
     srcs = _ASSETS + [
         ":bundle-es2015.min",
-        ":bundle-es5.min",
         # each injected index file should be listed here
         ":inject_scripts_for_prod",
         # Include polyfills that will be requested by old browsers
-        "@npm//:node_modules/systemjs/dist/system.js",
-        "@npm//:node_modules/core-js/client/core.min.js",
+        # "//:node_modules/systemjs/dist/system.js",
+        # "//:node_modules/core-js/client/core.min.js",
     ],
     # In production mode we serve some polyfills with script tags that have hard-coded paths in the index.html
     # so we must serve them at that path, by stripping a prefix
@@ -195,8 +162,7 @@ pkg_web(
     ],
 )
 
-history_server(
+history_server_bin.history_server_binary(
     name = "prodserver",
     data = [":prodapp"],
-    templated_args = ["-a $$(rlocation $(rootpath :prodapp))"],
 )

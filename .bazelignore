@@ -1,0 +1,5 @@
+dist
+
+# From npm_translate_lock(verify_node_modules_ignored) -----------
+node_modules
+# -----------

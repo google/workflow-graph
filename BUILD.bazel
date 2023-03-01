@@ -1,5 +1,16 @@
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
+
+npm_link_all_packages(name = "node_modules")
+
 package(default_visibility = ["//:__subpackages__"])
 
 licenses(["notice"])
 
 exports_files(["LICENSE"])
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.opensource.json",
+    visibility = ["//visibility:public"],
+)

@@ -1,9 +1,9 @@
 load("@io_bazel_rules_sass//:defs.bzl", "npm_sass_library", "sass_binary", "sass_library")
-load("//src:bazel_functions.bzl", "ng_ts_project")
+load("//src/tools:ng.bzl", "ng_project")
 
 package(default_visibility = ["//visibility:public"])
 
-ng_ts_project(
+ng_project(
     name = "node_spec",
     srcs = [
         "node_spec.ts",
@@ -13,7 +13,7 @@ ng_ts_project(
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "dag_state_service",
     srcs = [
         "dag-state.service.ts",
@@ -21,13 +21,13 @@ ng_ts_project(
     deps = [
         ":internals",
         ":node_spec",
-        "@npm//@angular/core",
-        "@npm//@types/node",
-        "@npm//rxjs",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@types/node",
+        "//:node_modules/rxjs",
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "internals",
     srcs = [
         "data_types_internal.ts",
@@ -35,24 +35,24 @@ ng_ts_project(
     deps = [],
 )
 
-ng_ts_project(
+ng_project(
     name = "icons_module",
     srcs = [
         "icons_module.ts",
     ],
     deps = [
         ":url_sanitizer",
-        "@npm//@angular/common",
-        "@npm//@angular/core",
-        "@npm//@angular/material",
-        "@npm//@angular/platform-browser",
-        "@npm//@types/node",
-        "@npm//@types/trusted-types",
-        "@npm//safevalues",
+        "//:node_modules/@angular/common",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@angular/material",
+        "//:node_modules/@angular/platform-browser",
+        "//:node_modules/@types/node",
+        "//:node_modules/@types/trusted-types",
+        "//:node_modules/safevalues",
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "icon_util",
     srcs = [
         "icon_util.ts",
@@ -65,7 +65,7 @@ ng_ts_project(
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "icon_wrapper",
     srcs = [
         "icon_wrapper.ts",
@@ -75,8 +75,8 @@ ng_ts_project(
         ":icon_wrapper_sass",
     ],
     deps = [
-        "@npm//@angular/material",
-        "@npm//@types/node",
+        "//:node_modules/@angular/material",
+        "//:node_modules/@types/node",
     ],
 )
 
@@ -88,7 +88,7 @@ sass_binary(
     deps = [],
 )
 
-ng_ts_project(
+ng_project(
     name = "node",
     srcs = [
         "node.ts",
@@ -106,9 +106,9 @@ ng_ts_project(
         ":internals",
         ":node_ref_badge",
         ":node_spec",
-        "@npm//@angular/material",
-        "@npm//lodash",
-        "@npm//rxjs",
+        "//:node_modules/@angular/material",
+        "//:node_modules/lodash",
+        "//:node_modules/rxjs",
     ],
 )
 
@@ -120,29 +120,29 @@ sass_binary(
     deps = [":mixins"],
 )
 
-ng_ts_project(
+ng_project(
     name = "ng_var_directive",
     srcs = [
         "ng_var_directive.ts",
     ],
     deps = [
-        "@npm//@angular/core",
+        "//:node_modules/@angular/core",
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "resize_monitor",
     srcs = [
         "resize_monitor_directive.ts",
     ],
     deps = [
-        "@npm//@angular/core",
-        "@npm//@types/node",
-        "@npm//rxjs",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@types/node",
+        "//:node_modules/rxjs",
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "toolbar",
     srcs = [
         "toolbar.ts",
@@ -159,9 +159,9 @@ ng_ts_project(
         ":ng_var_directive",
         ":node_spec",
         "//src/app/logger",
-        "@npm//@angular/forms",
-        "@npm//@angular/material",
-        "@npm//lodash",
+        "//:node_modules/@angular/forms",
+        "//:node_modules/@angular/material",
+        "//:node_modules/lodash",
     ],
 )
 
@@ -173,7 +173,7 @@ sass_binary(
     deps = [":mixins"],
 )
 
-ng_ts_project(
+ng_project(
     name = "scaffold",
     srcs = [
         "scaffold.ts",
@@ -197,7 +197,7 @@ sass_binary(
     sourcemap = False,
 )
 
-ng_ts_project(
+ng_project(
     name = "sidebar",
     srcs = [
         "sidebar.ts",
@@ -208,8 +208,8 @@ ng_ts_project(
     ],
     deps = [
         ":internals",
-        "@npm//@angular/core",
-        "@npm//@types/node",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@types/node",
     ],
 )
 
@@ -223,7 +223,7 @@ sass_binary(
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "workflow_graph_wrapper",
     srcs = [
         "workflow_graph_wrapper.ts",
@@ -237,13 +237,13 @@ ng_ts_project(
         ":scaffold",
         ":toolbar",
         "//src/app/logger",
-        "@npm//@angular/common",
+        "//:node_modules/@angular/common",
     ],
 )
 
 npm_sass_library(
     name = "angular_material_sass_deps",
-    deps = ["@npm//@angular/material"],
+    deps = ["//:node_modules/@angular/material"],
 )
 
 sass_binary(
@@ -257,7 +257,7 @@ sass_binary(
     deps = [":angular_material_sass_deps"],
 )
 
-ng_ts_project(
+ng_project(
     name = "app",
     srcs = [
         "app.component.ts",
@@ -270,29 +270,29 @@ ng_ts_project(
         ":url_sanitizer",
         ":workflow_graph_wrapper",
         "//src/app/test_resources",
-        "@npm//@angular/common",
-        "@npm//@angular/core",
-        "@npm//@angular/elements",
-        "@npm//@angular/platform-browser",
-        "@npm//@types/node",
-        "@npm//rxjs",
+        "//:node_modules/@angular/common",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@angular/elements",
+        "//:node_modules/@angular/platform-browser",
+        "//:node_modules/@types/node",
+        "//:node_modules/rxjs",
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "url_sanitizer",
     srcs = [
         "url_sanitizer.opensource.ts",
         "url_sanitizer_types.ts",
     ],
     deps = [
-        "@npm//@angular/common",
-        "@npm//@angular/core",
-        "@npm//@angular/platform-browser",
+        "//:node_modules/@angular/common",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@angular/platform-browser",
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "i18n",
     srcs = [
         "i18n.ts",
@@ -300,7 +300,7 @@ ng_ts_project(
     deps = [],
 )
 
-ng_ts_project(
+ng_project(
     name = "directed_acyclic_graph",
     srcs = [
         "directed_acyclic_graph.ts",
@@ -318,13 +318,13 @@ ng_ts_project(
         ":resize_monitor",
         ":sidebar",
         "//src/app/logger",
-        "@npm//@angular/cdk",
-        "@npm//@angular/common",
-        "@npm//@angular/core",
-        "@npm//@types/dagre",
-        "@npm//dagre",
-        "@npm//lodash",
-        "@npm//rxjs",
+        "//:node_modules/@angular/cdk",
+        "//:node_modules/@angular/common",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@types/dagre",
+        "//:node_modules/dagre",
+        "//:node_modules/lodash",
+        "//:node_modules/rxjs",
     ],
 )
 
@@ -336,7 +336,7 @@ sass_binary(
     deps = [":mixins"],
 )
 
-ng_ts_project(
+ng_project(
     name = "directed_acyclic_graph_raw",
     srcs = [
         "directed_acyclic_graph_raw.ts",
@@ -355,13 +355,13 @@ ng_ts_project(
         ":node",
         ":node_ref_badge",
         ":node_spec",
-        "@npm//@angular/cdk",
-        "@npm//@angular/common",
-        "@npm//@angular/core",
-        "@npm//@types/dagre",
-        "@npm//dagre",
-        "@npm//lodash",
-        "@npm//rxjs",
+        "//:node_modules/@angular/cdk",
+        "//:node_modules/@angular/common",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@types/dagre",
+        "//:node_modules/dagre",
+        "//:node_modules/lodash",
+        "//:node_modules/rxjs",
     ],
 )
 
@@ -379,7 +379,7 @@ sass_library(
     visibility = ["//visibility:public"],
 )
 
-ng_ts_project(
+ng_project(
     name = "node_state_badge",
     srcs = [
         "node_state_badge.ts",
@@ -402,7 +402,7 @@ sass_binary(
     sourcemap = False,
 )
 
-ng_ts_project(
+ng_project(
     name = "node_ref_badge",
     srcs = [
         "node_ref_badge.ts",
@@ -418,7 +418,7 @@ ng_ts_project(
         ":icons_module",
         ":internals",
         ":node_spec",
-        "@npm//rxjs",
+        "//:node_modules/rxjs",
     ],
 )
 
@@ -430,7 +430,7 @@ sass_binary(
     deps = [":mixins"],
 )
 
-ng_ts_project(
+ng_project(
     name = "group_iteration_select",
     srcs = [
         "group_iteration_select.ts",
@@ -447,8 +447,8 @@ ng_ts_project(
         ":icons_module",
         ":internals",
         ":node_spec",
-        "@npm//@angular/material",
-        "@npm//rxjs",
+        "//:node_modules/@angular/material",
+        "//:node_modules/rxjs",
     ],
 )
 

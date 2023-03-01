@@ -1,4 +1,4 @@
-load("//src:bazel_functions.bzl", "ng_ts_project")
+load("//src/tools:ng.bzl", "ng_project")
 
 package(
     default_visibility = [
@@ -6,12 +6,12 @@ package(
     ],
 )
 
-ng_ts_project(
+ng_project(
     name = "logger",
     srcs = ["dag_logger.ts"],
     deps = [
-        "@npm//@angular/core",
-        "@npm//@types/node",
-        "@npm//rxjs",
+        "//:node_modules/@angular/core",
+        "//:node_modules/@types/node",
+        "//:node_modules/rxjs",
     ],
 )
