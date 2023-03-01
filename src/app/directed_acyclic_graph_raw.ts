@@ -19,7 +19,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash:bundle
+import {UrlSanitizerInternal} from 'google3/third_party/javascript/workflow_graph/src/app/url_sanitizer';
+import {URL_SANITIZER} from 'google3/third_party/javascript/workflow_graph/src/app/url_sanitizer_types';
+import * as lodash from 'lodash';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
@@ -1211,6 +1213,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   exports: [
     DagRaw,
   ],
+  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizerInternal}],
 })
 export class DagRawModule {
 }

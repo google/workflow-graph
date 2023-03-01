@@ -31,4 +31,5 @@ export abstract class UrlSanitizer {
  * Injection token used to replace the sanitizer between internal and
  * open-source versions.
  */
-export const URL_SANITIZER = new InjectionToken<UrlSanitizer>('title');
+export const URL_SANITIZER =
+    new InjectionToken<UrlSanitizer>('Workflow Graph Url Sanitizer token');

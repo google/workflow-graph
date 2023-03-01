@@ -192,35 +192,34 @@ export function bgForState(state: NodeState, theme: DagTheme): string {
  * state due to user intervention.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_WORKING =
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_WORKING =
     translateMessage('Working');
 
 /**
  * @desc Label for an execution that has not started.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_PENDING =
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_PENDING =
     translateMessage('Pending');
 
 /**
  * @desc Label for an execution that was stopped by the user.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CANCELLED =
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CANCELLED =
     translateMessage('Cancelled');
 
 /**
  * @desc Label for an execution that failed to complete.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_FAILED =
-    translateMessage('Failed');
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_FAILED = translateMessage('Failed');
 
 /**
  * @desc Label for an execution that is currently in progress.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING =
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING =
     translateMessage('Running');
 
 /**
@@ -228,14 +227,13 @@ const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING =
  * cached.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CACHED =
-    translateMessage('Cached');
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CACHED = translateMessage('Cached');
 
 /**
  * @desc Label for an execution that did not complete due to a timeout.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT =
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT =
     translateMessage('Timeout');
 
 /**
@@ -243,14 +241,14 @@ const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT =
  * policy didn't match.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_NOT_TRIGGERED =
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_NOT_TRIGGERED =
     translateMessage('Not Triggered');
 
 /**
  * @desc Label for an execution that completed successfully.
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_COMPLETED =
+const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_COMPLETED =
     translateMessage('Completed');
 
 /** Returns a display name for a NodeState. */
@@ -258,31 +256,31 @@ export function labelForState(state: NodeState): string {
   switch (state) {
     case 'CANCEL_PENDING':
     case 'CANCELLING':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_WORKING;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_WORKING;
 
     case 'CANCELLED':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CANCELLED;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CANCELLED;
 
     case 'FAILED':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_FAILED;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_FAILED;
 
     case 'PENDING':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_PENDING;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_PENDING;
 
     case 'RUNNING':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING;
 
     case 'SKIPPED':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CACHED;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CACHED;
 
     case 'SUCCEEDED':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_COMPLETED;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_COMPLETED;
 
     case 'TIMEOUT':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT;
 
     case 'NOT_TRIGGERED':
-      return MSG_AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_NOT_TRIGGERED;
+      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_NOT_TRIGGERED;
 
     case 'NO_STATE_RUNTIME':
     case 'NO_STATE_STATIC':

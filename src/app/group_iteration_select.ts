@@ -38,7 +38,7 @@ const cssVars = {
  * Warnings, etc)
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS =
+const AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS =
     translateMessage('Failed iterations');
 
 /**
@@ -46,7 +46,7 @@ const MSG_AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS =
  * user to see (Successes, Running, Pending, Not deployed yet, etc)
  * @suppress { messageConventions }
  */
-const MSG_AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS =
+const AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS =
     translateMessage('Other iterations');
 
 
@@ -73,8 +73,8 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
       iconSizeToPx('large') + cssVars.padding * 2 + cssVars.border * 2;
 
   readonly labels = {
-    failedIters: MSG_AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS,
-    otherIters: MSG_AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS,
+    failedIters: AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS,
+    otherIters: AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS,
   };
 
   private observers: Subscription[] = [];
