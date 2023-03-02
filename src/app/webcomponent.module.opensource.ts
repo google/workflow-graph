@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
+import {DoBootstrap, Injector, NgModule} from '@angular/core';
+import {createCustomElement} from '@angular/elements';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
 import {UrlSanitizerOpenSource} from './url_sanitizer.opensource';
 import {URL_SANITIZER} from './url_sanitizer_types';
-import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
+import {WorkflowGraphWrapper, WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,6 +35,11 @@ import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
   ],
   providers: [{provide: URL_SANITIZER, useClass: UrlSanitizerOpenSource}],
 })
-export class AppModule {
-  constructor() {}
+export class AppModule implements DoBootstrap {
+  constructor(private readonly injector: Injector) {}
+  ngDoBootstrap() {
+    const dagConstructor =
+        createCustomElement(WorkflowGraphWrapper, {injector: this.injector});
+    customElements.define('google-workflow-graph', dagConstructor);
+  }
 }

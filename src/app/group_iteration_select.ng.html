@@ -9,9 +9,9 @@
     <span class="focus-animator"></span>
     <div class="content-wrap">
       <ng-container *ngIf="!!softIteration">
-        <div *ngIf="getStateIcon(selectedIteration) as icon" class="icon-wrap">
+        <div *ngIf="getStateIcon(selectedIteration!) as icon" class="icon-wrap">
           <workflow-graph-icon
-            [title]="'State: ' + selectedIteration.state.toLowerCase()"
+            [title]="'State: ' + selectedIteration?.state?.toLowerCase()"
             [icon]="fetchIcon(icon, 'name')"
             [iconset]="fetchIcon(icon, 'iconset')"
             [style.color]="fetchIcon(icon, 'color')"

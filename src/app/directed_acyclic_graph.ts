@@ -18,7 +18,7 @@
 
 import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef,TemplateRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, ViewChild} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash:bundle
 import {Subscription} from 'rxjs';
@@ -121,7 +121,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   stateService = new DagStateService(this.resolveReference.bind(this));
   animateMove = false;
   mousedown = false;
-  private $customNodeTemplates: Record<string, ElementRef> = {};
+  private $customNodeTemplates: Record<string, TemplateRef<any>> = {};
   private $features = defaultFeatures;
 
   private readonly uniqueId: string;
@@ -298,7 +298,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   }
 
   @Input('customNodeTemplates')
-  set customNodeTemplates(templates: Record<string, ElementRef>) {
+  set customNodeTemplates(templates: Record<string, TemplateRef<any>>) {
     this.$customNodeTemplates = templates;
     this.stateService.setCustomNodeTemplates(templates);
   }
@@ -306,7 +306,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     return this.$customNodeTemplates;
   }
 
-  @Input() customMinimapNodeTemplates: Record<string, ElementRef> = {};
+  @Input() customMinimapNodeTemplates: Record<string, TemplateRef<any>> = {};
 
   constructor(
       private readonly cdr: ChangeDetectorRef,
@@ -478,7 +478,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  nodeOrGroupTrack(n: DagNode|DagGroup) {
+  nodeOrGroupTrack(_index: number, n: DagNode|DagGroup) {
     return n.id;
   }
 
@@ -644,7 +644,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
    * Aware whether focus happened via mouse or keyboard, and accordingly
    * schedules the focus handler to run or not
    */
-  focusElementFiltered(e: MouseEvent) {
+  focusElementFiltered(e: FocusEvent) {
     if (!e.target || this.mousedown) return;
     this.focusElement(e);
   }
@@ -654,7 +654,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
    *
    * _**Note:** this method is debounced by 50ms_
    */
-  focusElement(e: MouseEvent) {
+  focusElement(e: FocusEvent) {
     let el = e.target as HTMLElement;
     const offset: Point = {
       x: el.offsetLeft,
@@ -941,13 +941,13 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     return false;
   }
 
-  getCustomMinimapNodeTemplateForNode(node: DagNode): ElementRef|undefined {
+  getCustomMinimapNodeTemplateForNode(node: DagNode): TemplateRef<any>|null {
     if (node instanceof CustomNode) {
       const templateRefName = node.minimapTemplateRef;
-      if (!templateRefName) return undefined;
+      if (!templateRefName) return null;
       return this.customMinimapNodeTemplates[templateRefName];
     }
-    return undefined;
+    return null;
   }
 
   // We're okay not sending a resolver because we do not handle rendering here,

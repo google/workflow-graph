@@ -208,7 +208,7 @@ export class DagNodeEl implements OnInit, OnDestroy {
     return this.node?.state?.toLowerCase() || '';
   }
 
-  fetchIcon = (icon: NodeIcon, key: keyof NodeIcon) => fetchIcon(icon, key);
+  fetchIcon = (icon: NodeIcon, key: keyof NodeIcon|'bg') => fetchIcon(icon, key);
 
   isNoState = isNoState;
   bgForState = (state: NodeState) => bgForState(state, this.theme);

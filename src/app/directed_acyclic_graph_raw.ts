@@ -17,7 +17,7 @@
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, TemplateRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash:bundle
 import {Subscription} from 'rxjs';
@@ -56,7 +56,8 @@ export type EnhancedDagGroup = DagGroup&Dimension&Point&{
   // This is an extremely private property that should not be relied on by any
   // user of the DAG, except for the DAG Components internals
   // tslint:disable-next-line:enforce-name-casing
-  _cachedSelection: DagGroup|DagNode;
+  // TODO: Remove any to satisfy TS check
+  _cachedSelection: DagGroup|DagNode|any;
 };
 
 /**
@@ -94,7 +95,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   hoveredNodeFromNode?: DagNode|DagGroup;
   hoveredNodeFromBadge?: DagNode|DagGroup;
   themeConfig = DEFAULT_THEME;
-  private $customNodeTemplates: Record<string, ElementRef> = {};
+  private $customNodeTemplates: Record<string, TemplateRef<any>> = {};
 
   // State Props
   // We want this to be strings, so that we can hold state even when data is
@@ -219,8 +220,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.updateGraphLayout();
     reselectIfNeeded();
   }
-  get groups() {
-    return this.$groups;
+  get groups(): EnhancedDagGroup[] {
+    return this.$groups as EnhancedDagGroup[];
   }
 
   @ViewChildren('subDag') subDags?: QueryList<DagRaw>;
@@ -275,7 +276,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   @Input('customNodeTemplates')
-  set customNodeTemplates(templates: Record<string, ElementRef>) {
+  set customNodeTemplates(templates: Record<string, TemplateRef<any>>) {
     this.$customNodeTemplates = templates;
     this.cdr.detectChanges();
   }
@@ -803,7 +804,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.toggleSelectedNode(null);
   }
 
-  toggleSelectedNode(node: DagNode|DagGroup|null, $event?: MouseEvent) {
+  toggleSelectedNode(node: DagNode|DagGroup|null, $event?: MouseEvent|Event) {
     $event?.preventDefault();
     $event?.stopPropagation();
     if (this.selectedNode?.node === node) {
@@ -813,7 +814,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return !!node;
   }
 
-  refBadgeClick(refNode: DagNode|DagGroup, ref: NodeRef, $event?: MouseEvent) {
+  refBadgeClick(refNode: DagNode|DagGroup, ref: NodeRef, $event?: MouseEvent|Event) {
     $event?.preventDefault();
     $event?.stopPropagation();
     const value = this.selectedNode?.node === refNode ? null : {
@@ -981,15 +982,15 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
    * More info:
    * https://medium.com/simars/improve-ngfor-usability-and-performance-with-trackby-97f32ab92f1c
    */
-  edgeLabelTrack(e: ReturnType<this['getEdgeLabels']>[0]) {
+  edgeLabelTrack(_index: number, e: ReturnType<this['getEdgeLabels']>[0]) {
     return e.id;
   }
 
-  edgeTrack(e: DagEdge) {
+  edgeTrack(_index: number, e: DagEdge) {
     return `edge-${e.from}->${e.to}`;
   }
 
-  nodeOrGroupTrack(n: DagNode|DagGroup|NodeRef) {
+  nodeOrGroupTrack(_i: number, n: DagNode|DagGroup|NodeRef) {
     return n.id;
   }
 
@@ -1045,7 +1046,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   resolveReference(ref: NodeRef) {
-    return this.stateService?.resolveReference(ref);
+    return this.stateService?.resolveReference(ref) as DagNode;
   }
 
   animatedEdge(e: DagEdge) {
@@ -1121,9 +1122,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     ];
   }
 
-  private makeSafeNode(node: DagNode, isControlNode?: boolean): DagNode;
-  private makeSafeNode(node: undefined, isControlNode?: boolean): undefined;
-  private makeSafeNode(node: DagNode|undefined, isControlNode = false) {
+  makeSafeNode(node: DagNode, isControlNode?: boolean): DagNode;
+  makeSafeNode(node: undefined, isControlNode?: boolean): undefined;
+  makeSafeNode(node: DagNode|undefined, isControlNode = false) {
     if (!node) return;
     type ExpandedNode = DagNode&{origIcon?: NodeIcon};
     const expNode = node as ExpandedNode;

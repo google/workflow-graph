@@ -4,3 +4,4 @@ bazel-testlogs/
 bazel-workflow-graph/
 node_modules/
 dist/
+.angular/

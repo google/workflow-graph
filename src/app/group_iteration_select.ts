@@ -120,12 +120,12 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     const oldIter = this.$iteration;
     this.$iteration = id;
     this.calculateIteration();
-    if (id !== oldIter) this.iterationChanged.emit(id);
+    if (id !== oldIter) this.iterationChange.emit(id);
   }
   get iteration() {
     return this.$iteration;
   }
-  @Output() iterationChanged = new EventEmitter<string>();
+  @Output() iterationChange = new EventEmitter<string>();
   @Output() onIterSelect = new EventEmitter<DagNode|DagGroup|undefined>();
   @Input() stateService?: DagStateService;
 

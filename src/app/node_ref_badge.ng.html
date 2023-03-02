@@ -1,9 +1,9 @@
 <article
   class="scale-wrap"
   *ngIf="node && node.icon"
-  [style.transform]="scaleFactor(collapsed && !selected)"
-  [style.color]="fetchIcon(forceInverted(node.icon), 'color', node.type)"
-  [style.background]="fetchIcon(forceInverted(node.icon), 'bg', node.type)"
+  [style.transform]="scaleFactor()"
+  [style.color]="fetchIcon(forceInverted(node.icon), 'color')"
+  [style.background]="fetchIcon(forceInverted(node.icon), 'bg')"
   [style.width.px]="trueWidth"
   [style.height.px]="trueWidth"
 >
@@ -14,12 +14,12 @@
   >
     <workflow-graph-icon
       class="icon"
-      [icon]="fetchIcon(node.icon, 'name', node.type)"
-      [iconset]="fetchIcon(node.icon, 'iconset', node.type)"
-      [size]="fetchIcon(node.icon, 'size', node.type)"
+      [icon]="fetchIcon(node.icon, 'name')"
+      [iconset]="fetchIcon(node.icon, 'iconset')"
+      [size]="fetchIcon(node.icon, 'size')"
     ></workflow-graph-icon>
   </span>
   <span *ngIf="isTextIcon(node.icon)" class="icon text">{{
-    fetchIcon(node.icon, "text", node.type)
+    fetchIcon(node.icon, "text")
   }}</span>
 </article>

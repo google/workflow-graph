@@ -2,26 +2,26 @@
   <header class="node-main" [style.height.px]="hoverDims(node, 'height')">
     <header
       class="icon-space node-type"
-      [class.inverted]="node.icon.iconColors === 'inverted'"
+      [class.inverted]="node.icon?.iconColors === 'inverted'"
       [style.minWidth.px]="hoverDims(node, 'leftIcon')"
       [attr.title]="node.getIconTitle()"
-      [style.background]="fetchIcon(node.icon, 'bg', node.type)"
-      [style.color]="fetchIcon(node.icon, 'color', node.type)"
+      [style.background]="fetchIcon(node.icon!, 'bg')"
+      [style.color]="fetchIcon(node.icon!, 'color')"
     >
       <span
         *ngIf="!isTextIcon(node.icon)"
         class="icon-wrap"
-        [style.transform]="iconRescale(node.icon, 'large')"
+        [style.transform]="iconRescale(node.icon!, 'large')"
       >
         <workflow-graph-icon
           class="icon left"
-          [icon]="fetchIcon(node.icon, 'name', node.type)"
-          [iconset]="fetchIcon(node.icon, 'iconset', node.type)"
-          [size]="fetchIcon(node.icon, 'size', node.type)"
+          [icon]="fetchIcon(node.icon!, 'name')"
+          [iconset]="fetchIcon(node.icon!, 'iconset')"
+          [size]="fetchIcon(node.icon!, 'size')"
         ></workflow-graph-icon>
       </span>
       <span *ngIf="isTextIcon(node.icon)" class="icon text left">{{
-        fetchIcon(node.icon, "text", node.type)
+        fetchIcon(node.icon, "text")
       }}</span>
     </header>
     <article class="text-area" [style.width.px]="hoverDims(node, 'text')">
@@ -50,9 +50,9 @@
     <footer
       *ngIf="!isNoState(node.state) || !!node.conditionalQuery"
       class="icon-space state"
-      [ngClass]="[classNameState(node)]"
+      [ngClass]="[classNameState()]"
       [class.conditional]="!!node.conditionalQuery"
-      [title]="node.stateTooltip || classNameState(node)"
+      [title]="node.stateTooltip || classNameState()"
       [style.minWidth.px]="getStateIconWidth(node)"
       [style.color]="getNodeStateColor(node)"
       [style.background]="bgForState(node.state)"
@@ -67,15 +67,15 @@
       ></workflow-graph-icon>
 
       <span
-        *ngIf="!isNoState(node.state) && !!iconForState(node.state, theme)"
+        *ngIf="!isNoState(node.state) && !!iconForState(node.state)"
         class="icon-wrap"
-        [style.transform]="iconRescale(iconForState(node.state, theme), 'medium')"
+        [style.transform]="iconRescale(iconForState(node.state)!, 'medium')"
       >
         <workflow-graph-icon
-          [ngClass]="['icon', 'right', classNameState(node)]"
-          [icon]="fetchIcon(iconForState(node.state, theme), 'name')"
-          [iconset]="fetchIcon(iconForState(node.state, theme), 'iconset')"
-          [size]="fetchIcon(iconForState(node.state, theme), 'size')"
+          [ngClass]="['icon', 'right', classNameState()]"
+          [icon]="fetchIcon(iconForState(node.state)!, 'name')"
+          [iconset]="fetchIcon(iconForState(node.state)!, 'iconset')"
+          [size]="fetchIcon(iconForState(node.state)!, 'size')"
         ></workflow-graph-icon>
       </span>
     </footer>
