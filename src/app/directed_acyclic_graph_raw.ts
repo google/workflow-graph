@@ -17,10 +17,8 @@
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, TemplateRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Output, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import {UrlSanitizerInternal} from 'google3/third_party/javascript/workflow_graph/src/app/url_sanitizer';
-import {URL_SANITIZER} from 'google3/third_party/javascript/workflow_graph/src/app/url_sanitizer_types';
 import * as lodash from 'lodash';
 import {Subscription} from 'rxjs';
 
@@ -33,6 +31,8 @@ import {DagIconsModule} from './icons_module';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
 import {CustomNode, DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
+import {UrlSanitizer} from './url_sanitizer';
+import {URL_SANITIZER} from './url_sanitizer_types';
 
 // tslint:disable:no-dict-access-on-struct-type
 
@@ -1214,7 +1214,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   exports: [
     DagRaw,
   ],
-  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizerInternal}],
+  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizer}],
 })
 export class DagRawModule {
 }

@@ -18,7 +18,7 @@
 import {Inject, NgModule} from '@angular/core';
 import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 
-import {URL_SANITIZER, UrlSanitizer} from './url_sanitizer_types';
+import {AbstractUrlSanitizer, URL_SANITIZER} from './url_sanitizer_types';
 
 /**
  * Variables from common constants, re-declared here for OSS.
@@ -72,7 +72,7 @@ type IconsetList = [string, IconSizes, number];
 export class DagIconsModule {
   constructor(
       iconRegistry: MatIconRegistry,
-      @Inject(URL_SANITIZER) private readonly sanitizer: UrlSanitizer) {
+      @Inject(URL_SANITIZER) private readonly sanitizer: AbstractUrlSanitizer) {
     const icons: IconsetList[] = [
       [AI_ICONSET, 'large', AI_LARGE_ICONSET_VERSION],
       [AI_ICONSET, 'medium', AI_MEDIUM_ICONSET_VERSION],

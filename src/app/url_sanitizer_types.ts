@@ -22,7 +22,7 @@ import {SafeResourceUrl} from '@angular/platform-browser';
  * Interface of URL sanitizer service that differs between internal vs.
  * open-source.
  */
-export abstract class UrlSanitizer {
+export abstract class AbstractUrlSanitizer {
   abstract sanitizeUrl(iconset: string, size: string, version: number):
       SafeResourceUrl;
 }
@@ -32,4 +32,4 @@ export abstract class UrlSanitizer {
  * open-source versions.
  */
 export const URL_SANITIZER =
-    new InjectionToken<UrlSanitizer>('Workflow Graph Url Sanitizer token');
+    new InjectionToken<AbstractUrlSanitizer>('Workflow Graph Url Sanitizer token');

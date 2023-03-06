@@ -21,7 +21,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
-import {UrlSanitizerOpenSource} from './url_sanitizer.opensource';
+import {UrlSanitizer} from './url_sanitizer';
 import {URL_SANITIZER} from './url_sanitizer_types';
 import {WorkflowGraphWrapper, WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 
@@ -32,7 +32,7 @@ import {WorkflowGraphWrapper, WorkflowGraphWrapperModule} from './workflow_graph
     BrowserAnimationsModule,
     WorkflowGraphWrapperModule,
   ],
-  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizerOpenSource}],
+  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizer}],
 })
 export class AppModule implements DoBootstrap {
   constructor(private readonly injector: Injector) {}

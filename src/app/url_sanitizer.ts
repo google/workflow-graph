@@ -18,14 +18,14 @@
 import {Injectable} from '@angular/core';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 
-import {UrlSanitizer} from './url_sanitizer_types';
+import {AbstractUrlSanitizer} from './url_sanitizer_types';
 // Used in the open-source version only
 // tslint:enable:deprecation
 
 @Injectable({
   providedIn: 'root',
 })
-export class UrlSanitizerOpenSource implements UrlSanitizer {
+export class UrlSanitizer implements AbstractUrlSanitizer {
   constructor(private readonly sanitizer: DomSanitizer) {}
   sanitizeUrl(iconset: string, size: string, version: number): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(

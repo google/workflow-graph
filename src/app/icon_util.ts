@@ -107,7 +107,11 @@ export function fetchIcon(icon: NodeIcon, key: keyof NodeIcon|'bg'): string {
  * Rescales icons from any sized iconset to target sizes required on the
  * Visual DAG
  */
-export function iconRescale(icon: IconConfig, targetSize: IconConfig['size']) {
+export function iconRescale(
+    icon: IconConfig|undefined, targetSize: IconConfig['size']) {
+  if (!icon) {
+    return '';
+  }
   const size = fetchIcon(icon, 'size') as typeof targetSize;
   if (!targetSize || size === targetSize) return '';
   const [sizePx, targetPx] = [size!, targetSize].map(s => iconSizeToPx(s));
