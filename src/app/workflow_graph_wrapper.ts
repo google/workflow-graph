@@ -54,9 +54,6 @@ export interface WorkflowGraphProps {
  */
 @Component({
   selector: 'workflow-graph',
-  // This is a .css file generated during build (difference between OSS and
-  // internal)
-  styleUrls: ['./material_theme.css'],
   encapsulation: ViewEncapsulation.None,
   template: `
 <ai-dag-scaffold>

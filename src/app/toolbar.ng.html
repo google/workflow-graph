@@ -9,7 +9,7 @@
   <article class="cell progress" *ngIf="graphState === 'Runtime'">
     <workflow-graph-icon
       *ngIf="!!icon"
-      [title]="'State: ' + finalState.toLowerCase()"
+      [title]="'State: ' + finalState?.toLowerCase()"
       [icon]="fetchIcon(icon, 'name')"
       [iconset]="fetchIcon(icon, 'iconset')"
       [style.color]="fetchIcon(icon, 'color')"

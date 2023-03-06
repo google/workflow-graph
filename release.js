@@ -19,10 +19,10 @@ const fse = require('fs-extra');
 const path = require('path');
 
 const packageJsonPath = path.join(__dirname, 'package.json');
-const distDirectoryPath = path.join(__dirname, '/dist');
+const releaseDirectoryPath = path.join(__dirname, '/release');
 const webComponentDistDirectoryPath =
-    path.join(distDirectoryPath, '/web-component');
-const bazelBinDirectoryPath = path.join(__dirname, '/bazel-bin');
+    path.join(releaseDirectoryPath, '/web-component');
+const bazelBinDirectoryPath = path.join(__dirname, '/dist');
 
 /**
  * Ensures the destination /dist directory exists and Bazel output files are
@@ -32,28 +32,31 @@ function ensureDirectoriesExist() {
   const bazelBinExists = fse.existsSync(bazelBinDirectoryPath);
   if (!bazelBinExists) {
     console.error(
-        'ERROR: bazel-bin directory does not exist. Make sure you built the component before running this script.');
+        'ERROR: dist directory does not exist. Make sure you built the component before running this script.');
     process.exit(1);
   }
 
-  fse.ensureDirSync(distDirectoryPath);
-  fse.emptyDirSync(distDirectoryPath);
+  fse.ensureDirSync(releaseDirectoryPath);
+  fse.emptyDirSync(releaseDirectoryPath);
 }
 
 /** Copy bundled source code to /dist */
 function copyBundleToDist() {
   const pathToMinifiedBundles =
-      path.join(bazelBinDirectoryPath, 'src', 'prodapp', 'bundle-es2015.min');
+      path.join(bazelBinDirectoryPath, 'registerWorkflowGraphWebComponent.js');
   fse.copySync(
-      pathToMinifiedBundles, webComponentDistDirectoryPath,
+      pathToMinifiedBundles,
+      path.join(
+          webComponentDistDirectoryPath,
+          'registerWorkflowGraphWebComponent.js'),
       {dereference: true});
 }
 
 /** Copies source files to the /lib directory within /dist */
 function copyCompiledLibrary() {
-  const libDir = path.join(distDirectoryPath, 'lib');
+  const libDir = path.join(releaseDirectoryPath, 'lib');
   fse.ensureDirSync(libDir);
-  const sourceFilesDir = path.join(bazelBinDirectoryPath, 'src');
+  const sourceFilesDir = path.join(bazelBinDirectoryPath, 'out-tsc');
 
   fse.copySync(sourceFilesDir, libDir, {dereference: true});
 }
@@ -64,7 +67,7 @@ function copyCompiledLibrary() {
 function copyConfigFilesToDist() {
   const webComponentPackageJson = fse.readJsonSync(packageJsonPath);
   fse.writeJsonSync(
-      path.join(distDirectoryPath, 'package.json'), webComponentPackageJson);
+      path.join(releaseDirectoryPath, 'package.json'), webComponentPackageJson);
 
   webComponentPackageJson.scripts['run-ngcc'] =
       webComponentPackageJson.scripts['postinstall'];
@@ -72,12 +75,13 @@ function copyConfigFilesToDist() {
 
   fse.copySync(
       path.join(__dirname, '.npmignore'),
-      path.join(distDirectoryPath, '.npmignore'));
+      path.join(releaseDirectoryPath, '.npmignore'));
   fse.copySync(
       path.join(__dirname, 'README.md'),
-      path.join(distDirectoryPath, 'README.md'));
+      path.join(releaseDirectoryPath, 'README.md'));
   fse.copySync(
-      path.join(__dirname, 'LICENSE'), path.join(distDirectoryPath, 'LICENSE'));
+      path.join(__dirname, 'LICENSE'),
+      path.join(releaseDirectoryPath, 'LICENSE'));
 }
 
 (function main() {

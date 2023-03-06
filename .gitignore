@@ -1,6 +1,13 @@
 bazel-bin/
+bazel-bin
 bazel-out/
+bazel-out
 bazel-testlogs/
+bazel-testlogs
 bazel-workflow-graph/
+bazel-workflow-graph
 node_modules/
 dist/
+.angular/
+.angular
+release/

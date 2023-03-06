@@ -74,20 +74,20 @@ export class WorkflowGraphIcon implements OnChanges {
   @Input() icon = '';
 
   /** The size (in T-shirt sizes) of the icon. */
-  @Input() size: IconSize = 'small';
+  @Input() size: IconSize|string = 'small';
 
   /** An internal specification for what icon this component will render. */
   iconSpec?: IconSpec;
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.icon === 'working') {
-      this.iconSpec = {kind: 'mat-spinner', sizePx: sizeToPixels(this.size)};
+      this.iconSpec = {kind: 'mat-spinner', sizePx: sizeToPixels(this.size as IconSize)};
     } else if (this.icon) {
       this.iconSpec = {
         kind: 'mat-icon',
         iconset: this.iconset,
         icon: this.icon,
-        size: this.size,
+        size: this.size as IconSize,
       };
     } else {
       // Display nothing when no icon value has been set yet, or when an `async`

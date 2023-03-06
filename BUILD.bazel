@@ -1,5 +1,21 @@
-package(default_visibility = ["//:__subpackages__"])
+"""
+Contains build rules for setting up an Angular build.
+"""
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load(":defs.bzl", "ng_app", "ng_config")
 
-licenses(["notice"])
+package(default_visibility = ["//visibility:public"])
 
-exports_files(["LICENSE"])
+# Link npm packages
+npm_link_all_packages(name = "node_modules")
+
+# The Angular application
+ng_app(
+    name = "app",
+    project_name = "angular",
+    deps = [],
+)
+
+ng_config(
+    name = "ng-config",
+)

@@ -15,17 +15,11 @@
  * limitations under the License.
  */
 
-import {MatIconTestingModule} from '@angular/material/icon/testing';
-import {provideNoopAnimations} from '@angular/platform-browser/animations';
+/***************************************************************************************************
+ * Zone JS is required by default for Angular itself.
+ */
+import 'zone.js'; // Included with Angular CLI.
 
-import {UrlSanitizerInternal} from './url_sanitizer';
-import {URL_SANITIZER} from './url_sanitizer_types';
-
-export const TEST_PROVIDERS = [
-  {provide: URL_SANITIZER, useClass: UrlSanitizerInternal},
-  provideNoopAnimations(),
-];
-
-export const TEST_IMPORTS = [
-  MatIconTestingModule,
-];
+/***************************************************************************************************
+ * APPLICATION IMPORTS
+ */
