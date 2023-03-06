@@ -1,67 +1,86 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "newProjectRoot": "projects",
+  "cli": {
+    "packageManager": "pnpm"
+  },
   "projects": {
-    "workflow-graph": {
+    "angular": {
+      "projectType": "application",
+      "schematics": {},
       "root": "",
       "sourceRoot": "src",
-      "projectType": "application",
-      "prefix": "app",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
+      "prefix": "baz-arch",
       "architect": {
         "build": {
-          "builder": "@angular-builders/bazel:build",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "targetLabel": "//src:prodapp",
-            "bazelCommand": "build"
-          }
-        },
-        "serve": {
-          "builder": "@angular-builders/bazel:build",
-          "options": {
-            "targetLabel": "//src:devserver",
-            "bazelCommand": "run",
-            "watch": true
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.opensource.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
+            ],
+            "scripts": []
           },
           "configurations": {
             "production": {
-              "targetLabel": "//src:prodserver"
+              "outputHashing": "all"
+            },
+            "production-web-component": {
+              "outputHashing": "none",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.module.opensource.ts",
+                  "with": "src/app/webcomponent.module.opensource.ts"
+                }
+              ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
-          }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angular:build:production"
+            },
+            "development": {
+              "browserTarget": "angular:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ngbazel:build"
+            "browserTarget": "angular:build"
           }
         },
         "test": {
-          "builder": "@angular-builders/bazel:build",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "bazelCommand": "test",
-            "targetLabel": "//src/app/..."
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.json",
-              "src/tsconfig-test.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [],
+            "styles": [],
+            "scripts": []
           }
         }
       }
     }
-  },
-  "defaultProject": "ngbazel"
-  
+  }
 }

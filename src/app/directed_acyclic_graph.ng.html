@@ -87,7 +87,7 @@
                   node.type,
                   classNameState(node),
                   convertStateToRuntime(node.state).toLowerCase(),
-                  toggleClass(selectedNode == node, 'selected-node')
+                  toggleClass(selectedNode?.node == node, 'selected-node')
                 ]"
                 [style.left.px]="node.x"
                 [style.top.px]="node.y"
@@ -103,7 +103,7 @@
                 <aside class="custom-node-error" role="alert">
                   <span>
                     Could not find the
-                    <code>minimapTemplateRef = {{node.minimapTemplateRef}}</code>
+                    <code>minimapTemplateRef = node['minimapTemplateRef']</code>
                     for node <code>{{node.id}}</code>.
                   </span>
                 </aside>

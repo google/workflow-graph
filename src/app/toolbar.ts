@@ -16,7 +16,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, NgModule, Optional, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, TemplateRef, EventEmitter, Input, NgModule, Optional, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -122,8 +122,8 @@ export class DagToolbar {
 
   $nodes: Array<DagNode|CustomNode> = [];
   $groups: DagGroup[] = [];
-  private $customToolbarToggleTemplates: ElementRef[] = [];
-  private $rightAlignedCustomToolbarToggleTemplates: ElementRef[] = [];
+  private $customToolbarToggleTemplates: TemplateRef<any>[] = [];
+  private $rightAlignedCustomToolbarToggleTemplates: TemplateRef<any>[] = [];
 
   @Input() enableMinimap = true;
   @Output() enableMinimapChange = new EventEmitter();
@@ -178,7 +178,7 @@ export class DagToolbar {
   }
 
   @Input('customToolbarToggleTemplates')
-  set customToolbarToggleTemplates(templates: ElementRef[]) {
+  set customToolbarToggleTemplates(templates: TemplateRef<any>[]) {
     this.$customToolbarToggleTemplates = templates;
     this.cdr.detectChanges();
   }
@@ -187,7 +187,7 @@ export class DagToolbar {
   }
 
   @Input('rightAlignedCustomToolbarToggleTemplates')
-  set rightAlignedCustomToolbarToggleTemplates(templates: ElementRef[]) {
+  set rightAlignedCustomToolbarToggleTemplates(templates: TemplateRef<any>[]) {
     this.$rightAlignedCustomToolbarToggleTemplates = templates;
     this.cdr.detectChanges();
   }

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ElementRef} from '@angular/core';
+import {TemplateRef} from '@angular/core';
 import {Observable, Subject, Subscription} from 'rxjs';
 import {distinctUntilChanged} from 'rxjs/operators';
 
@@ -47,7 +47,7 @@ export class DagStateService {
   private theme = DEFAULT_THEME;
   private layout = DEFAULT_LAYOUT_OPTIONS;
   private features = defaultFeatures;
-  private customNodeTemplates: Record<string, ElementRef> = {};
+  private customNodeTemplates: Record<string, TemplateRef<any>> = {};
   private expandPath: string[] = [];
   private iterationChange!: GroupIterationRecord;
 

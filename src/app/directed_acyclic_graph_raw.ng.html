@@ -54,8 +54,8 @@
     [title]="l.label"
     (mouseenter)="setEdgeHover(l.edge, true)"
     (mouseleave)="setEdgeHover(l.edge, false)"
-    [style.left.px]="l.mid.x"
-    [style.top.px]="l.mid.y"
+    [style.left.px]="l.mid!.x"
+    [style.top.px]="l.mid!.y"
   >
     {{ l.label }}
   </figcaption>
@@ -157,19 +157,19 @@
         role="presentation"
         [class.expanded]="isGroupExpanded(group)"
         [style.left.px]="group.x"
-        [style.top.px]="group.y + group.padY / 2"
+        [style.top.px]="group.y + group.padY! / 2"
         [style.width.px]="group.width"
-        [style.height.px]="group.height - group.padY"
+        [style.height.px]="group.height - group.padY!"
       ></aside>
       <article
         [attr.id]="a11yIdFor(group)"
         [attr.aria-label]="group.id"
         [ngClass]="['group', classNameState(group)]"
         [class.expanded]="isGroupExpanded(group)"
-        [style.left.px]="group.x"
-        [style.top.px]="group.y + group.padY / 2"
-        [style.width.px]="group.width"
-        [style.height.px]="group.height - group.padY"
+        [style.left.px]="group.x!"
+        [style.top.px]="group.y! + group.padY! / 2"
+        [style.width.px]="group.width!"
+        [style.height.px]="(group.height! - group.padY!)"
       >
         <header
           *ngIf="group.hasControlNode"
@@ -223,7 +223,7 @@
               [sourceGroup]="group.getNodeDisplayName()"
               [iterations]="getIterationsFor(group)"
               [(iteration)]="group.selectedLoopId"
-              (onIterSelect)="broadcastIterChange(group, (group._cachedSelection = $event))"
+              (onIterSelect)="broadcastIterChange(group, (group._cachedSelection = $event)!)"
             ></ai-dag-iteration-selector>
           </ai-dag-node>
         </header>
@@ -309,11 +309,11 @@
           <circle
             r="4"
             class="outer-circle"
-            [attr.cx]="e.points[0].x"
-            [attr.cy]="e.points[0].y"
+            [attr.cx]="e.points?.[0]?.x"
+            [attr.cy]="e.points?.[0]?.y"
             [attr.fill]="getEdgeColor(e)"
           />
-          <circle r="3" class="inner-circle" [attr.cx]="e.points[0].x" [attr.cy]="e.points[0].y" />
+          <circle r="3" class="inner-circle" [attr.cx]="e.points?.[0]?.x" [attr.cy]="e.points?.[0]?.y" />
         </g>
         <g
           *ngIf="(e.toMarkerStyle || theme.edgeToMarkerStyle) === 'circle'"
@@ -322,15 +322,15 @@
           <circle
             r="4"
             class="outer-circle"
-            [attr.cx]="e.points.slice(-1)[0].x"
-            [attr.cy]="e.points.slice(-1)[0].y"
+            [attr.cx]="e.points?.slice(-1)?.[0]?.x"
+            [attr.cy]="e.points?.slice(-1)?.[0]?.y"
             [attr.fill]="getEdgeColor(e)"
           />
           <circle
             r="3"
             class="inner-circle"
-            [attr.cx]="e.points.slice(-1)[0].x"
-            [attr.cy]="e.points.slice(-1)[0].y"
+            [attr.cx]="e.points?.slice(-1)?.[0]?.x"
+            [attr.cy]="e.points?.slice(-1)?.[0]?.y"
           />
         </g>
       </g>

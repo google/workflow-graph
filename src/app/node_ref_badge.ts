@@ -111,7 +111,7 @@ export class NodeRefBadge implements OnInit, OnDestroy {
   }
 
   isTextIcon = isTextIcon;
-  fetchIcon = (icon: NodeIcon, key: keyof NodeIcon) => fetchIcon(icon, key);
+  fetchIcon = (icon: NodeIcon, key: keyof NodeIcon|'bg') => fetchIcon(icon, key);
   convertStateToRuntime = convertStateToRuntime;
   iconRescale = iconRescale;
   iconSizeToPx = iconSizeToPx;
