@@ -34,11 +34,11 @@ Spec | Description
 
 ## Development, building and re-use
 ### Local developer environment
-This app is built with [Bazel](https://bazel.build/). After cloning the repo, start a local development environment by running `bazel run src:devserver` or `ng serve`. This will spin up a local `history-server` and use the Web Component version of the app, injected into a local HTML file.
+This app is built with [Bazel](https://bazel.build/) with [Aspect build rules](https://github.com/aspect-build/bazel-examples/tree/main/angular) with Angular Architect tooling. After cloning the repo, start a local development environment by running `pnpm install` and `ng serve`. This will spin up a local server and use the Angular version of the app, injected into a local HTML file.
 
 
 ### Building, bundling
-To build a reusable Web Component bundle, run `bazel build src:prodapp` or `ng build`. This will create a bundle in your Bazel output directory which can be included in an HTML file to load the component.
+To build a reusable Web Component bundle, run `npm run build-web-component`. This will create a bundle in your /dist directory, as well as type declarations in /dist-types. The bundle can be included in an HTML file to load the component. To load the Material styles, don't forget to include the generated `styles.css` file in your index.html or as part of your style imports.
 
 ### Use as an Angular component
 Coming soon...
@@ -62,7 +62,7 @@ This component is available on npm at https://www.npmjs.com/package/@google/work
 ```
 
 #### Web Component integration in any framework
-This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here](/src/example/index.html). An [example repo](https://github.com/biharygergo/workflow-graph-example-react) is available that shows this component can be used in React and Typescript. 
+This component can be built and bundled as a Web Component, which makes it reusable in a variety of stacks. A full, working example can be found [here](/src/example/index.html). An [example repo](https://github.com/biharygergo/workflow-graph-example-react) is available that shows how this component can be used in React and Typescript. 
 
 ## Next steps
 - [x] Create a release script and deploy Web Component artifacts (bundle, CSS, typings) to NPM.
