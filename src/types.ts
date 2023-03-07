@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-export {AppModule} from './app/app.module.opensource';
 export {DagTheme, FeatureToggleOptions, IconConfig, LayoutOptions, Logger, NodeState, RankAlignment, RankDirection, RankerAlgorithim, RuntimeState, ZoomConfig} from './app/data_types_internal';
 export {WorkflowGraphProps} from './app/workflow_graph_wrapper_types';
 

@@ -19,16 +19,7 @@ import {Injectable, NgModule} from '@angular/core';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 
-/** The shape of a log event sent from the graph component. */
-export interface LogEvent {
-  name: string;
-  metadata: {[key: string]: boolean|string|number};
-}
-
-/** A default logger interface, provided by consumers of the component. */
-export interface Logger {
-  logEvent: (event: LogEvent) => void;
-}
+import {LogEvent, Logger} from '../data_types_internal';
 
 
 /**

@@ -675,3 +675,14 @@ export function assert(condition: any, msg?: string): asserts condition {
     throw new AssertionError(msg);
   }
 }
+
+/** The shape of a log event sent from the graph component. */
+export interface LogEvent {
+  name: string;
+  metadata: {[key: string]: boolean|string|number};
+}
+
+/** A default logger interface, provided by consumers of the component. */
+export interface Logger {
+  logEvent: (event: LogEvent) => void;
+}

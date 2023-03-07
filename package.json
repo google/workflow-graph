@@ -8,15 +8,15 @@
   "publishConfig": {
     "registry": "https://wombat-dressing-room.appspot.com"
   },
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./lib/types.js",
+  "types": "./lib/types.d.ts",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "combine-sources": "cat dist/runtime.js dist/main.js > dist/registerWorkflowGraphWebComponent.js",
-    "build-web-component": "ng build --configuration production-web-component && npm run combine-sources && tsc",
+    "build-web-component": "ng build angular --configuration production-web-component && npm run combine-sources && tsc --project tsconfig.types.json",
     "test": "ng test"
   },
   "engines": {

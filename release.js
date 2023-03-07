@@ -42,13 +42,21 @@ function ensureDirectoriesExist() {
 
 /** Copy bundled source code to /dist */
 function copyBundleToDist() {
-  const pathToMinifiedBundles =
+  const pathToJs =
       path.join(bazelBinDirectoryPath, 'registerWorkflowGraphWebComponent.js');
+  const pathToStyles =
+      path.join(bazelBinDirectoryPath, 'styles.css');
   fse.copySync(
-      pathToMinifiedBundles,
+      pathToJs,
       path.join(
           webComponentDistDirectoryPath,
           'registerWorkflowGraphWebComponent.js'),
+      {dereference: true});
+  fse.copySync(
+      pathToStyles,
+      path.join(
+          webComponentDistDirectoryPath,
+          'styles.css'),
       {dereference: true});
 }
 
@@ -56,7 +64,7 @@ function copyBundleToDist() {
 function copyCompiledLibrary() {
   const libDir = path.join(releaseDirectoryPath, 'lib');
   fse.ensureDirSync(libDir);
-  const sourceFilesDir = path.join(bazelBinDirectoryPath, 'out-tsc');
+  const sourceFilesDir = path.join(__dirname, '/dist-types');
 
   fse.copySync(sourceFilesDir, libDir, {dereference: true});
 }

@@ -3,10 +3,6 @@
     "exclude": ["bazel-*"],
     "compilerOptions": {
       "baseUrl": "./",
-      "paths": {
-        "common": ["dist/common"],
-        "lib-a": ["dist/lib-a"]
-      },
       "outDir": "./dist/out-tsc",
       "forceConsistentCasingInFileNames": true,
       "strict": true,

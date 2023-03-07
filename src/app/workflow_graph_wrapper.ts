@@ -19,35 +19,12 @@ import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {Component, EventEmitter, Input, NgModule, Output, ViewChild, ViewEncapsulation} from '@angular/core';
 
+import {Logger} from './data_types_internal';
 import {DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
-import {Logger} from './logger/dag_logger';
-import {DagEdge, DagNode, DagNodeSkeleton, GraphSpec, NodeRef, SelectedNode, StateTable} from './node_spec';
+import {DagEdge, DagNode, GraphSpec, NodeRef, SelectedNode} from './node_spec';
 import {DagScaffoldModule} from './scaffold';
 import {DagToolbarModule} from './toolbar';
-
-declare interface DagSpec {
-  skeleton: DagNodeSkeleton[];
-  meta?: StateTable;
-}
-
-/**
- * Interface for the inputs and outputs of the WebComponent wrapper of the
- * Workflow Graph.
- */
-export interface WorkflowGraphProps {
-  enableToolbar: boolean;
-  enableMinimap: boolean;
-  expandedMode: boolean;
-  loading: boolean;
-  optimizeForOrm: boolean;
-  dagSpec: DagSpec;
-  selectedNode: NodeRef|null;
-  followNode: NodeRef|null;
-  hoveredEdge?: DagEdge;
-  layout?: DagreOptions;
-  logger?: Logger;
-  zoom: number;
-}
+import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
 
 /**
  * Wrapper for DirectedAcyclicGraph.
