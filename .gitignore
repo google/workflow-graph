@@ -8,6 +8,7 @@ bazel-workflow-graph/
 bazel-workflow-graph
 node_modules/
 dist/
+dist-types/
 .angular/
 .angular
 release/
