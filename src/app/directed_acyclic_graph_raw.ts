@@ -19,11 +19,11 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import * as lodash from 'lodash';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
 import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, LayoutOptions, NodeIcon, PadType, RankAlignment, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {debounce} from './debounce_util';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -290,7 +290,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       private readonly differs: KeyValueDiffers,
       private readonly cdr: ChangeDetectorRef,
   ) {
-    this.updateGraphLayout = lodash.debounce(this.updateGraphLayout, 50);
+    this.updateGraphLayout = debounce(this.updateGraphLayout, 50);
     this.updateDAG = this.updateDAG.bind(this);
     this.updateGraphLayoutFromNodesChange =
         this.updateGraphLayoutFromNodesChange.bind(this);

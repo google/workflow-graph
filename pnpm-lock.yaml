@@ -18,7 +18,6 @@ specifiers:
   '@angular/platform-browser': ^14.2.3
   '@angular/platform-browser-dynamic': 14.2.3
   '@types/dagre': 0.7.48
-  '@types/lodash': 4.14.191
   '@types/node': 18.11.9
   '@types/trusted-types': 2.0.2
   core-js: 2.6.9
@@ -30,7 +29,6 @@ specifiers:
   karma-coverage: 2.2.0
   karma-jasmine: 5.1.0
   karma-jasmine-html-reporter: 2.0.0
-  lodash: ^4.17.21
   ng-packagr: 14.2.1
   rxjs: 7.5.7
   safevalues: ^0.4.0
@@ -51,7 +49,6 @@ dependencies:
   '@angular/platform-browser': 14.2.12_dax2jypo47bpgiczdvqsh7iq24
   '@angular/platform-browser-dynamic': 14.2.3_6cqhozsvdfqcnce26piw2go6r4
   dagre: 0.8.5
-  lodash: 4.17.21
   rxjs: 7.5.7
   safevalues: 0.4.0
   systemjs: 6.1.2
@@ -67,7 +64,6 @@ devDependencies:
   '@angular/compiler-cli': 14.2.12_ldxvyn7sfxql3enqylvzy5khzu
   '@angular/localize': 14.2.12_cqwiofdtgqwkx67gfnt5blkgxu
   '@types/dagre': 0.7.48
-  '@types/lodash': 4.14.191
   '@types/node': 18.11.9
   '@types/trusted-types': 2.0.2
   core-js: 2.6.9
