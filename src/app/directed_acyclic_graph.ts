@@ -20,11 +20,11 @@ import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cd
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import * as lodash from 'lodash';  // from //third_party/javascript/typings/lodash:bundle
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
 import {assert, baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
+import {debounce} from './debounce_util';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
 import {DagIconsModule} from './icons_module';
 import {DagLogger} from './logger/dag_logger';
@@ -317,10 +317,10 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       private readonly cdr: ChangeDetectorRef,
       @Optional() private readonly dagLogger: DagLogger|null,
   ) {
-    this.focusElement = lodash.debounce(this.focusElement, 50);
-    this.onVisualUpdate = lodash.debounce(this.onVisualUpdate, 50);
-    this.handleResizeAsync = lodash.debounce(this.handleResizeAsync, 50);
-    this.resetAnimationMode = lodash.debounce(this.resetAnimationMode, 1200);
+    this.focusElement = debounce(this.focusElement, 50, this);
+    this.onVisualUpdate = debounce(this.onVisualUpdate, 50, this);
+    this.handleResizeAsync = debounce(this.handleResizeAsync, 50, this);
+    this.resetAnimationMode = debounce(this.resetAnimationMode, 1200, this);
     this.uniqueId = `${Date.now()}`;
   }
 
@@ -701,7 +701,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     return this.handleResizeSync();
   }
 
-  /** This method is asyncified in the constructor by using `lodash.debounce` */
+  /** This method is asyncified in the constructor by using `debounce` */
   private handleResizeAsync() {
     this.handleResizeSync();
   }
