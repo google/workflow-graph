@@ -21,6 +21,7 @@ import {distinctUntilChanged} from 'rxjs/operators';
 
 import {DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures} from './data_types_internal';
 import {DagGroup, DagNode, GroupIterationRecord, NodeRef, SelectedNode} from './node_spec';
+import {isEqual} from './util_functions';
 
 /** Function handler to listen for state changes on type `T` */
 export type StateListener<T> = (value: T) => void;
@@ -170,7 +171,8 @@ export class DagStateService {
     this.selectedNodeChange$.next(v);
   }
   private listenTheme(fn: StateListener<DagStateService['theme']>) {
-    const obs = this.theme$.subscribe(v => void fn(v));
+    const obs = this.theme$.pipe(distinctUntilChanged(isEqual))
+                    .subscribe(v => void fn(v));
     this.setTheme(this.theme);
     return obs;
   }

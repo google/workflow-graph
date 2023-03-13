@@ -24,7 +24,7 @@ import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
 import {assert, baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
-import {debounce} from './debounce_util';
+import {debounce} from './util_functions';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
 import {DagIconsModule} from './icons_module';
 import {DagLogger} from './logger/dag_logger';

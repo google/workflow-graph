@@ -23,7 +23,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
-import {debounce} from './debounce_util';
+import {debounce} from './util_functions';
 import {fetchIcon, iconForState} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagIconsModule} from './icons_module';

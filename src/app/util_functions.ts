@@ -30,3 +30,8 @@ export function debounce<T>(
     timeoutId = setTimeout(later, delayMilliseconds);
   };
 }
+
+/** Simple object equality comparator to replace _.isEqual usage */
+export function isEqual<T>(a: T, b: T) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
