@@ -17,7 +17,7 @@
 
 export function debounce<T>(
     callback: Function, delayMilliseconds: number, context: T) {
-  let timeoutId: number|null;
+  let timeoutId: null|ReturnType<typeof setTimeout>;
 
   return function() {
     const later = () => {
