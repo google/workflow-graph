@@ -16,7 +16,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {Subscription} from 'rxjs';
 
@@ -62,6 +62,7 @@ const AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS =
   styleUrls: ['group_iteration_select.scss'],
   templateUrl: 'group_iteration_select.ng.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
   host: {
     '[class.selected]': 'parentNodeSelected',
     '[class.untab]': 'unTabbable',

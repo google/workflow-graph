@@ -4,6 +4,7 @@
   (selectionChange)="updateValue($event)"
   [attr.tabindex]="unTabbable ? -1 : 0"
   (click)="$event.stopPropagation()"
+  class="group-iteration-select"
 >
   <mat-select-trigger>
     <span class="focus-animator"></span>
