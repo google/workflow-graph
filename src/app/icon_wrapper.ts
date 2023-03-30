@@ -18,7 +18,7 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, Component, HostBinding, Input, NgModule, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
 import {MatIconModule} from '@angular/material/icon';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatLegacyProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const SIZE_ICON_LARGE = 32;
 const SIZE_ICON_MEDIUM = 24;
@@ -112,7 +112,7 @@ export class WorkflowGraphIcon implements OnChanges {
   imports: [
     CommonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
+    MatLegacyProgressSpinnerModule,
   ],
   declarations: [
     WorkflowGraphIcon,

@@ -16,8 +16,8 @@
  */
 
 import {ComponentHarness, TestElement} from '@angular/cdk/testing';
-import {MatButtonHarness} from '@angular/material/button/testing';
-import {MatSlideToggleHarness} from '@angular/material/slide-toggle/testing';
+import {MatLegacyButtonHarness} from '@angular/material/button/testing';
+import {MatLegacySlideToggleHarness} from '@angular/material/slide-toggle/testing';
 
 /** Test harness for the Directed Acyclic Graph component. */
 export class DagToolbarHarness extends ComponentHarness {
@@ -33,9 +33,9 @@ export class DagToolbarHarness extends ComponentHarness {
     return this.locatorForOptional(':not(.controls) button')();
   }
 
-  getExpandToggle(): Promise<MatSlideToggleHarness> {
+  getExpandToggle(): Promise<MatLegacySlideToggleHarness> {
     return this.locatorFor(
-        MatSlideToggleHarness.with({selector: '#dag-toggle'}))();
+        MatLegacySlideToggleHarness.with({selector: '#dag-toggle'}))();
   }
 
   async getZoomText(): Promise<string> {
@@ -44,10 +44,10 @@ export class DagToolbarHarness extends ComponentHarness {
   }
 
   getZoomInButton() {
-    return this.locatorFor(MatButtonHarness.with({selector: '.zoom .in'}))();
+    return this.locatorFor(MatLegacyButtonHarness.with({selector: '.zoom .in'}))();
   }
   getZoomOutButton() {
-    return this.locatorFor(MatButtonHarness.with({selector: '.zoom .out'}))();
+    return this.locatorFor(MatLegacyButtonHarness.with({selector: '.zoom .out'}))();
   }
 
   getElement(query: string) {

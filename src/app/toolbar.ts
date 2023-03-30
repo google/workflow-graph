@@ -18,8 +18,8 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, TemplateRef, EventEmitter, Input, NgModule, Optional, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatLegacyButtonModule} from '@angular/material/button';
+import {MatLegacySlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
@@ -313,8 +313,8 @@ export class DagToolbar {
   imports: [
     CommonModule,
     WorkflowGraphIconModule,
-    MatSlideToggleModule,
-    MatButtonModule,
+    MatLegacySlideToggleModule,
+    MatLegacyButtonModule,
     FormsModule,
     DagIconsModule,
     NgVarModule,
