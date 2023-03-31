@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import {InjectionToken} from '@angular/core';
 import {SafeResourceUrl} from '@angular/platform-browser';
 
 /**
@@ -26,10 +25,3 @@ export abstract class AbstractUrlSanitizer {
   abstract sanitizeUrl(iconset: string, size: string, version: number):
       SafeResourceUrl;
 }
-
-/**
- * Injection token used to replace the sanitizer between internal and
- * open-source versions.
- */
-export const URL_SANITIZER =
-    new InjectionToken<AbstractUrlSanitizer>('Workflow Graph Url Sanitizer token');

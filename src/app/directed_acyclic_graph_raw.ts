@@ -23,7 +23,6 @@ import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
 import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, LayoutOptions, NodeIcon, PadType, RankAlignment, SVG_ELEMENT_SIZE} from './data_types_internal';
-import {debounce} from './util_functions';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -31,8 +30,7 @@ import {DagIconsModule} from './icons_module';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
 import {CustomNode, DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
-import {UrlSanitizer} from './url_sanitizer';
-import {URL_SANITIZER} from './url_sanitizer_types';
+import {debounce} from './util_functions';
 
 // tslint:disable:no-dict-access-on-struct-type
 
@@ -1214,7 +1212,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   exports: [
     DagRaw,
   ],
-  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizer}],
 })
 export class DagRawModule {
 }

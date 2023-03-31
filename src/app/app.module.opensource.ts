@@ -20,8 +20,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
-import {UrlSanitizer} from './url_sanitizer';
-import {URL_SANITIZER} from './url_sanitizer_types';
 import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 
 @NgModule({
@@ -32,7 +30,6 @@ import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
     BrowserAnimationsModule,
     WorkflowGraphWrapperModule,
   ],
-  providers: [{provide: URL_SANITIZER, useClass: UrlSanitizer}],
 })
 export class AppModule {
   constructor() {}
