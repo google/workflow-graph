@@ -27,20 +27,20 @@
   </mat-select-trigger>
   <mat-optgroup [label]="labels.failedIters">
     <mat-option *ngFor="let i of badIters" [value]="i.id">
-      <ng-container  *ngIf="getStateIcon(i) as icon">
+      <div *ngIf="getStateIcon(i) as icon" [style.color]="icon && fetchIcon(icon, 'color')">
         <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
       [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
-      <span [style.color]="icon && fetchIcon(icon, 'color')">{{ i.getNodeDisplayName() }}</span>
-      </ng-container>
+      <span>{{ i.getNodeDisplayName() }}</span>
+      </div>
     </mat-option>
   </mat-optgroup>
   <mat-optgroup [label]="labels.otherIters">
     <mat-option *ngFor="let i of goodIters" [value]="i.id">
-      <ng-container  *ngIf="getStateIcon(i) as icon">
+      <div *ngIf="getStateIcon(i) as icon"  [style.color]="icon && fetchIcon(icon, 'color')">
         <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
       [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
-      <span [style.color]="icon && fetchIcon(icon, 'color')">{{ i.getNodeDisplayName() }}</span>
-      </ng-container>
+      <span>{{ i.getNodeDisplayName() }}</span>
+      </div>
     </mat-option>
   </mat-optgroup>
 </mat-select>

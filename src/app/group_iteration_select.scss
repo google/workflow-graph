@@ -37,7 +37,8 @@
     border: 1px solid $node-border-color;
     border-radius: 0 0 6px 6px;
     transition: border-color 0.25s;
-    padding: 4px;
+    padding: 0.4em 1em;
+  
     @include elevate(1);
 
     &:focus-visible {
@@ -60,8 +61,10 @@
       align-items: center;
 
       .icon-wrap {
-        width: 50px;
         text-align: center;
+        margin-right: 14px;
+        margin-left: 2px;
+
         &.arrow > * {
           transform: scale(1.3);
         }
@@ -73,6 +76,7 @@
         flex: 1 1 0%;
         font-weight: $ace-font-weight-medium;
         font-size: 14px;
+        color: #3c4043;
       }
       .empty-state {
         margin-left: 1em;
