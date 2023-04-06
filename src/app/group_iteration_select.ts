@@ -17,7 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output} from '@angular/core';
-import {MatSelectChange, MatSelectModule} from '@angular/material/select';
+import {MatLegacySelectChange, MatLegacySelectModule} from '@angular/material/select';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
@@ -163,7 +163,7 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     this.onIterSelect.emit(this.selectedIteration);
   }
 
-  updateValue(val: MatSelectChange) {
+  updateValue(val: MatLegacySelectChange) {
     this.iteration = val.value;
   }
 
@@ -184,7 +184,7 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     CommonModule,
     WorkflowGraphIconModule,
     DagIconsModule,
-    MatSelectModule,
+    MatLegacySelectModule,
   ],
   declarations: [
     GroupIterationSelector,

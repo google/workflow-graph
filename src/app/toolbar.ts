@@ -16,20 +16,20 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, TemplateRef, EventEmitter, Input, NgModule, Optional, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, Optional, Output, TemplateRef} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatLegacyButtonModule} from '@angular/material/button';
+import {MatLegacySlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
-import {debounce} from './util_functions';
 import {fetchIcon, iconForState} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagIconsModule} from './icons_module';
 import {DagLogger} from './logger/dag_logger';
 import {NgVarModule} from './ng_var_directive';
 import {calculateGraphState, CustomNode, DagGroup, DagNode, getNodeType, IconConfig, NodeState} from './node_spec';
+import {debounce} from './util_functions';
 
 /**
  * Expose internal Shared Objects
@@ -313,8 +313,8 @@ export class DagToolbar {
   imports: [
     CommonModule,
     WorkflowGraphIconModule,
-    MatSlideToggleModule,
-    MatButtonModule,
+    MatLegacySlideToggleModule,
+    MatLegacyButtonModule,
     FormsModule,
     DagIconsModule,
     NgVarModule,
