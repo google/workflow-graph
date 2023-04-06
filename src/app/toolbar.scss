@@ -61,6 +61,10 @@ $toolbar-color: #5f6368;
     margin: 0 0.25em 0 0;
   }
 
+  .mat-mdc-slide-toggle {
+    --mdc-switch-state-layer-size: 32px;
+  }
+
   &.toggler > * {
     margin: 0;
     .text {
@@ -73,6 +77,12 @@ $toolbar-color: #5f6368;
     height: 28px;
     line-height: 28px;
     color: $toolbar-color;
+    padding: 0;
+
+    .workflow-graph-icon {
+      width: 18px;
+      height: 18px;
+    }
   }
 }
 

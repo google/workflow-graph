@@ -26,6 +26,8 @@ $size-icon-large: 32px;
   // to use the system colors that are passed in.
   svg {
     forced-color-adjust: auto;
+    width: 100%;
+    height: 100%;
   }
 
   &.workflow-graph-icon-size-small mat-icon {

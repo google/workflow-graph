@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@include mat.all-component-typographies();
 @include mat.core();
 
 $my-primary: mat.define-palette(mat.$indigo-palette, 500);
@@ -16,6 +17,9 @@ $graph-theme: mat.define-light-theme(
 );
 
 // Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($graph-theme);
+@include mat.mdc-core-theme($graph-theme);
+@include mat.mdc-tooltip-theme($graph-theme);
+@include mat.mdc-button-theme($graph-theme);
+@include mat.mdc-select-theme($graph-theme);
+@include mat.mdc-progress-spinner-theme($graph-theme);
+@include mat.mdc-slide-toggle-theme($graph-theme);
