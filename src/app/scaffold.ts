@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, Input, NgModule} from '@angular/core';
+import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, Input, NgModule, ViewEncapsulation} from '@angular/core';
 
 import {baseColors, BLUE_THEME, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
@@ -41,12 +41,16 @@ export {
  */
 @Component({
   selector: 'ai-dag-scaffold',
-  styleUrls: ['scaffold.scss'],
+  styleUrls: [
+    'scaffold.scss',
+    './material_theme.scss',
+  ],
   templateUrl: 'scaffold.ng.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     DagLogger,
   ],
+  encapsulation: ViewEncapsulation.None,
 })
 export class DagScaffold implements AfterContentInit {
   private features?: FeatureToggleOptions;

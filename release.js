@@ -44,19 +44,12 @@ function ensureDirectoriesExist() {
 function copyBundleToDist() {
   const pathToJs =
       path.join(bazelBinDirectoryPath, 'registerWorkflowGraphWebComponent.js');
-  const pathToStyles =
-      path.join(bazelBinDirectoryPath, 'styles.css');
+
   fse.copySync(
       pathToJs,
       path.join(
           webComponentDistDirectoryPath,
           'registerWorkflowGraphWebComponent.js'),
-      {dereference: true});
-  fse.copySync(
-      pathToStyles,
-      path.join(
-          webComponentDistDirectoryPath,
-          'styles.css'),
       {dereference: true});
 }
 

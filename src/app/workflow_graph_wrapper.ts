@@ -17,7 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
-import {Component, EventEmitter, Input, NgModule, Output, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
 
 import {Logger} from './data_types_internal';
 import {DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
@@ -31,7 +31,6 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
  */
 @Component({
   selector: 'workflow-graph',
-  encapsulation: ViewEncapsulation.None,
   template: `
 <ai-dag-scaffold>
     <ai-dag-toolbar

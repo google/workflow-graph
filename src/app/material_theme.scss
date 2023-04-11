@@ -1,0 +1,27 @@
+@use '@angular/material' as mat;
+@include mat.all-component-typographies();
+@include mat.core();
+
+$my-primary: mat.define-palette(mat.$blue-palette, 500);
+$my-accent: mat.define-palette(mat.$blue-palette, A200, A100, A400);
+
+$graph-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+@include mat.core-theme($graph-theme);
+@include mat.tooltip-theme($graph-theme);
+@include mat.button-theme($graph-theme);
+@include mat.select-theme($graph-theme);
+@include mat.option-theme($graph-theme);
+@include mat.optgroup-theme($graph-theme);
+@include mat.progress-spinner-theme($graph-theme);
+@include mat.slide-toggle-theme($graph-theme);

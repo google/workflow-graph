@@ -38,7 +38,7 @@ This app is built with [Bazel](https://bazel.build/) with [Aspect build rules](h
 
 
 ### Building, bundling
-To build a reusable Web Component bundle, run `npm run build-web-component`. This will create a bundle in your /dist directory, as well as type declarations in /dist-types. The bundle can be included in an HTML file to load the component. To load the Material styles, don't forget to include the generated `styles.css` file in your index.html or as part of your style imports.
+To build a reusable Web Component bundle, run `npm run build-web-component`. This will create a bundle in your /dist directory, as well as type declarations in /dist-types. The bundle can be included in an HTML file to load the component.
 
 ### Use as an Angular component
 Coming soon...
@@ -68,7 +68,7 @@ This component can be built and bundled as a Web Component, which makes it reusa
 - [x] Create a release script and deploy Web Component artifacts (bundle, CSS, typings) to NPM.
 - [ ] Validate usage as an Angular library, improve documentation
 - [ ] Improve code structure
-- [ ] Bump Angular and Angular Material versions to latest
+- [x] Bump Angular and Angular Material versions to latest
 
 ## Disclaimer
 This is not an officially supported Google product.
