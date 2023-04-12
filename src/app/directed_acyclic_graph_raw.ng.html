@@ -177,11 +177,11 @@
           [style.width.px]="getControlNodeFor(group).width"
           [style.height.px]="getControlNodeFor(group).height"
         >
-          <aside
+          <div
             class="control-node-shadow"
             [style.width.px]="getControlNodeFor(group).width"
             [style.height.px]="getControlNodeFor(group).height"
-          ></aside>
+          ></div>
           <ai-dag-node
             class="control-node"
             [class.kill-bottom-border]="group.treatAsLoop && isGroupExpanded(group)"
