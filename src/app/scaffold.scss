@@ -13,8 +13,8 @@ ai-dag-scaffold {
     overflow: auto;
     display: flex;
   }
-}
 
-* {
-  box-sizing: border-box;
+  ::ng-deep * {
+    box-sizing: border-box;
+  }
 }
