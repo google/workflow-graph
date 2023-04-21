@@ -81,7 +81,10 @@ export class WorkflowGraphIcon implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.icon === 'working') {
-      this.iconSpec = {kind: 'mat-spinner', sizePx: sizeToPixels(this.size as IconSize)};
+      this.iconSpec = {
+        kind: 'mat-spinner',
+        sizePx: sizeToPixels(this.size as IconSize)
+      };
     } else if (this.icon) {
       this.iconSpec = {
         kind: 'mat-icon',
