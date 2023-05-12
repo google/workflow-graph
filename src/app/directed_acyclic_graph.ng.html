@@ -58,8 +58,9 @@
     [class.minimap-focused]="mmFocused && !mmPressed"
   ></ai-dag-raw>
 </figure>
-<aside
+<div
   *ngIf="enableMinimap"
+  role="application"
   class="minimap-wrapper"
   aria-label="DAG Minimap"
   i18n-aria-label="Area where DAG preview is shown and you can zoom or pan the graph"
@@ -68,14 +69,14 @@
   [class.preview-on-pan]="features.seeThroughMinimapOnPan"
   [attr.minimap-position]="minimapPosition"
 >
-  <article
+  <div
     *ngIf="rootDagInitialized"
     class="minimap fade-in"
     [style.minWidth.px]="mmWidth"
     [style.minHeight.px]="mmVisualHeight + 2"
     (click)="mmBgClickPan($event)"
   >
-    <article class="bounds" [style.minHeight.px]="mmHeight">
+    <div class="bounds" [style.minHeight.px]="mmHeight">
       <section style.transform="scale({{ mmScale }})" class="dag-preview">
         <!-- This element will scale smaller than the parent container when zoom is above 1 -->
         <section style.transform="scale({{ min(mmLazyZoom, 1) }})" class="dag">
@@ -147,9 +148,9 @@
         (focus)="mmFocused = true"
         (blur)="mmFocused = false"
       ></button>
-    </article>
-  </article>
-</aside>
+    </div>
+  </div>
+</div>
 <aside *ngIf="!!sidebarRef"
   class="sidebar-wrapper"
   [style.top.px]="getSidebarDims('top')"
