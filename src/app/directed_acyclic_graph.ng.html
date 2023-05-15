@@ -135,8 +135,6 @@
         aria-label="Draggable Minimap ViewBox"
         i18n-aria-label="The draggable minimap view box that allows quick panning across the DAG"
         [attr.aria-pressed]="mmPressed + ''"
-        [attr.tabindex]="hideMinimapFromAssistiveTechnologies ? '-1' : '0'"
-        [attr.aria-hidden]="hideMinimapFromAssistiveTechnologies"
         [ngClass]="['view-window', toggleClass(!features.minimapHoverAnimations, 'no-animations')]"
         [cdkDragFreeDragPosition]="{x: lazymmPos.x, y: lazymmPos.y}"
         [style.width.px]="mmWinWidth / max(zoom, 1)"

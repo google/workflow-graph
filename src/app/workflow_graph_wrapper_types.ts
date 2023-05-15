@@ -33,7 +33,6 @@ export interface DagSpec {
 export interface WorkflowGraphProps {
   enableToolbar: boolean;
   enableMinimap: boolean;
-  hideMinimapFromAssistiveTechnologies: boolean;
   expandedMode: boolean;
   loading: boolean;
   optimizeForOrm: boolean;

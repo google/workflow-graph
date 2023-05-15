@@ -43,7 +43,6 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
     </ai-dag-toolbar>
     <ai-dag-renderer
       [enableMinimap]="enableMinimap"
-      [hideMinimapFromAssistiveTechnologies]="hideMinimapFromAssistiveTechnologies"
       [loading]="loading"
       [nodes]="graphSpec.nodes"
       [groups]="graphSpec.groups"
@@ -68,7 +67,6 @@ export class WorkflowGraphWrapper implements WorkflowGraphProps {
   };
   @Input() enableToolbar = true;
   @Input() enableMinimap = true;
-  @Input() hideMinimapFromAssistiveTechnologies = false;
   @Input() expandedMode = false;
   @Input() loading = false;
   @Input() optimizeForOrm = false;
