@@ -755,8 +755,8 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       const {winH, winW} = this.getMinimapWindowDims();
       // This point should be a minimap scoped point
       const clampedPt = {
-        x: clampVal(x, 0, Math.max(this.mmWidth - winW, 0)),
-        y: clampVal(y, 0, Math.max(this.mmHeight - winH, 0)),
+        x: clampVal(x, 0, Math.max(this.mmWidth - winW, 0)) || 0,
+        y: clampVal(y, 0, Math.max(this.mmHeight - winH, 0)) || 0,
       };
       this.lazymmPos = newPt = clampedPt;
     } else {
