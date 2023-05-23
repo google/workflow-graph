@@ -132,8 +132,9 @@
         cdkDrag
         cdkDragBoundary=".minimap .bounds"
         tabindex="0"
-        aria-label="Draggable Minimap ViewBox"
-        i18n-aria-label="The draggable minimap view box that allows quick panning across the DAG"
+        aria-label="Minimap ViewBox"
+        i18n-aria-label="The minimap view box that allows quick panning across the DAG"
+        aria-describedby="mapArrowDesc"
         [attr.aria-pressed]="mmPressed + ''"
         [ngClass]="['view-window', toggleClass(!features.minimapHoverAnimations, 'no-animations')]"
         [cdkDragFreeDragPosition]="{x: lazymmPos.x, y: lazymmPos.y}"
@@ -146,6 +147,9 @@
         (focus)="mmFocused = true"
         (blur)="mmFocused = false"
       ></button>
+      <div class="cdk-visually-hidden" id="mapArrowDesc">
+        To control the minimap, use the ARROW keys.
+      </div>
     </div>
   </div>
 </div>
