@@ -135,7 +135,6 @@
         aria-label="Minimap ViewBox"
         i18n-aria-label="The minimap view box that allows quick panning across the DAG"
         aria-describedby="mapArrowDesc"
-        [attr.aria-pressed]="mmPressed + ''"
         [ngClass]="['view-window', toggleClass(!features.minimapHoverAnimations, 'no-animations')]"
         [cdkDragFreeDragPosition]="{x: lazymmPos.x, y: lazymmPos.y}"
         [style.width.px]="mmWinWidth / max(zoom, 1)"
