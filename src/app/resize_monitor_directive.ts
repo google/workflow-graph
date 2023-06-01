@@ -71,6 +71,13 @@ export class ResizeMonitorDirective implements OnDestroy, AfterViewInit,
   }
 
   ngAfterViewInit() {
+    setTimeout(() => {
+      this.resize.emit({
+        height: this.elementRef.nativeElement.offsetHeight,
+        width: this.elementRef.nativeElement.offsetWidth,
+      });
+    }, 300);
+
     this.resizeObserver?.observe(this.elementRef.nativeElement);
   }
 
