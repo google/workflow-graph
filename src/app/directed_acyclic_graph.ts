@@ -94,7 +94,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
   // DOM Elements
   @ViewChild('mmViewBox') private readonly mmViewBox!: ElementRef;
-  @ViewChild('dagWrapper') private readonly dagWrapper!: ElementRef;
   @ViewChild('rootDag') private readonly rootDag?: DagRaw;
   @ContentChild(DagSidebar) readonly sidebarRef?: DagSidebar;
 
@@ -283,8 +282,9 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     const {min, max} = this.zoomStepConfig;
     zoom = clampVal(zoom, min, max);
     if (this.zoom === zoom) return;
-
-    this.zoomingTo(zoom);
+    this.zoom = zoom;
+    this.zoomChange.emit(zoom);
+    this.handleResize();
   }
   @Output() zoomChange = new EventEmitter();
 
@@ -707,7 +707,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
    * `mmLazyZoom` is created to only updated minimap's zoom when this function
    * actually updates the view
    */
-  private handleResizeSync(withoutPanning?: boolean) {
+  private handleResizeSync() {
     const resizeEventData = this.lastResizeEv;
     const mmMinHeight = this.enableMinimap ? this.dims.minimapMinHeight : 0;
     const {width, height} = resizeEventData;
@@ -732,12 +732,10 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       canvasHeight,
     });
     // Reposition the DAG so it's within bounds (account for features)
-    if (!withoutPanning) {
-      if (this.enableMinimap) {
-        this.mmBgClickPan();
-      } else {
-        this.graphPan('validate');
-      }
+    if (this.enableMinimap) {
+      this.mmBgClickPan();
+    } else {
+      this.graphPan('validate');
     }
     this.detectChanges();
     this.onVisualUpdate();
@@ -899,51 +897,11 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
   /** Handles zooming done via scroll events */
   scrollZoom($e: WheelEvent) {
-    $e.preventDefault();
     if (!this.features.scrollToZoom) return;
-
     const invSign = $e.deltaY > 0 ? -1 : 1;
-    const newZoom = this.zoom +
-        invSign *
-            Math.min(
-                this.zoomStepConfig.scrollStep * Math.abs($e.deltaY),
-                this.zoomStepConfig.step);
-
-    this.zoomingTo(newZoom, {x: $e.x, y: $e.y});
+    this.onZoomSet = this.zoom + invSign * this.zoomStepConfig.step;
     this.dagLogger?.logZoom(invSign === 1 ? 'in' : 'out', 'wheel');
   }
-
-  private zoomingTo(zoom: number, to?: Point) {
-    const container = this.dagWrapper.nativeElement.getBoundingClientRect();
-
-    // Previous top-left position converted into the new zoom level.
-    const position = {
-      x: -this.graphX / this.zoom * zoom,
-      y: -this.graphY / this.zoom * zoom
-    };
-
-    // relative place of the cursor within the viewport at the time of zoom.
-    // if not available, using the center
-    const relativePos = {
-      x: to ? (to.x - container.left) / this.lastResizeEv.width : 0.5,
-      y: to ? (to.y - container.top) / this.lastResizeEv.height : 0.5
-    };
-
-    // Taking the difference between the viewport under the old and new zoom,
-    // then multiplying with the relative position of the cursor.
-    const diffX = (zoom - this.zoom) * this.lastResizeEv.width / this.zoom;
-    const diffY = (zoom - this.zoom) * this.lastResizeEv.height / this.zoom;
-
-    position.x += relativePos.x * diffX;
-    position.y += relativePos.y * diffY;
-
-    this.mmWindowPan(this.convertCanvasPtToMinimap(position));
-
-    this.zoom = zoom;
-    this.zoomChange.emit(zoom);
-    this.handleResizeSync(true);
-  }
-
   /**
    * Sets zoom value to 100%
    *

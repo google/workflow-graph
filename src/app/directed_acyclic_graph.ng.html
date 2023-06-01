@@ -38,9 +38,11 @@
   <ai-dag-raw
     #rootDag
     class="root-dag"
-    style.transform="translate({{ graphX }}px, {{ graphY }}px) scale({{ zoom }}) "
+    style.transform="scale3d({{ zoom }}, {{ zoom }}, 1)"
     [noEmptySpaceAlloc]="true"
     [class.panning]="graphPanning"
+    [style.left.px]="graphX"
+    [style.top.px]="graphY"
     [sizeConfig]="sizeConfig"
     [nodes]="nodes"
     [edges]="edges"

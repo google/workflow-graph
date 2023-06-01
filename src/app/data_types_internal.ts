@@ -378,15 +378,12 @@ export interface ZoomConfig {
   max: number;
   /** Buttons should increment or decrement by what magnitude. Default: .05 */
   step: number;
-  /** Increment or decrement per scroll / trackpad delta. */
-  scrollStep: number;
 }
 /** Default zoom config that can be used for DAG Toolbar or DAG Renderer */
 export const defaultZoomConfig: ZoomConfig = {
   max: 1.5,
   min: .2,
   step: .10,
-  scrollStep: .02,
 };
 /**
  * Allows you to construct a full DAG Zoom Config set from partial entries
