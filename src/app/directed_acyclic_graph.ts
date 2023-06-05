@@ -23,14 +23,14 @@ import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
-import {assert, baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
-import {debounce} from './util_functions';
+import {assert, baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
 import {DagIconsModule} from './icons_module';
 import {DagLogger} from './logger/dag_logger';
 import {CustomNode, DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
 import {ResizeEventData, ResizeMonitorModule} from './resize_monitor_directive';
 import {DagSidebar} from './sidebar';
+import {debounce} from './util_functions';
 
 // tslint:disable:g3-no-void-expression
 
@@ -94,6 +94,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
   // DOM Elements
   @ViewChild('mmViewBox') private readonly mmViewBox!: ElementRef;
+  @ViewChild('dagWrapper') private readonly dagWrapper!: ElementRef;
   @ViewChild('rootDag') private readonly rootDag?: DagRaw;
   @ContentChild(DagSidebar) readonly sidebarRef?: DagSidebar;
 
@@ -282,9 +283,8 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     const {min, max} = this.zoomStepConfig;
     zoom = clampVal(zoom, min, max);
     if (this.zoom === zoom) return;
-    this.zoom = zoom;
-    this.zoomChange.emit(zoom);
-    this.handleResize();
+
+    this.zoomingTo(zoom);
   }
   @Output() zoomChange = new EventEmitter();
 
@@ -707,7 +707,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
    * `mmLazyZoom` is created to only updated minimap's zoom when this function
    * actually updates the view
    */
-  private handleResizeSync() {
+  private handleResizeSync(withoutPanning?: boolean) {
     const resizeEventData = this.lastResizeEv;
     const mmMinHeight = this.enableMinimap ? this.dims.minimapMinHeight : 0;
     const {width, height} = resizeEventData;
@@ -732,10 +732,12 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       canvasHeight,
     });
     // Reposition the DAG so it's within bounds (account for features)
-    if (this.enableMinimap) {
-      this.mmBgClickPan();
-    } else {
-      this.graphPan('validate');
+    if (!withoutPanning) {
+      if (this.enableMinimap) {
+        this.mmBgClickPan();
+      } else {
+        this.graphPan('validate');
+      }
     }
     this.detectChanges();
     this.onVisualUpdate();
@@ -897,11 +899,51 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
   /** Handles zooming done via scroll events */
   scrollZoom($e: WheelEvent) {
+    $e.preventDefault();
     if (!this.features.scrollToZoom) return;
+
     const invSign = $e.deltaY > 0 ? -1 : 1;
-    this.onZoomSet = this.zoom + invSign * this.zoomStepConfig.step;
+    const newZoom = this.zoom +
+        invSign *
+            Math.min(
+                SCROLL_STEP_PER_DELTA * Math.abs($e.deltaY),
+                this.zoomStepConfig.step);
+
+    this.zoomingTo(newZoom, {x: $e.x, y: $e.y});
     this.dagLogger?.logZoom(invSign === 1 ? 'in' : 'out', 'wheel');
   }
+
+  private zoomingTo(zoom: number, to?: Point) {
+    const container = this.dagWrapper.nativeElement.getBoundingClientRect();
+
+    // Previous top-left position converted into the new zoom level.
+    const position = {
+      x: -this.graphX / this.zoom * zoom,
+      y: -this.graphY / this.zoom * zoom
+    };
+
+    // relative place of the cursor within the viewport at the time of zoom.
+    // if not available, using the center
+    const relativePos = {
+      x: to ? (to.x - container.left) / this.lastResizeEv.width : 0.5,
+      y: to ? (to.y - container.top) / this.lastResizeEv.height : 0.5
+    };
+
+    // Taking the difference between the viewport under the old and new zoom,
+    // then multiplying with the relative position of the cursor.
+    const diffX = (zoom - this.zoom) * this.lastResizeEv.width / this.zoom;
+    const diffY = (zoom - this.zoom) * this.lastResizeEv.height / this.zoom;
+
+    position.x += relativePos.x * diffX;
+    position.y += relativePos.y * diffY;
+
+    this.mmWindowPan(this.convertCanvasPtToMinimap(position));
+
+    this.zoom = zoom;
+    this.zoomChange.emit(zoom);
+    this.handleResizeSync(true);
+  }
+
   /**
    * Sets zoom value to 100%
    *

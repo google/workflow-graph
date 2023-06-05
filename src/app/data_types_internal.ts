@@ -385,6 +385,10 @@ export const defaultZoomConfig: ZoomConfig = {
   min: .2,
   step: .10,
 };
+
+/** Increment or decrement per scroll / trackpad delta. */
+export const SCROLL_STEP_PER_DELTA = .02;
+
 /**
  * Allows you to construct a full DAG Zoom Config set from partial entries
  * which override the defaults
