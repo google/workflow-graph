@@ -5,6 +5,7 @@
   [attr.tabindex]="unTabbable ? -1 : 0"
   (click)="$event.stopPropagation()"
   class="group-iteration-select"
+  panelClass="ai-dag-iteration-select-panel"
 >
   <mat-select-trigger>
     <span class="focus-animator"></span>
@@ -26,22 +27,29 @@
       <span *ngIf="!softIteration" class="empty-state"> Please select an iteration </span>
     </div>
   </mat-select-trigger>
+  <ai-dag-iteration-selector-filter (onSearch)="filterIterations($event)" />
   <mat-optgroup [label]="labels.failedIters">
-    <mat-option *ngFor="let i of badIters" [value]="i.id">
+    <mat-option *ngFor="let i of badIters" [value]="i.id" [class.hidden]="i.hidden">
       <div *ngIf="getStateIcon(i) as icon" [style.color]="icon && fetchIcon(icon, 'color')">
         <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
-      [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
-      <span>{{ i.getNodeDisplayName() }}</span>
+        [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
+        <span>{{ i.getNodeDisplayName() }}</span>
       </div>
+    </mat-option>
+    <mat-option disabled i18n="Message displayed when there are no items to display" *ngIf="!badItersShown">
+      No items to display.
     </mat-option>
   </mat-optgroup>
   <mat-optgroup [label]="labels.otherIters">
-    <mat-option *ngFor="let i of goodIters" [value]="i.id">
-      <div *ngIf="getStateIcon(i) as icon"  [style.color]="icon && fetchIcon(icon, 'color')">
-        <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
-      [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
-      <span>{{ i.getNodeDisplayName() }}</span>
-      </div>
-    </mat-option>
-  </mat-optgroup>
+      <mat-option *ngFor="let i of goodIters" [value]="i.id" [class.hidden]="i.hidden">
+        <div *ngIf="getStateIcon(i) as icon"  [style.color]="icon && fetchIcon(icon, 'color')">
+          <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
+        [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
+        <span>{{ i.getNodeDisplayName() }}</span>
+        </div>
+      </mat-option>
+      <mat-option disabled i18n="Message displayed when there are no items to display" *ngIf="!goodItersShown">
+        No items to display.
+      </mat-option>
+    </mat-optgroup>
 </mat-select>

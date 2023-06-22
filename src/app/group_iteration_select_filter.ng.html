@@ -1,0 +1,32 @@
+<workflow-graph-icon
+    title="Filter"
+    icon="filter"
+    iconset="common">
+</workflow-graph-icon>
+<label class="ai-dag-iteration-selector-filter-label" 
+    for="ai-dag-iteration-selector-filter" 
+    i18n="Input field used to filter the options in a select dropdown.">
+  Filter
+</label>
+<input
+    matInput
+    placeholder="Type to filter"
+    i18n-placeholder="The placeholder shown within the filter text box."
+    id="ai-dag-iteration-selector-filter"
+    autocomplete="off"
+    [formControl]="searchInput"
+/>
+<button
+    mat-icon-button
+    *ngIf="!!searchInput.value"
+    (click)="searchInput.reset('')"
+    aria-label="Clear filter"
+    i18n-aria-label="Label for button used to clear the filter input."
+    class="clear"
+>
+  <workflow-graph-icon
+      title="Clear filter"
+      icon="close"
+      iconset="common">
+  </workflow-graph-icon>
+</button>

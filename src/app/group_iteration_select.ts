@@ -17,11 +17,15 @@
 
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output} from '@angular/core';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
 import {DEFAULT_THEME, STATE_PRIORITY} from './data_types_internal';
+import {GroupIterationSelectorFilter} from './group_iteration_select_filter';
 import {translateMessage} from './i18n';
 import {fetchIcon, iconForState, iconRescale, iconSizeToPx} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -49,6 +53,7 @@ const AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS =
 const AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS =
     translateMessage('Other iterations');
 
+type IterationSelectOption = (DagNode|DagGroup)&{hidden?: boolean};
 
 /**
  * Renders the workflow DAG.
@@ -80,13 +85,16 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   private observers: Subscription[] = [];
   private iterMap: Record<string, DagNode|DagGroup> = {};
   selectedIteration?: DagNode|DagGroup;
-  $iterations: Array<DagNode|DagGroup> = [];
-  goodIters: Array<DagNode|DagGroup> = [];
-  badIters: Array<DagNode|DagGroup> = [];
+  $iterations: IterationSelectOption[] = [];
+  goodIters: IterationSelectOption[] = [];
+  badIters: IterationSelectOption[] = [];
+  goodItersShown = 0;
+  badItersShown = 0;
   $iteration = '';
   expanded = false;
   focusedOption = '';
   softIteration = '';
+  filterValue = '';
 
   // Dropdown Related Props
   @Input() theme = DEFAULT_THEME;
@@ -94,11 +102,16 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   @Input() unTabbable = false;
   @Input() parentNodeSelected = false;
   @Input('iterations')
-  set iterations(iters: Array<DagNode|DagGroup>) {
+  set iterations(iters: IterationSelectOption[]) {
     this.$iterations = iters;
     this.iterMap = Object.fromEntries(iters.map(i => [i.id, i]));
-    const goodIters: typeof iters = [];
-    const badIters: typeof iters = [];
+    const goodIters: IterationSelectOption[] = [];
+    const badIters: IterationSelectOption[] = [];
+    for (const iter of iters) {
+      iter.hidden = !(iter.displayName.toLocaleLowerCase().includes(
+          this.filterValue.toLocaleLowerCase()));
+    }
+
     for (const iter of iters) {
       if (STATE_PRIORITY[iter.state] <= STATE_PRIORITY['RUNNING']) {
         goodIters.push(iter);
@@ -108,8 +121,10 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     }
     this.goodIters = goodIters.sort(
         (a, b) => STATE_PRIORITY[b.state] - STATE_PRIORITY[a.state]);
+    this.goodItersShown = this.goodIters.filter(({hidden}) => !hidden).length;
     this.badIters = badIters.sort(
         (a, b) => STATE_PRIORITY[b.state] - STATE_PRIORITY[a.state]);
+    this.badItersShown = this.badIters.filter(({hidden}) => !hidden).length;
     this.calculateIteration();
   }
   get iterations() {
@@ -173,6 +188,11 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     return `${prompt}: ${this.iteration}`;
   }
 
+  filterIterations(value: string) {
+    this.filterValue = value;
+    this.iterations = this.iterations;
+  }
+
   fetchIcon = (icon: NodeIcon, key: keyof NodeIcon) => fetchIcon(icon, key);
   iconRescale = iconRescale;
   iconForState = iconForState;
@@ -185,12 +205,14 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     WorkflowGraphIconModule,
     DagIconsModule,
     MatSelectModule,
+    MatButtonModule,
+    MatInputModule,
+    ReactiveFormsModule,
   ],
-  declarations: [
-    GroupIterationSelector,
-  ],
+  declarations: [GroupIterationSelector, GroupIterationSelectorFilter],
   exports: [
     GroupIterationSelector,
+    GroupIterationSelectorFilter,
   ],
 })
 export class GroupIterationSelectorModule {

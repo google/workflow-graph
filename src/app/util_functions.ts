@@ -19,10 +19,10 @@ export function debounce<T>(
     callback: Function, delayMilliseconds: number, context: T) {
   let timeoutId: null|ReturnType<typeof setTimeout>;
 
-  return function() {
+  return (...args: unknown[]) => {
     const later = () => {
       timeoutId = null;
-      callback.apply(context);
+      callback.apply(context, args);
     };
     if (timeoutId != null) {
       clearTimeout(timeoutId);
