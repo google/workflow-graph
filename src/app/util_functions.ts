@@ -15,11 +15,6 @@
  * limitations under the License.
  */
 
-import * as _ from 'lodash';
-
-const isEqual = _.isEqual;
-export {isEqual};
-
 export function debounce<T>(
     callback: Function, delayMilliseconds: number, context: T) {
   let timeoutId: null|ReturnType<typeof setTimeout>;
@@ -34,4 +29,9 @@ export function debounce<T>(
     }
     timeoutId = setTimeout(later, delayMilliseconds);
   };
+}
+
+/** Simple object equality comparator to replace _.isEqual usage */
+export function isEqual<T>(a: T, b: T) {
+  return JSON.stringify(a) === JSON.stringify(b);
 }
