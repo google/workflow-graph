@@ -914,6 +914,10 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private zoomingTo(zoom: number, to?: Point) {
+    const {min, max} = this.zoomStepConfig;
+    zoom = clampVal(zoom, min, max);
+    if (zoom === this.zoom) return;
+
     const container = this.dagWrapper.nativeElement.getBoundingClientRect();
 
     // Previous top-left position converted into the new zoom level.
@@ -939,9 +943,11 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
     this.mmWindowPan(this.convertCanvasPtToMinimap(position));
 
-    this.zoom = zoom;
-    this.zoomChange.emit(zoom);
-    this.handleResizeSync(true);
+    setTimeout(() => {
+      this.zoom = zoom;
+      this.zoomChange.emit(zoom);
+      this.handleResizeSync(true);
+    }, 0);
   }
 
   /**
