@@ -429,6 +429,10 @@ export interface FeatureToggleOptions {
    * issues with Panning logic
    */
   debugPanningLayer: boolean;
+  /**
+   * Activate A11y keyboard shortcut functionalities
+   */
+  enableShortcuts: boolean;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -446,6 +450,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   seeThroughMinimapOnPan: true,
   debugPanningLayer: false,
   fullscreenToggle: false,
+  enableShortcuts: false,
 };
 
 /**

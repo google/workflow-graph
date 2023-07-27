@@ -19,7 +19,7 @@ import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
 
-import {Logger} from './data_types_internal';
+import {defaultFeatures, Logger} from './data_types_internal';
 import {DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
 import {DagEdge, DagNode, GraphSpec, NodeRef, SelectedNode} from './node_spec';
 import {DagScaffoldModule} from './scaffold';
@@ -32,7 +32,7 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
 @Component({
   selector: 'workflow-graph',
   template: `
-<ai-dag-scaffold>
+<ai-dag-scaffold [features]="features">
     <ai-dag-toolbar
       [nodes]="graphSpec.nodes"
       [(expanded)]="expandedMode"
@@ -67,6 +67,7 @@ export class WorkflowGraphWrapper implements WorkflowGraphProps {
   };
   @Input() enableToolbar = true;
   @Input() enableMinimap = true;
+  @Input() features = defaultFeatures;
   @Input() expandedMode = false;
   @Input() loading = false;
   @Input() optimizeForOrm = false;

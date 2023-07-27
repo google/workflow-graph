@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {LayoutOptions, Logger} from './data_types_internal';
+import {FeatureToggleOptions, LayoutOptions, Logger} from './data_types_internal';
 import {DagEdge, DagNodeSkeleton, NodeRef, StateTable} from './node_spec';
 
 /**
@@ -43,4 +43,5 @@ export interface WorkflowGraphProps {
   layout?: LayoutOptions;
   logger?: Logger;
   zoom: number;
+  features?: FeatureToggleOptions;
 }

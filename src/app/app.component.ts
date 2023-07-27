@@ -18,7 +18,7 @@
 import {Component} from '@angular/core';
 import {Subject} from 'rxjs';
 
-import {DEFAULT_LAYOUT_OPTIONS} from './data_types_internal';
+import {DEFAULT_LAYOUT_OPTIONS, defaultFeatures} from './data_types_internal';
 import {fakeGraph} from './test_resources/fake_data';
 
 
@@ -26,6 +26,7 @@ import {fakeGraph} from './test_resources/fake_data';
   selector: 'app-root',
   template: `
   <workflow-graph
+    [features]="features"
     [enableMinimap]="enableMinimap"
     [loading]="loading"
     [dagSpec]="dagSpec"
@@ -49,4 +50,5 @@ export class AppComponent {
 
   selectedNodeChange = new Subject();
   zoomChange = new Subject();
+  features = {...defaultFeatures, enableShortcuts: true};
 }

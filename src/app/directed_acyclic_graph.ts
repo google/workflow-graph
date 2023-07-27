@@ -22,6 +22,7 @@ import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Co
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
+import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
 import {assert, baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
@@ -311,6 +312,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   constructor(
       private readonly cdr: ChangeDetectorRef,
       @Optional() private readonly dagLogger: DagLogger|null,
+      private readonly shortcutService: ShortcutService,
   ) {
     this.focusElement = debounce(this.focusElement, 50, this);
     this.onVisualUpdate = debounce(this.onVisualUpdate, 50, this);
@@ -331,6 +333,26 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
   detectChanges() {
     this.cdr.detectChanges();
+  }
+
+  private stepCanvasOffset(direction: 'up'|'right'|'down'|'left') {
+    const newPt = {x: -this.graphX, y: -this.graphY};
+    switch (direction) {
+      case 'up':
+        newPt.y -= 100;
+        break;
+      case 'right':
+        newPt.x += 100;
+        break;
+      case 'down':
+        newPt.y += 100;
+        break;
+      case 'left':
+        newPt.x -= 100;
+        break;
+      default:
+    }
+    this.mmWindowPan(this.convertCanvasPtToMinimap(newPt));
   }
 
   ngOnInit() {
@@ -361,6 +383,15 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
         iter && this.groupIterationChanged.emit(iter);
       },
     });
+
+    this.shortcutService.registerShortcutAction(
+        'CANVAS_UP', () => this.stepCanvasOffset('up'));
+    this.shortcutService.registerShortcutAction(
+        'CANVAS_RIGHT', () => this.stepCanvasOffset('right'));
+    this.shortcutService.registerShortcutAction(
+        'CANVAS_DOWN', () => this.stepCanvasOffset('down'));
+    this.shortcutService.registerShortcutAction(
+        'CANVAS_LEFT', () => this.stepCanvasOffset('left'));
   }
 
   ngOnDestroy() {

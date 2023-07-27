@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, Input, NgModule, ViewEncapsulation} from '@angular/core';
+import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, HostBinding, Input, NgModule, ViewEncapsulation} from '@angular/core';
 
+import {ShortcutService} from './a11y/shortcut.service';
 import {baseColors, BLUE_THEME, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
 import {DagLogger, DagLoggerModule} from './logger/dag_logger';
@@ -57,6 +58,7 @@ export class DagScaffold implements AfterContentInit {
   private theme?: DagTheme;
   private hasInited = false;
 
+  @HostBinding('attr.tabindex') tabindex = 0;
   @ContentChild(DagToolbar) toolbarRef?: DagToolbar;
   @ContentChild(DirectedAcyclicGraph) dagRef?: DirectedAcyclicGraph;
   @Input('features')
@@ -68,6 +70,16 @@ export class DagScaffold implements AfterContentInit {
   set onSetTheme(t: DagTheme) {
     this.theme = t;
     this.propagateFeatures();
+  }
+
+  constructor(
+      private readonly shortcutService: ShortcutService,
+      private readonly el: ElementRef) {}
+
+  ngOnInit() {
+    if (this.features?.enableShortcuts) {
+      this.shortcutService.enableShortcuts(this.el);
+    }
   }
 
   ngAfterContentInit() {
