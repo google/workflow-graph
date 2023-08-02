@@ -38,6 +38,7 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
       [(expanded)]="expandedMode"
       [(enableMinimap)]="enableMinimap"
       [(zoom)]="zoom"
+      [features]="features"
       *ngIf="enableToolbar"
     >
     </ai-dag-toolbar>

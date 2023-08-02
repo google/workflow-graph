@@ -25,8 +25,8 @@ import {UrlSanitizer} from './url_sanitizer';
  */
 const AI_ICONSET = 'cloud_ai';
 const AI_LARGE_ICONSET_VERSION = 5;
-const AI_MEDIUM_ICONSET_VERSION = 48;
-const AI_SMALL_ICONSET_VERSION = 48;
+const AI_MEDIUM_ICONSET_VERSION = 59;
+const AI_SMALL_ICONSET_VERSION = 59;
 
 const SHELL_ICONSET = 'shell';
 const SHELL_MEDIUM_ICONSET_VERSION = 8;

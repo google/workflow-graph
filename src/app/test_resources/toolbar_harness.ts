@@ -49,6 +49,10 @@ export class DagToolbarHarness extends ComponentHarness {
   getZoomOutButton() {
     return this.locatorFor(MatButtonHarness.with({selector: '.zoom .out'}))();
   }
+  getA11yHelpCenterButton() {
+    return this.locatorFor(
+        MatButtonHarness.with({selector: '.a11y-help-center'}))();
+  }
 
   getElement(query: string) {
     return this.locatorFor(query)();

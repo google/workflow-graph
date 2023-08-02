@@ -18,8 +18,7 @@
 import {ElementRef, Injectable, OnDestroy} from '@angular/core';
 import {fromEvent as observableFromEvent, Subscription} from 'rxjs';
 
-import {DEFAULT_SHORTCUTS, ShortcutName} from './shortcuts';
-
+import {DEFAULT_SHORTCUTS, SavedShortcutConfig, ShortcutConfig, ShortcutList, ShortcutName} from './shortcuts';
 
 /**
  * A11y Shortcut singleton service provided on root level.
@@ -27,29 +26,33 @@ import {DEFAULT_SHORTCUTS, ShortcutName} from './shortcuts';
 @Injectable({providedIn: 'root'})
 export class ShortcutService implements OnDestroy {
   private keySubscription?: Subscription;
-  private readonly shortcutActions =
-      new Map<keyof typeof ShortcutName, Function>();
-  private readonly shortcuts = new Map<string, keyof typeof ShortcutName>();
+  readonly shortcuts: ShortcutList = {};
 
   constructor() {
-    // Mapping through DEFAULT_SHORTCUTS and appending the OS dependent
-    // default shortcut to "this.shortcuts".
-    // TODO: overwrite them with provided settings.
+    // TODO: Overwriting shortcuts with received from userconfig service
+    // b/293854568
     Object.entries(DEFAULT_SHORTCUTS).forEach(entry => {
       const [key, value] = entry;
       const os = this.detectOS();
       const keys = new Map(Object.entries(value.keys));
-      const valueToSet = keys.get(os) || keys.get('master');
-      if (valueToSet) this.shortcuts.set(valueToSet, key as ShortcutName);
+      const shortcut = keys.get(os) || keys.get('master');
+      const shortcutKey = key as ShortcutName;
+      if (shortcut) {
+        this.shortcuts[shortcutKey] = {
+          enabled: true,
+          shortcut,
+          ...DEFAULT_SHORTCUTS[shortcutKey]!,
+        };
+      }
     });
+  }
+
+  updateShortcuts(values: ShortcutList<SavedShortcutConfig>) {
+    // TODO b/293854568
   }
 
   ngOnDestroy() {
     this.keySubscription?.unsubscribe();
-  }
-
-  registerShortcutAction(name: keyof typeof ShortcutName, action: Function) {
-    this.shortcutActions.set(name, action);
   }
 
   private handleShortcut(e: KeyboardEvent) {
@@ -61,11 +64,13 @@ export class ShortcutService implements OnDestroy {
     if (e.shiftKey) keys.push('Shift');
     keys.push(e.key.length > 1 ? e.key : e.key.toUpperCase());
 
-    const foundShortcutKey = this.shortcuts.get(keys.join('-'));
+    const foundShortcut =
+        Object.values(this.shortcuts)
+            .find(({shortcut}) => shortcut === keys.join('-'));
 
-    if (foundShortcutKey && this.shortcutActions.has(foundShortcutKey)) {
+    if (foundShortcut?.action && foundShortcut?.enabled) {
       e.preventDefault();
-      this.shortcutActions.get(foundShortcutKey)!();
+      foundShortcut.action();
     }
   }
 
@@ -82,6 +87,10 @@ export class ShortcutService implements OnDestroy {
     return 'master';
   }
 
+  registerShortcutAction(name: keyof typeof ShortcutName, action: Function) {
+    this.shortcuts[name] = {...this.shortcuts[name], action} as ShortcutConfig;
+  }
+
   enableShortcuts(ref: ElementRef) {
     this.keySubscription?.unsubscribe();
     this.keySubscription =
@@ -91,3 +100,5 @@ export class ShortcutService implements OnDestroy {
             });
   }
 }
+
+export {SavedShortcutConfig, ShortcutConfig, ShortcutList, ShortcutName};
