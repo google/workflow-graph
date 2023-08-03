@@ -59,7 +59,7 @@ export class AccessibilityHelpCenter implements OnInit, OnDestroy {
         }),
     settings: this.fb.group({}),
   });
-  destroy = new Subject();
+  destroy = new Subject<void>();
   allEnabled = false;
   someEnabled = false;
 

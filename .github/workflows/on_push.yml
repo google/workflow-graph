@@ -1,4 +1,4 @@
-name: Verify build
+name: Verify build and run tests
 on: [push]
 jobs:
   build:
@@ -11,7 +11,8 @@ jobs:
           version: 6.10.0
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
           cache: 'pnpm'
       - run: pnpm install
       - run: npm run build
+      - run: npm run test
