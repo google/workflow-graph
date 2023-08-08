@@ -651,6 +651,11 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
   }
 
+  // Only for tests
+  detectChanges() {
+    this.cdr.detectChanges();
+  }
+
   getTopCenterPoint(node: DagNode|DagGroup): Point {
     return {x: node.x, y: node.y - node.height / 2};
   }

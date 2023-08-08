@@ -17,7 +17,7 @@
 
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, ViewChild} from '@angular/core';
-import {ComponentFixture, discardPeriodicTasks, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {DagRaw, DagRawModule} from './directed_acyclic_graph_raw';
@@ -55,6 +55,10 @@ describe('Directed Acyclic Graph Raw', () => {
     beforeEach(waitForAsync(async () => {
       fixture = TestBed.createComponent(DagWrapper);
       fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.componentInstance.dagRaw.updateGraphLayout();
+      fixture.componentInstance.dagRaw.detectChanges();
+
       const loader = TestbedHarnessEnvironment.loader(fixture);
       harness = await loader.getHarness(DagRawHarness);
     }));
@@ -64,7 +68,6 @@ describe('Directed Acyclic Graph Raw', () => {
     }));
 
     it('Renders correctly', fakeAsync(async () => {
-         discardPeriodicTasks();
          expect(fixture.componentInstance.dagRaw).toBeDefined();
          expect(fixture.componentInstance.dagRaw.nodes).toBeDefined();
          expect(fixture.componentInstance.dagRaw.edges).toBeDefined();
@@ -73,8 +76,6 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('Selection and data binding for nodes works', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          await harness.clickArtifactNode('TransformedTable');
          expect(fixture.componentInstance.dagRaw.selectedNode?.node
                     .getNodeDisplayName())
@@ -82,10 +83,7 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('Preserves selection data on reassignment', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          await harness.clickArtifactNode('TransformedTable');
-
          const {dagRaw} = fixture.componentInstance;
          const newNode = new DagNode('test', 'artifact');
          const newEdge: DagEdge = {from: 'TransformedTable', to: newNode.id};
@@ -99,8 +97,6 @@ describe('Directed Acyclic Graph Raw', () => {
 
     it('Unselect node when a node is clicked again on the graph',
        fakeAsync(async () => {
-         discardPeriodicTasks();
-
          await harness.clickArtifactNode('TransformedTable');
          expect(fixture.componentInstance.dagRaw.selectedNode).not.toBeNull();
          await harness.clickArtifactNode('TransformedTable');
@@ -108,10 +104,7 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('Custom Node renders correctly', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          await harness.clickCustomNode('CustomNode1');
-         flush();
          expect(fixture.componentInstance.dagRaw.selectedNode).toBeNull();
        }));
   });
@@ -131,8 +124,6 @@ describe('Directed Acyclic Graph Raw', () => {
     }));
 
     it('`ensureNode` behaves as expected', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          renderer.nodes = [
            new DagNode('a', 'execution', 'CANCELLED'),
            new DagNode('b', 'artifact'),
@@ -148,8 +139,6 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('`animatedEdge` behaves as expected', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          renderer.nodes = [
            new DagNode('root', 'execution', 'SUCCEEDED'),
            new DagNode('a1', 'execution', 'CANCELLED'),
@@ -180,8 +169,6 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('`selectNodeById` behaves as expected', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          renderer.nodes = [
            new DagNode('a', 'execution', 'CANCELLED'),
          ];
@@ -199,8 +186,6 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('`pendingOrStatic` behaves as expected', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          renderer.nodes = [
            new DagNode('a', 'execution', 'CANCELLED'),
            new DagNode('b', 'execution', 'NO_STATE_RUNTIME'),
@@ -219,8 +204,6 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('`toggleClass` behaves as expected', fakeAsync(async () => {
-         discardPeriodicTasks();
-
          expect(renderer.toggleClass(true, 'a')).toBe('a');
          expect(renderer.toggleClass(false, 'a')).toBe('');
        }));
