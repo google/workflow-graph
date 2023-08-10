@@ -20,7 +20,10 @@ $graph-theme: mat.define-light-theme(
 @include mat.core-theme($graph-theme);
 @include mat.tooltip-theme($graph-theme);
 @include mat.button-theme($graph-theme);
+@include mat.icon-button-theme($graph-theme);
+@include mat.dialog-theme($graph-theme);
 @include mat.select-theme($graph-theme);
+@include mat.table-theme($graph-theme);
 @include mat.option-theme($graph-theme);
 @include mat.checkbox-theme($graph-theme);
 @include mat.optgroup-theme($graph-theme);

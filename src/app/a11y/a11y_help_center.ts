@@ -15,15 +15,20 @@
  * limitations under the License.
  */
 
+import {CommonModule} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
+
+import {WorkflowGraphIconModule} from '../icon_wrapper';
 
 import {ShortcutService} from './shortcut.service';
 
@@ -36,16 +41,20 @@ import {ShortcutService} from './shortcut.service';
   templateUrl: 'a11y_help_center.ng.html',
   standalone: true,
   imports: [
+    CommonModule,
     MatButtonModule,
     MatDialogModule,
     MatTableModule,
     MatCheckboxModule,
     ReactiveFormsModule,
     MatTooltipModule,
+    MatFormFieldModule,
+    MatInputModule,
+    WorkflowGraphIconModule,
   ],
 })
 export class AccessibilityHelpCenter implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['enabled', 'desc', 'shortcut'];
+  displayedColumns: string[] = ['enabled', 'desc', 'shortcut', 'edit'];
   dataSource = Object.values(this.shortcutService.shortcuts);
   form = this.fb.group({
     shortcuts: this.fb.group(
@@ -57,7 +66,7 @@ export class AccessibilityHelpCenter implements OnInit, OnDestroy {
           [key: string]: FormGroup<
               {enabled: FormControl<boolean>, shortcut: FormControl<string>}>
         }),
-    settings: this.fb.group({}),
+    disableAnimations: new FormControl<boolean>(false),
   });
   destroy = new Subject<void>();
   allEnabled = false;

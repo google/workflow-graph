@@ -1,15 +1,26 @@
 :host {
-  h1 {
-    font-size: 24px;
-    line-height: 32px;
-    font-weight: 400;
-  }
-  h2 {
-    font-size: 16px;
-  }
-  * {
-    font-size: 14px;
+  --mat-table-header-container-height: 45px;
+  --mat-table-row-item-container-height: 45px;
+}
+
+table {
+  margin-bottom: 24px;
+  button {
+    --mdc-icon-button-state-layer-size:40px;
+    padding: 0;
   }
 }
 
+td, th {
+  &:first-child, &:last-child {
+    padding: 0px;
+  }
+}
 
+th {
+  background-color: rgba(0,0,0,.04);
+}
+
+button {
+  text-transform: uppercase;
+}

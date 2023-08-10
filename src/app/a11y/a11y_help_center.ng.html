@@ -1,14 +1,9 @@
-<h1 mat-dialog-title i18n>Accessibility Help Center</h1>
+<h2 mat-dialog-title i18n="Title on accessibility dialog for editing shortcuts in the workflow graph">Accessibility Help Center</h2>
 <form [formGroup]="form" (ngSubmit)="save()">
   <mat-dialog-content>
-    <div class="help-text"></div>
-    <h2 i18n>Accessibility settings</h2>
-    <ul>
-      <li i18n>Turn off distracting animations</li>
-
-    </ul>
-
-    <h2 i18n>Configure keyboard shortcuts</h2>
+    <h3 i18n="Subtitle on accessibility dialog for editing Accessibility configs">Accessibility settings</h3>
+    <mat-checkbox i18n="Checkbox label in accessibility dialog to turn off distracting animations">Turn off distracting animations</mat-checkbox>
+    <h3 i18n="Subtitle on accessibility dialog for editing Shortcuts">Configure keyboard shortcuts</h3>
     <table mat-table [dataSource]="dataSource" formGroupName="shortcuts">
       <ng-container matColumnDef="enabled">
         <th mat-header-cell *matHeaderCellDef>
@@ -16,33 +11,61 @@
             [checked]="allEnabled"
             [indeterminate]="someEnabled"
             (change)="toggleAll($event.checked)"
-            i18n-matTooltip
+            i18n-matTooltip="Checkbox label to turn on/off all shortcuts at once in the workflow graph"
             matTooltip="Toggle all shortcuts"
             matTooltipPosition="left"
           />
         </th>
-        <td mat-cell *matCellDef="let element">
-          <ng-container [formGroupName]="element.name">
-            <mat-checkbox formControlName="enabled" i18n-matTooltip matTooltip="Toogle this shortcut" matTooltipPosition="left"/>
-          </ng-container>
+        <td mat-cell *matCellDef="let element" [formGroupName]="element.name">
+          <mat-checkbox
+              formControlName="enabled"
+              matTooltip="Toogle this shortcut"
+              i18n-matTooltip="Checkbox label to turn on/off one shortcut in the workflow graph"
+              matTooltipPosition="left"/>
         </td>
       </ng-container>
       <ng-container matColumnDef="desc">
-        <th mat-header-cell *matHeaderCellDef i18n>Action</th>
+        <th mat-header-cell *matHeaderCellDef i18n="Shortcuts table column header for action descriptions">Action</th>
         <td mat-cell *matCellDef="let element">{{element.desc}}</td>
       </ng-container>
       <ng-container matColumnDef="shortcut">
-        <th mat-header-cell *matHeaderCellDef i18n>Shortcut</th>
-        <td mat-cell *matCellDef="let element">{{element.shortcut}}</td>
+        <th mat-header-cell *matHeaderCellDef i18n="Shortcuts table column header for key combinations">Shortcut</th>
+        <td mat-cell *matCellDef="let element">
+          <ng-container>{{element.shortcut}}</ng-container>
+          <mat-form-field appearance="outline" *ngIf="false">
+            <input
+                matInput
+                placeholder="Type a shortcut"
+                i18n-placeholder="Placeholder for shortcut remapping input field in accessibility dialog"
+                aria-label="Type a shortcut"
+                i18n-aria-label="Aria label for shortcut remapping input field in accessibility dialog"
+              >
+            <mat-hint i18n="Hint text for shortcut input field in accessibility dialog of Workflow Graph">
+              Begin with Control or Shift
+            </mat-hint>
+          </mat-form-field>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button
+              mat-icon-button
+              matTooltip="Edit shortcut"
+              i18n-matTooltip="Tooltip for edit button in shortcut remapping table to append input field"
+              matTooltipPosition="right"
+            >
+            <workflow-graph-icon icon="edit"/>
+          </button>
+        </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <button mat-button i18n>Restore all defaults</button>
-
+    <button mat-button i18n="Button text to reset all modified accessibility shortcuts">Restore all defaults</button>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close i18n>Cancel</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial type="submit" i18n>Save</button>
+    <button mat-button mat-dialog-close i18n="Cancel button text to close accessibility dialog">Cancel</button>
+    <button mat-button mat-dialog-close cdkFocusInitial color="primary" type="submit" i18n="Save button text to submit changes in accessibility dialog">Save</button>
   </mat-dialog-actions>
 </form>
