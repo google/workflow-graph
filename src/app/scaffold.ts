@@ -15,13 +15,16 @@
  * limitations under the License.
  */
 
-import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, HostBinding, Input, NgModule, ViewEncapsulation} from '@angular/core';
+import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, NgModule, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
 import {baseColors, BLUE_THEME, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
 import {DagLogger, DagLoggerModule} from './logger/dag_logger';
 import {DagToolbar} from './toolbar';
+import {UserConfig, UserConfigService} from './user_config.service';
 
 /**
  * Expose internal Shared Objects
@@ -53,10 +56,11 @@ export {
   ],
   encapsulation: ViewEncapsulation.None,
 })
-export class DagScaffold implements AfterContentInit {
+export class DagScaffold implements AfterContentInit, OnDestroy {
   private features?: FeatureToggleOptions;
   private theme?: DagTheme;
   private hasInited = false;
+  private readonly destroy = new Subject<void>();
 
   @HostBinding('attr.tabindex') tabindex = 0;
   @ContentChild(DagToolbar) toolbarRef?: DagToolbar;
@@ -71,12 +75,20 @@ export class DagScaffold implements AfterContentInit {
     this.theme = t;
     this.propagateFeatures();
   }
+  @Input() userConfig?: UserConfig;
+  @Output() readonly userConfigChange = new EventEmitter<UserConfig>();
 
   constructor(
+      private readonly userConfigService: UserConfigService,
       private readonly shortcutService: ShortcutService,
       private readonly el: ElementRef) {}
 
   ngOnInit() {
+    this.userConfigService.init(this.userConfig);
+    this.userConfigService.config.pipe(takeUntil(this.destroy))
+        .subscribe((userConfig: UserConfig) => {
+          this.userConfigChange.emit(userConfig);
+        });
     if (this.features?.enableShortcuts) {
       this.shortcutService.enableShortcuts(this.el);
     }
@@ -86,6 +98,12 @@ export class DagScaffold implements AfterContentInit {
     this.hasInited = true;
     this.propagateFeatures();
   }
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
+  }
+
   /**
    * Propagate DAG Features to elements, manually (either on init or after
    * change)

@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 import {DEFAULT_LAYOUT_OPTIONS, defaultFeatures} from './data_types_internal';
 import {fakeGraph} from './test_resources/fake_data';
+import {UserConfig} from './user_config.service';
 
+const LOCAL_STORAGE_KEY = 'workflow_graph_user_config';
 
 @Component({
   selector: 'app-root',
@@ -35,11 +38,14 @@ import {fakeGraph} from './test_resources/fake_data';
     [layout]="layout"
     [hoveredEdge]="hoveredEdge"
     (selectedNodeChange)="selectedNodeChange.next($event)"
-    (zoomChange)="zoomChange.next($event)">
-</workflow-graph>
+    [userConfig]="userConfig"
+    (userConfigChange)="userConfigChange.next($event)"
+    (zoomChange)="zoomChange.next($event)"
+    />
 `,
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
+  destroy = new Subject<void>();
   enableMinimap = true;
   loading = false;
   dagSpec = {skeleton: fakeGraph.skeleton, meta: fakeGraph.state};
@@ -47,8 +53,22 @@ export class AppComponent {
   followNode = null;
   layout = DEFAULT_LAYOUT_OPTIONS;
   hoveredEdge = undefined;
-
+  userConfig =
+      JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}') as UserConfig;
+  userConfigChange = new Subject<UserConfig>();
   selectedNodeChange = new Subject();
   zoomChange = new Subject();
   features = {...defaultFeatures, enableShortcuts: true};
+
+  constructor() {
+    this.userConfigChange.pipe(takeUntil(this.destroy))
+        .subscribe((v: UserConfig) => {
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(v));
+        });
+  }
+
+  ngOnDestroy() {
+    this.destroy.next();
+    this.destroy.complete();
+  }
 }

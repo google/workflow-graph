@@ -65,6 +65,12 @@
         console.log(event)
       );
 
+      const LOCAL_STORAGE_KEY = 'workflow_graph_user_config';
+      element.userConfig = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}');
+      element.addEventListener("userConfigChange", (value) =>
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value));
+      );
+
       const wrapper = document.querySelector("#graph-component-wrapper");
       wrapper.appendChild(element);
     </script>

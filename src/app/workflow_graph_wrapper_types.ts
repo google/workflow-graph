@@ -17,6 +17,7 @@
 
 import {FeatureToggleOptions, LayoutOptions, Logger} from './data_types_internal';
 import {DagEdge, DagNodeSkeleton, NodeRef, StateTable} from './node_spec';
+import {UserConfig} from './user_config.service';
 
 /**
  * Wrapper type for a DAG specification.
@@ -44,4 +45,5 @@ export interface WorkflowGraphProps {
   logger?: Logger;
   zoom: number;
   features?: FeatureToggleOptions;
+  userConfig?: UserConfig;
 }

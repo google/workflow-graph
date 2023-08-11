@@ -24,6 +24,7 @@ import {DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './
 import {DagEdge, DagNode, GraphSpec, NodeRef, SelectedNode} from './node_spec';
 import {DagScaffoldModule} from './scaffold';
 import {DagToolbarModule} from './toolbar';
+import {UserConfig} from './user_config.service';
 import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
 
 /**
@@ -32,7 +33,7 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
 @Component({
   selector: 'workflow-graph',
   template: `
-<ai-dag-scaffold [features]="features">
+  <ai-dag-scaffold [features]="features" [userConfig]="userConfig" (userConfigChange)="userConfigChange.emit($event)">
     <ai-dag-toolbar
       [nodes]="graphSpec.nodes"
       [(expanded)]="expandedMode"
@@ -90,6 +91,9 @@ export class WorkflowGraphWrapper implements WorkflowGraphProps {
   @Input() layout?: DagreOptions;
   @Input() logger?: Logger;
   @Input() zoom: number = 1;
+  @Input() userConfig?: UserConfig;
+  @Output() readonly userConfigChange = new EventEmitter<UserConfig>();
+
   @Output() readonly selectedNodeChange = new EventEmitter<SelectedNode|null>();
 
   @ViewChild(DirectedAcyclicGraph, {static: true}) graph!: DirectedAcyclicGraph;

@@ -29,6 +29,7 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {WorkflowGraphIconModule} from '../icon_wrapper';
+import {UserConfig, UserConfigService} from '../user_config.service';
 
 import {ShortcutService} from './shortcut.service';
 
@@ -66,13 +67,15 @@ export class AccessibilityHelpCenter implements OnInit, OnDestroy {
           [key: string]: FormGroup<
               {enabled: FormControl<boolean>, shortcut: FormControl<string>}>
         }),
-    disableAnimations: new FormControl<boolean>(false),
+    disableAnimations: new FormControl<boolean>(
+        !!this.userConfigService.config?.value?.a11y?.disableAnimations),
   });
   destroy = new Subject<void>();
   allEnabled = false;
   someEnabled = false;
 
   constructor(
+      private readonly userConfigService: UserConfigService,
       private readonly shortcutService: ShortcutService,
       private readonly fb: FormBuilder) {}
 
@@ -89,7 +92,9 @@ export class AccessibilityHelpCenter implements OnInit, OnDestroy {
   }
 
   save() {
-    // TODO: b/293854568
+    this.userConfigService.update({
+      a11y: this.form.value,
+    } as Partial<UserConfig>);
   }
 
   toggleAll(enabled: boolean) {

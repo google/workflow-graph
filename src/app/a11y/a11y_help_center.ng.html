@@ -2,7 +2,7 @@
 <form [formGroup]="form" (ngSubmit)="save()">
   <mat-dialog-content>
     <h3 i18n="Subtitle on accessibility dialog for editing Accessibility configs">Accessibility settings</h3>
-    <mat-checkbox i18n="Checkbox label in accessibility dialog to turn off distracting animations">Turn off distracting animations</mat-checkbox>
+    <mat-checkbox formControlName="disableAnimations" i18n="Checkbox label in accessibility dialog to turn off distracting animations">Turn off distracting animations</mat-checkbox>
     <h3 i18n="Subtitle on accessibility dialog for editing Shortcuts">Configure keyboard shortcuts</h3>
     <table mat-table [dataSource]="dataSource" formGroupName="shortcuts">
       <ng-container matColumnDef="enabled">

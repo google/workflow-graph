@@ -29,10 +29,7 @@ export class ShortcutService implements OnDestroy {
   readonly shortcuts: ShortcutList = {};
 
   constructor() {
-    // TODO: Overwriting shortcuts with received from userconfig service
-    // b/293854568
-    Object.entries(DEFAULT_SHORTCUTS).forEach(entry => {
-      const [key, value] = entry;
+    Object.entries(DEFAULT_SHORTCUTS).forEach(([key, value]) => {
       const os = this.detectOS();
       const keys = new Map(Object.entries(value.keys));
       const shortcut = keys.get(os) || keys.get('master');
@@ -48,11 +45,12 @@ export class ShortcutService implements OnDestroy {
   }
 
   updateShortcuts(values: ShortcutList<SavedShortcutConfig>) {
-    // TODO b/293854568
-  }
-
-  ngOnDestroy() {
-    this.keySubscription?.unsubscribe();
+    Object.entries(values).forEach(([key, value]) => {
+      const shortcutKey = key as ShortcutName;
+      if (this.shortcuts[shortcutKey]) {
+        Object.assign(this.shortcuts[shortcutKey]!, value);
+      }
+    });
   }
 
   private handleShortcut(e: KeyboardEvent) {
@@ -98,6 +96,10 @@ export class ShortcutService implements OnDestroy {
             .subscribe(e => {
               this.handleShortcut(e);
             });
+  }
+
+  ngOnDestroy() {
+    this.keySubscription?.unsubscribe();
   }
 }
 
