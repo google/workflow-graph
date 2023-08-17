@@ -26,11 +26,17 @@ const INITIAL_USER_CONFIG_EXAMPLE = {
   }
 };
 
+const TEST_CUSTOM_SHORTCUT = {
+  CANVAS_RIGHT: {enabled: true, shortcut: 'TEST'}
+};
+
 describe('UserConfigService', () => {
   let service: UserConfigService;
+  let shortcutService: ShortcutService;
 
   beforeEach(() => {
-    service = new UserConfigService(new ShortcutService());
+    shortcutService = new ShortcutService();
+    service = new UserConfigService(shortcutService);
     service.init(INITIAL_USER_CONFIG_EXAMPLE);
   });
 
@@ -43,5 +49,14 @@ describe('UserConfigService', () => {
     newValue.a11y.disableAnimations = true;
     service.update(newValue);
     expect(service.config.value).toEqual(newValue);
+  });
+
+  it('Update method updates shortcuts in the Shortcut Service', () => {
+    spyOn(shortcutService, 'updateShortcuts');
+    const newValue = {...INITIAL_USER_CONFIG_EXAMPLE};
+    newValue.a11y.shortcuts = {...TEST_CUSTOM_SHORTCUT};
+    service.update(newValue);
+    expect(shortcutService.updateShortcuts)
+        .toHaveBeenCalledWith(TEST_CUSTOM_SHORTCUT);
   });
 });

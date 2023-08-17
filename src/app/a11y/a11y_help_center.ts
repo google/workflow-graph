@@ -110,6 +110,9 @@ export class AccessibilityHelpCenter implements OnInit, OnDestroy {
   }
 
   restoreDefault() {
-    // TODO b/293855097
+    this.form.patchValue({
+      shortcuts: this.shortcutService.defaultSaved,
+      disableAnimations: false,
+    });
   }
 }

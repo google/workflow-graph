@@ -27,6 +27,7 @@ import {DEFAULT_SHORTCUTS, SavedShortcutConfig, ShortcutConfig, ShortcutList, Sh
 export class ShortcutService implements OnDestroy {
   private keySubscription?: Subscription;
   readonly shortcuts: ShortcutList = {};
+  readonly defaultSaved: ShortcutList<SavedShortcutConfig> = {};
 
   constructor() {
     Object.entries(DEFAULT_SHORTCUTS).forEach(([key, value]) => {
@@ -35,9 +36,12 @@ export class ShortcutService implements OnDestroy {
       const shortcut = keys.get(os) || keys.get('master');
       const shortcutKey = key as ShortcutName;
       if (shortcut) {
-        this.shortcuts[shortcutKey] = {
+        this.defaultSaved[shortcutKey] = {
           enabled: true,
           shortcut,
+        };
+        this.shortcuts[shortcutKey] = {
+          ...this.defaultSaved[shortcutKey]!,
           ...DEFAULT_SHORTCUTS[shortcutKey]!,
         };
       }

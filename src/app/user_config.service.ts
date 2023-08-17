@@ -43,7 +43,7 @@ export class UserConfigService {
 
   init(userConfig?: UserConfig) {
     if (!userConfig) return;
-    this.config?.next(userConfig);
+    this.update(userConfig);
   }
 
   update(values: Partial<UserConfig>) {

@@ -5,20 +5,21 @@
 
 table {
   margin-bottom: 24px;
+
+  th {
+    background-color: rgba(0,0,0,.04);
+  }
+
+  td, th {
+    &:first-child, &:last-child {
+      padding: 0px;
+    }
+  }
+
   button {
     --mdc-icon-button-state-layer-size:40px;
     padding: 0;
   }
-}
-
-td, th {
-  &:first-child, &:last-child {
-    padding: 0px;
-  }
-}
-
-th {
-  background-color: rgba(0,0,0,.04);
 }
 
 button {

@@ -62,7 +62,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <button mat-button i18n="Button text to reset all modified accessibility shortcuts">Restore all defaults</button>
+    <button mat-button color="primary" i18n="Button text to reset all modified accessibility shortcuts" (click)="restoreDefault()">Restore all defaults</button>
   </mat-dialog-content>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close i18n="Cancel button text to close accessibility dialog">Cancel</button>
