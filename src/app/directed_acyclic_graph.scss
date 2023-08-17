@@ -93,30 +93,24 @@
     background: repeating-linear-gradient(
         45deg,
         rgba(#000, 0.005),
-        rgba(#000, 0.005) 5px,
-        rgba(#000, 0.05) 5px,
-        rgba(#000, 0.05) 10px
+        rgba(#000, 0.005) 2px,
+        rgba(#000, 0.05) 2px,
+        rgba(#000, 0.05) 4px
       )
       white;
     border: 1px solid $minimap-primary-color;
     border-radius: 4px;
     overflow: hidden;
     position: relative;
-    transition: width 0.08s, height 0.08s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .bounds {
+      pointer-events: none;
       width: 100%;
       background: white;
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: min-height 0.08s;
       overflow: hidden;
       .dag-preview {
-        position: absolute;
-        pointer-events: none;
-        top: 0;
-        left: 0;
-        transition: transform 0.08s;
         transform-origin: 0 0;
         /* This property is overriden by UI */
         transform: scale(0.08);
@@ -124,7 +118,6 @@
           position: absolute;
           top: 0;
           left: 0;
-          transition: transform 0.08s;
           /* This property is overriden by UI */
           transform: scale(0.5);
           ::ng-deep {
@@ -133,7 +126,6 @@
               // The 4px is a ghost offset, I am not sure why it exists
               transform: translate(-50%, calc(-50% - 4px));
               background: #607d8b;
-              transition: width 0.08s, height 0.08s;
               &.artifact {
                 border: 10px solid #607d8b;
                 background: transparent;
@@ -161,16 +153,16 @@
       }
     }
     .view-window {
+      pointer-events: auto;
       color: $minimap-primary-color;
       cursor: move;
       background: currentColor;
       opacity: 0.2;
-      transition: width 0.08s, height 0.08s, opacity $graph-change-speed, 
-        transform 0.08s;
+      transition: opacity $graph-change-speed;
       position: absolute;
       border: 0;
       &:active {
-        transition: width 0.08s, height 0.08s, opacity $graph-change-speed;
+        transition: opacity $graph-change-speed;
       }
       &:not(.no-animations) {
         &:hover {

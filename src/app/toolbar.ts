@@ -142,6 +142,8 @@ export class DagToolbar implements OnInit {
   @Input() zoom = 1;
   @Output() zoomChange = new EventEmitter();
 
+  @Output() readonly resetZoom = new EventEmitter();
+
   @Input('features')
   set features(f: FeatureToggleOptions) {
     this.$features = f;
@@ -283,7 +285,7 @@ export class DagToolbar implements OnInit {
   }
 
   zoomReset() {
-    this.zoomVal = 1;
+    this.resetZoom.emit();
     this.dagLogger?.logZoom('reset', 'toolbar');
   }
 

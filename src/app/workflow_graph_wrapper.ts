@@ -41,9 +41,11 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
       [(zoom)]="zoom"
       [features]="features"
       *ngIf="enableToolbar"
+      (resetZoom)="renderer.resetZoom()"
     >
     </ai-dag-toolbar>
     <ai-dag-renderer
+      #renderer
       [enableMinimap]="enableMinimap"
       [loading]="loading"
       [nodes]="graphSpec.nodes"

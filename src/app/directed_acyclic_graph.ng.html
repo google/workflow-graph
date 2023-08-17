@@ -71,13 +71,13 @@
     *ngIf="rootDagInitialized"
     class="minimap fade-in"
     [style.minWidth.px]="mmWidth"
-    [style.minHeight.px]="mmVisualHeight + 2"
+    [style.minHeight.px]="mmHeight + 2"
     (click)="mmBgClickPan($event)"
   >
-    <div class="bounds" [style.minHeight.px]="mmHeight">
+    <div class="bounds" [style.height.px]="minimapInnerHeight | async" [style.width.px]="minimapInnerWidth | async">
       <section style.transform="scale({{ mmScale }})" class="dag-preview">
         <!-- This element will scale smaller than the parent container when zoom is above 1 -->
-        <section style.transform="scale({{ min(mmLazyZoom, 1) }})" class="dag">
+        <section  style.transform="scale({{ min(mmLazyZoom, 1) }})" class="dag">
           <ng-container *ngFor="let node of nodes; trackBy: nodeOrGroupTrack">
             <ng-container *ngIf="!hasCustomMinimapNodeTemplateForNode(node)">
               <article
@@ -128,7 +128,7 @@
       <button
         #mmViewBox
         cdkDrag
-        cdkDragBoundary=".minimap .bounds"
+        cdkDragBoundary=".minimap"
         tabindex="0"
         aria-label="Minimap ViewBox"
         i18n-aria-label="The minimap view box that allows quick panning across the DAG"

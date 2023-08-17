@@ -211,7 +211,6 @@ export const SVG_ELEMENT_SIZE = (width = NODE_WIDTH, height = NODE_HEIGHT) => {
   const ICON_SIZE_LARGE = 32;
   const ICON_SPACE_WIDTH = 48;
   const MINIMAP_WIDTH = 150;
-  const MINIMAP_MIN_HEIGHT = 160;
 
   const dims = {
     getNodeWidth(state: NodeState, conditionalQuery: string) {
@@ -220,7 +219,6 @@ export const SVG_ELEMENT_SIZE = (width = NODE_WIDTH, height = NODE_HEIGHT) => {
     },
     height,
     minimapWidth: MINIMAP_WIDTH,
-    minimapMinHeight: MINIMAP_MIN_HEIGHT,
     iconSpaceWidth: ICON_SPACE_WIDTH,
     textareaWidth: width - 2 * ICON_SPACE_WIDTH,
     condensedIconWidth: ICON_SPACE_WIDTH * .8,
