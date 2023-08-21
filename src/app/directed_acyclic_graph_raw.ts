@@ -30,6 +30,7 @@ import {DagIconsModule} from './icons_module';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
 import {CustomNode, DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
+import {UserConfigService} from './user_config.service';
 import {debounce} from './util_functions';
 
 // tslint:disable:no-dict-access-on-struct-type
@@ -287,6 +288,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   constructor(
       private readonly differs: KeyValueDiffers,
       private readonly cdr: ChangeDetectorRef,
+      readonly userConfigService: UserConfigService,
   ) {
     this.updateGraphLayout = debounce(this.updateGraphLayout, 50, this);
     this.updateDAG = this.updateDAG.bind(this);

@@ -107,6 +107,13 @@ describe('Directed Acyclic Graph Raw', () => {
          await harness.clickCustomNode('CustomNode1');
          expect(fixture.componentInstance.dagRaw.selectedNode).toBeNull();
        }));
+
+    it('Distracting animations are stoppable', fakeAsync(async () => {
+         fixture.componentInstance.dagRaw.userConfigService.update(
+             {a11y: {disableAnimations: true}});
+         const animatedEdges = await harness.getEdges('.animated.running');
+         expect(animatedEdges.length).toBe(0);
+       }));
   });
 
   describe('Internals', () => {

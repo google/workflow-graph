@@ -19,6 +19,7 @@
         class="edge-group fade-in"
         [class.pending-or-static]="pendingOrStatic(e.to)"
         [class.animated]="animatedEdge(e)"
+        [class.running]="!(userConfigService.config | async)?.a11y?.disableAnimations"
         [class.hovered]="hoveredEdge == e"
       >
         <defs *ngIf="getEdgeWidth(e, false) as eWidth">

@@ -151,4 +151,11 @@ export class DagRawHarness extends ComponentHarness {
     }
     return node;
   }
+
+  /**
+   * Get all edges (lines between nodes) of the graph.
+   */
+  async getEdges(selector = '') {
+    return this.locatorForAll('.edge-group' + selector)();
+  }
 }

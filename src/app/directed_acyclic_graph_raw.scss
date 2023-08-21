@@ -54,9 +54,13 @@
       &.pending-or-static .line {
         stroke: #9ba1a7;
       }
-      &.animated .line {
-        stroke-dasharray: 5;
-        animation: live-move 0.5s linear infinite;
+      &.animated {
+        .line{
+          stroke-dasharray: 5;
+        }
+        &.running .line {
+          animation: live-move 0.5s linear infinite;
+        }
       }
       .line {
         /* This property is overriden in the HTML */
