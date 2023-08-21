@@ -126,6 +126,7 @@
               // The 4px is a ghost offset, I am not sure why it exists
               transform: translate(-50%, calc(-50% - 4px));
               background: #607d8b;
+              border: 3px solid transparent;
               &.artifact {
                 border: 10px solid #607d8b;
                 background: transparent;
@@ -160,7 +161,8 @@
       opacity: 0.2;
       transition: opacity $graph-change-speed;
       position: absolute;
-      border: 0;
+      border-color: transparent;
+      border-style: solid;
       &:active {
         transition: opacity $graph-change-speed;
       }

@@ -68,6 +68,15 @@
         fill: none;
         transition: d $graph-change-speed, stroke 0.25s, stroke-width 0.25s,
           stroke-dasharray 0.25s;
+        @media (forced-colors) {
+          stroke: $edge-label;
+        }
+      }
+      .arrow {
+        @media (forced-colors) {
+          stroke: $edge-label;
+          fill: $edge-label;
+        }
       }
     }
     &.marker {
@@ -100,6 +109,9 @@
         /* This property is overriden in the HTML */
         // fill: $active-color;
         color: currentColor;
+        @media (forced-colors) {
+          fill: $edge-label;
+        }
       }
       .inner-circle {
         display: none;
