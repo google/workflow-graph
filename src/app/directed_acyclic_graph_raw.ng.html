@@ -34,9 +34,11 @@
             orient="auto-start-reverse"
           >
             <path
-              d="M 0 1 L 10 5 L 0 9 z"
-              [attr.stroke]="getEdgeColor(e) || '#9ba1a7'"
-                  [attr.fill]="getEdgeColor(e) || '#9ba1a7'"/>
+                class="arrow"
+                d="M 0 1 L 10 5 L 0 9 z"
+                [attr.stroke]="getEdgeColor(e) || '#9ba1a7'"
+                [attr.fill]="getEdgeColor(e) || '#9ba1a7'"
+            />
           </marker>
         </defs>
         <path
