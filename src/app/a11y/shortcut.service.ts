@@ -64,11 +64,13 @@ export class ShortcutService implements OnDestroy {
     if (e.metaKey) keys.push('Cmd');
     if (e.altKey) keys.push('Alt');
     if (e.shiftKey) keys.push('Shift');
-    keys.push(e.key.length > 1 ? e.key : e.key.toUpperCase());
+    keys.push(e.code);
 
-    const foundShortcut =
-        Object.values(this.shortcuts)
-            .find(({shortcut}) => shortcut === keys.join('-'));
+    const foundShortcut = Object.values(this.shortcuts).find(({shortcut}) => {
+      const shortcutArray = shortcut.split(' ');
+      return shortcutArray.length === keys.length &&
+          keys.every(el => shortcutArray.includes(el));
+    });
 
     if (foundShortcut?.action && foundShortcut?.enabled) {
       e.preventDefault();

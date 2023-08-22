@@ -17,7 +17,7 @@
 
 // Returns user agent specific keyboard event to test Ctrl/Cmd + Key shortcuts
 // in any environment
-export function keyWithCtrlOrCommand(key: string): KeyboardEventInit {
+export function keyWithCtrlOrCommand(code: string): KeyboardEventInit {
   const isMac = navigator.userAgent.includes('Mac');
-  return {key, ctrlKey: !isMac, metaKey: isMac};
+  return {code, ctrlKey: !isMac, metaKey: isMac};
 }

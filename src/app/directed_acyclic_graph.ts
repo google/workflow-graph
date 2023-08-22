@@ -20,7 +20,7 @@ import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cd
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import {Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, Subscription} from 'rxjs';
 
 import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
@@ -166,8 +166,8 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   canvasWidth: number = 0;
   canvasHeight: number = 0;
   lastResizeEv: ResizeEventData = {width: 0, height: 0};
-  minimapInnerWidth = new Subject();
-  minimapInnerHeight = new Subject();
+  minimapInnerWidth = new BehaviorSubject(this.mmWidth);
+  minimapInnerHeight = new BehaviorSubject(this.mmHeight);
 
 
   @Input('theme')

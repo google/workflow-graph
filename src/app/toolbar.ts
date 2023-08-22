@@ -216,6 +216,21 @@ export class DagToolbar implements OnInit {
       this.shortcutService.registerShortcutAction('A11Y_HELP_CENTER', () => {
         this.openA11yHelpCenter();
       });
+      this.shortcutService.registerShortcutAction('EXPAND_ARTIFACTS', () => {
+        this.expandedMode = !this.expandedMode;
+      });
+      this.shortcutService.registerShortcutAction('ZOOM_IN', () => {
+        this.zoomIn();
+      });
+      this.shortcutService.registerShortcutAction('ZOOM_OUT', () => {
+        this.zoomOut();
+      });
+      this.shortcutService.registerShortcutAction('ZOOM_RESET', () => {
+        this.zoomReset();
+      });
+      this.shortcutService.registerShortcutAction('TOGGLE_MINIMAP', () => {
+        this.toggleMinimapVisibility();
+      });
     }
   }
 

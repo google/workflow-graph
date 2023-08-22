@@ -31,6 +31,7 @@ import {takeUntil} from 'rxjs/operators';
 import {WorkflowGraphIconModule} from '../icon_wrapper';
 import {UserConfig, UserConfigService} from '../user_config.service';
 
+import {ShortcutPipe} from './shortcut.pipe';
 import {ShortcutService} from './shortcut.service';
 
 /**
@@ -52,6 +53,7 @@ import {ShortcutService} from './shortcut.service';
     MatFormFieldModule,
     MatInputModule,
     WorkflowGraphIconModule,
+    ShortcutPipe,
   ],
 })
 export class AccessibilityHelpCenter implements OnInit, OnDestroy {

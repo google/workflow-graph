@@ -53,6 +53,11 @@ export enum ShortcutName {
   CANVAS_LEFT = 'CANVAS_LEFT',
   CANVAS_UP = 'CANVAS_UP',
   A11Y_HELP_CENTER = 'A11Y_HELP_CENTER',
+  EXPAND_ARTIFACTS = 'EXPAND_ARTIFACTS',
+  ZOOM_IN = 'ZOOM_IN',
+  ZOOM_OUT = 'ZOOM_OUT',
+  ZOOM_RESET = 'ZOOM_RESET',
+  TOGGLE_MINIMAP = 'TOGGLE_MINIMAP',
 }
 
 /** Default shortcut definitions. */
@@ -61,8 +66,8 @@ export const DEFAULT_SHORTCUTS: ShortcutList<Shortcut> = {
     name: 'CANVAS_RIGHT',
     desc: 'Move right on the canvas',
     keys: {
-      master: 'Ctrl-ArrowRight',
-      mac: 'Cmd-ArrowRight',
+      master: 'Ctrl ArrowRight',
+      mac: 'Cmd ArrowRight',
       windows: undefined,
       linux: undefined,
     },
@@ -71,8 +76,8 @@ export const DEFAULT_SHORTCUTS: ShortcutList<Shortcut> = {
     name: 'CANVAS_DOWN',
     desc: 'Move down on the canvas',
     keys: {
-      master: 'Ctrl-ArrowDown',
-      mac: 'Cmd-ArrowDown',
+      master: 'Ctrl ArrowDown',
+      mac: 'Cmd ArrowDown',
       windows: undefined,
       linux: undefined,
     },
@@ -81,8 +86,8 @@ export const DEFAULT_SHORTCUTS: ShortcutList<Shortcut> = {
     name: 'CANVAS_LEFT',
     desc: 'Move left on the canvas',
     keys: {
-      master: 'Ctrl-ArrowLeft',
-      mac: 'Cmd-ArrowLeft',
+      master: 'Ctrl ArrowLeft',
+      mac: 'Cmd ArrowLeft',
       windows: undefined,
       linux: undefined,
     },
@@ -91,8 +96,8 @@ export const DEFAULT_SHORTCUTS: ShortcutList<Shortcut> = {
     name: 'CANVAS_UP',
     desc: 'Move up on the canvas',
     keys: {
-      master: 'Ctrl-ArrowUp',
-      mac: 'Cmd-ArrowUp',
+      master: 'Ctrl ArrowUp',
+      mac: 'Cmd ArrowUp',
       windows: undefined,
       linux: undefined,
     },
@@ -101,8 +106,58 @@ export const DEFAULT_SHORTCUTS: ShortcutList<Shortcut> = {
     name: 'A11Y_HELP_CENTER',
     desc: 'Open the Accessibility Help Center',
     keys: {
-      master: 'Ctrl-H',
-      mac: 'Cmd-H',
+      master: 'KeyH',
+      mac: 'KeyH',
+      windows: undefined,
+      linux: undefined,
+    },
+  },
+  EXPAND_ARTIFACTS: {
+    name: 'EXPAND_ARTIFACTS',
+    desc: 'Expand Artifacts',
+    keys: {
+      master: 'KeyE',
+      mac: 'KeyE',
+      windows: undefined,
+      linux: undefined,
+    },
+  },
+  ZOOM_IN: {
+    name: 'ZOOM_IN',
+    desc: 'Zoom in',
+    keys: {
+      master: 'Equal',
+      mac: 'Equal',
+      windows: undefined,
+      linux: undefined,
+    },
+  },
+  ZOOM_OUT: {
+    name: 'ZOOM_OUT',
+    desc: 'Zoom out',
+    keys: {
+      master: 'Minus',
+      mac: 'Minus',
+      windows: undefined,
+      linux: undefined,
+    },
+  },
+  ZOOM_RESET: {
+    name: 'ZOOM_RESET',
+    desc: 'Zoom reset',
+    keys: {
+      master: 'Digit0',
+      mac: 'Digit0',
+      windows: undefined,
+      linux: undefined,
+    },
+  },
+  TOGGLE_MINIMAP: {
+    name: 'TOGGLE_MINIMAP',
+    desc: 'Toggle minimap',
+    keys: {
+      master: 'KeyM',
+      mac: 'KeyM',
       windows: undefined,
       linux: undefined,
     },

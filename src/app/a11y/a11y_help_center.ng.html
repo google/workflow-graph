@@ -31,7 +31,7 @@
       <ng-container matColumnDef="shortcut">
         <th mat-header-cell *matHeaderCellDef i18n="Shortcuts table column header for key combinations">Shortcut</th>
         <td mat-cell *matCellDef="let element">
-          <ng-container>{{element.shortcut}}</ng-container>
+          <ng-container>{{element.shortcut | shortcut | async}}</ng-container>
           <mat-form-field appearance="outline" *ngIf="false">
             <input
                 matInput
