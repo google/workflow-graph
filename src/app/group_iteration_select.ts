@@ -69,7 +69,7 @@ type IterationSelectOption = (DagNode|DagGroup)&{hidden?: boolean};
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class.selected]': 'parentNodeSelected',
-    '[class.untab]': 'unTabbable',
+    '[class.untab]': 'inputTabindex===-1',
     '(focusin)': '$event.stopPropagation()',
   },
 })
@@ -99,7 +99,6 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   // Dropdown Related Props
   @Input() theme = DEFAULT_THEME;
   @Input() sourceGroup: string = 'Group';
-  @Input() unTabbable = false;
   @Input() parentNodeSelected = false;
   @Input('iterations')
   set iterations(iters: IterationSelectOption[]) {
@@ -143,6 +142,7 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   @Output() iterationChange = new EventEmitter<string>();
   @Output() onIterSelect = new EventEmitter<DagNode|DagGroup|undefined>();
   @Input() stateService?: DagStateService;
+  @Input() inputTabindex = -1;
 
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
