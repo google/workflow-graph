@@ -104,6 +104,13 @@
       display: flex;
       justify-content: center;
     }
+  }
+
+  .node-cell-content {
+    > * {
+      display: flex;
+      justify-content: center;
+    }
     .text-area {
       position: relative;
       transition: width 0.25s;
