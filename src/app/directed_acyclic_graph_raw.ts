@@ -87,6 +87,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   $nodes: Array<DagNode|CustomNode> = [];
   $edges: DagEdge[] = [];
   $groups: DagGroup[] = [];
+  renderedNodesGroups: Array<DagNode|CustomNode|DagGroup> = [];
   layout: LayoutOptions = DEFAULT_LAYOUT_OPTIONS;
   dagreGraph?: dagre.graphlib.Graph;
   nodeMap: NodeMap = {nodes: {}, groups: {}};
@@ -651,6 +652,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.graphWidth = maxX + this.nodePad + margin['right'];
     this.graphHeight = maxY + nodeHeight / 2 + this.nodePad + margin['bottom'];
     this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
+
+    this.renderedNodesGroups = [...this.nodes, ...this.groups].sort(
+        (a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
   }
 
   // Only for tests
@@ -840,8 +844,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
    */
   selectNodeById(id?: string): boolean {
     if (id === undefined) return false;
-    const node =
-        this.nodes.find(n => n.id === id) || this.groups.find(g => g.id === id);
+    const node = this.renderedNodesGroups.find(n => n.id === id);
     if (!node) return false;
     if (node === this.selectedNode?.node) return true;
     return this.toggleSelectedNode(node);

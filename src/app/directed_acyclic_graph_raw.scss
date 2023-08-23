@@ -318,6 +318,7 @@
         animation: pulse 1.5s infinite;
         outline: none;
       }
+      z-index: 1;
       cursor: pointer;
       color: $minimap-primary-color;
       pointer-events: all;

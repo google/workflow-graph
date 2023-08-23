@@ -62,10 +62,12 @@
   >
     {{ l.label }}
   </figcaption>
-  <ng-container *ngFor="let node of nodes; trackBy: nodeOrGroupTrack">
+  <ng-container *ngFor="let nodeOrGroup of renderedNodesGroups; trackBy: nodeOrGroupTrack">
+  <ng-container *ngIf="getNodeType(nodeOrGroup) !== 'group' && nodeOrGroup; let node">
     <ng-container *ngIf="isCustomNode(node)">
       <article
         *ngIf="isDagreInit(node)"
+        tabindex="0"
         class="custom-node"
         [attr.node-title]="node.getNodeDisplayName()"
         [style.left.px]="node.x"
@@ -153,7 +155,7 @@
       </footer>
     </aside>
   </ng-container>
-  <ng-container *ngFor="let group of groups; trackBy: nodeOrGroupTrack">
+  <ng-container *ngIf="getNodeType(nodeOrGroup) === 'group' && nodeOrGroup; let group">
     <ng-container *ngIf="isDagreInit(group)">
       <aside
         class="group-border fade-in"
@@ -174,6 +176,19 @@
         [style.width.px]="group.width!"
         [style.height.px]="(group.height! - group.padY!)"
       >
+        <button
+          class="expand-toggle"
+          role="button"
+          tabindex="0"
+          aria-label="Expand / Collapse Toggle for DAG Group"
+          i18n-aria-label="Expand / Collapse Toggle for DAG Group"
+          [attr.aria-controls]="a11yIdFor(group)"
+          [attr.aria-expanded]="isGroupExpanded(group)"
+          (click)="toggleExpand(group)"
+        >
+          <workflow-graph-icon class="caret" icon="up" iconset="common" size="medium"></workflow-graph-icon>
+          <workflow-graph-icon class="caret" icon="down" iconset="common" size="medium"></workflow-graph-icon>
+        </button>
         <header
           *ngIf="group.hasControlNode"
           class="control-node-scaffold fade-in"
@@ -233,7 +248,7 @@
         <footer class="sub-dag">
           <button
             class="collapsed-expand-click-area"
-            [attr.tabindex]="isGroupExpanded(group) ? -1 : 0"
+            tabindex="-1"
             role="button"
             aria-label="Expand Surface for DAG Group"
             i18n-aria-label="Expand Surface for DAG Group"
@@ -289,21 +304,9 @@
         <span *ngIf="group.treatAsLoop" class="fade-in">
           <span class="iteration-counter"> {{ getIterationsFor(group).length }} iterations </span>
         </span>
-        <button
-          class="expand-toggle"
-          role="button"
-          tabindex="0"
-          aria-label="Expand / Collapse Toggle for DAG Group"
-          i18n-aria-label="Expand / Collapse Toggle for DAG Group"
-          [attr.aria-controls]="a11yIdFor(group)"
-          [attr.aria-expanded]="isGroupExpanded(group)"
-          (click)="toggleExpand(group)"
-        >
-          <workflow-graph-icon class="caret" icon="up" iconset="common" size="medium"></workflow-graph-icon>
-          <workflow-graph-icon class="caret" icon="down" iconset="common" size="medium"></workflow-graph-icon>
-        </button>
       </article>
     </ng-container>
+  </ng-container>
   </ng-container>
   <svg class="marker canvas">
     <ng-container *ngFor="let e of edges; trackBy: edgeTrack">

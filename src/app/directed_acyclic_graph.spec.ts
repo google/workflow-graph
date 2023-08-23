@@ -78,6 +78,21 @@ describe('Directed Acyclic Graph Renderer', () => {
       expect(fixture.componentInstance.dagRender.edges).toBeDefined();
       expect(harness).toBeDefined();
     });
+
+    it('Nodes are ordered by their coordinates (for tab key navigation)',
+       fakeAsync(async () => {
+         const nodes = await harness.getRootNodes();
+         const renderedCoordinates = await Promise.all(nodes.map(
+             async node => ({
+               x: Number((await node.getCssValue('left')).replace('px', '')),
+               y: Number((await node.getCssValue('top')).replace('px', '')),
+             })));
+
+         const sorted = [...renderedCoordinates].sort(
+             (a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
+
+         expect(renderedCoordinates).toEqual(sorted);
+       }));
   });
 });
 
