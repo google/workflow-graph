@@ -114,19 +114,6 @@ describe('Directed Acyclic Graph Raw', () => {
          const animatedEdges = await harness.getEdges('.animated.running');
          expect(animatedEdges.length).toBe(0);
        }));
-
-    it('Node after group has correct tabindex', fakeAsync(async () => {
-         const node = await harness.getNodeByType('execution', 'Send via APIs');
-         const tabindex = await node.getAttribute('tabindex');
-         expect(tabindex).toBe('54');
-       }));
-
-    it('Nested node has correct tabindex', fakeAsync(async () => {
-         const group =
-             await harness.getNodeByType('execution', 'Label Execution Logs');
-         const tabindex = await group.getAttribute('tabindex');
-         expect(tabindex).toBe('49');
-       }));
   });
 
   describe('Internals', () => {

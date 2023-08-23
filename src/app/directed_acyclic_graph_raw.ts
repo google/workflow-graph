@@ -651,27 +651,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.graphWidth = maxX + this.nodePad + margin['right'];
     this.graphHeight = maxY + nodeHeight / 2 + this.nodePad + margin['bottom'];
     this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
-
-    if (!this.dagPath.length) this.updateTabindex(this.nodes, this.groups);
-  }
-
-  /**
-   * Assigning a tabindex for each node and group recursively. Only called from
-   * the root node. The tabbable nodes and groups are sorted by coordinates.
-   **/
-  private updateTabindex(nodes: DagNode[], groups: DagGroup[], curr = 1):
-      number {
-    const all = [...nodes, ...groups];
-    all.sort((a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
-
-    for (const element of all) {
-      element.tabindex = curr;
-      curr++;
-      if (element instanceof DagGroup) {
-        curr = this.updateTabindex(element.nodes, element.groups, curr);
-      }
-    }
-    return curr;
   }
 
   // Only for tests
@@ -842,8 +821,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return !!node;
   }
 
-  refBadgeClick(
-      refNode: DagNode|DagGroup, ref: NodeRef, $event?: MouseEvent|Event) {
+  refBadgeClick(refNode: DagNode|DagGroup, ref: NodeRef, $event?: MouseEvent|Event) {
     $event?.preventDefault();
     $event?.stopPropagation();
     const value = this.selectedNode?.node === refNode ? null : {

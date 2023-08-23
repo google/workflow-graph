@@ -66,7 +66,6 @@
     <ng-container *ngIf="isCustomNode(node)">
       <article
         *ngIf="isDagreInit(node)"
-        [attr.tabindex]="node.tabindex"
         class="custom-node"
         [attr.node-title]="node.getNodeDisplayName()"
         [style.left.px]="node.x"
@@ -101,7 +100,7 @@
     <ng-container *ngIf="!isCustomNode(node)">
       <ai-dag-node
         *ngIf="isDagreInit(node)"
-        [attr.tabindex]="node.tabindex"
+        tabindex="0"
         role="switch"
         [style.left.px]="node.x"
         [style.top.px]="node.y"
@@ -136,7 +135,7 @@
             <ai-dag-node-ref-badge
               *ngIf="makeSafeNode(resolveReference(ref)) as resolvedRef"
               class="fade-in"
-              [attr.tabindex]="node.tabindex"
+              tabindex="0"
               role="switch"
               [node]="resolvedRef"
               [stateService]="stateService"
@@ -175,19 +174,6 @@
         [style.width.px]="group.width!"
         [style.height.px]="(group.height! - group.padY!)"
       >
-        <button
-          class="expand-toggle"
-          role="button"
-          [attr.tabindex]="group.tabindex"
-          aria-label="Expand / Collapse Toggle for DAG Group"
-          i18n-aria-label="Expand / Collapse Toggle for DAG Group"
-          [attr.aria-controls]="a11yIdFor(group)"
-          [attr.aria-expanded]="isGroupExpanded(group)"
-          (click)="toggleExpand(group)"
-        >
-          <workflow-graph-icon class="caret" icon="up" iconset="common" size="medium"></workflow-graph-icon>
-          <workflow-graph-icon class="caret" icon="down" iconset="common" size="medium"></workflow-graph-icon>
-        </button>
         <header
           *ngIf="group.hasControlNode"
           class="control-node-scaffold fade-in"
@@ -202,7 +188,7 @@
           <ai-dag-node
             class="control-node"
             [class.kill-bottom-border]="group.treatAsLoop && isGroupExpanded(group)"
-            [attr.tabindex]="isGroupExpanded(group) ? group.tabindex : -1"
+            [attr.tabindex]="isGroupExpanded(group) ? 0 : -1"
             role="switch"
             [style.left.px]="getControlNodeFor(group).width / 2"
             [node]="getControlNodeFor(group)"
@@ -233,10 +219,10 @@
             </ng-container>
             <ai-dag-iteration-selector
               *ngIf="group.treatAsLoop"
-              [inputTabindex]="isGroupExpanded(group) ? group.tabindex : -1"
               [style.height.px]="isGroupExpanded(group) ? getControlNodeFor(group).height * 0.6 : 0"
               [stateService]="stateService"
               [parentNodeSelected]="selectedNode?.node === group"
+              [unTabbable]="!isGroupExpanded(group)"
               [sourceGroup]="group.getNodeDisplayName()"
               [iterations]="getIterationsFor(group)"
               [(iteration)]="group.selectedLoopId"
@@ -247,7 +233,7 @@
         <footer class="sub-dag">
           <button
             class="collapsed-expand-click-area"
-            tabindex="-1"
+            [attr.tabindex]="isGroupExpanded(group) ? -1 : 0"
             role="button"
             aria-label="Expand Surface for DAG Group"
             i18n-aria-label="Expand Surface for DAG Group"
@@ -303,7 +289,19 @@
         <span *ngIf="group.treatAsLoop" class="fade-in">
           <span class="iteration-counter"> {{ getIterationsFor(group).length }} iterations </span>
         </span>
-        
+        <button
+          class="expand-toggle"
+          role="button"
+          tabindex="0"
+          aria-label="Expand / Collapse Toggle for DAG Group"
+          i18n-aria-label="Expand / Collapse Toggle for DAG Group"
+          [attr.aria-controls]="a11yIdFor(group)"
+          [attr.aria-expanded]="isGroupExpanded(group)"
+          (click)="toggleExpand(group)"
+        >
+          <workflow-graph-icon class="caret" icon="up" iconset="common" size="medium"></workflow-graph-icon>
+          <workflow-graph-icon class="caret" icon="down" iconset="common" size="medium"></workflow-graph-icon>
+        </button>
       </article>
     </ng-container>
   </ng-container>

@@ -265,7 +265,6 @@ export class DagGroup implements
   y = -1;
   width = 0;
   height = 0;
-  tabindex = 0;
 
   constructor(
       id: string, nodes: DagNode[] = [], edges: DagEdge[] = [],
@@ -576,7 +575,6 @@ export class DagNode implements
   y = -1;
   width = 0;
   height = 0;
-  tabindex = 0;
 
   constructor(
       id: string, type: NodeType, state: NodeState = 'NO_STATE_STATIC', {

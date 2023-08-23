@@ -2,7 +2,7 @@
   [aria-label]="getA11yLabelFor('button')"
   [value]="softIteration"
   (selectionChange)="updateValue($event)"
-  [attr.tabindex]="inputTabindex"
+  [attr.tabindex]="unTabbable ? -1 : 0"
   (click)="$event.stopPropagation()"
   class="group-iteration-select"
   panelClass="ai-dag-iteration-select-panel"
