@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 
+import {OverlayContainer} from '@angular/cdk/overlay';
 import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, NgModule, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
+import {CustomOverlayContainer} from './custom_overlay_container';
 import {baseColors, BLUE_THEME, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
 import {DagLogger, DagLoggerModule} from './logger/dag_logger';
@@ -129,6 +131,9 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
   exports: [
     DagScaffold,
   ],
+  providers: [
+    {provide: OverlayContainer, useClass: CustomOverlayContainer},
+  ]
 })
 export class DagScaffoldModule {
 }
