@@ -87,6 +87,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   $nodes: Array<DagNode|CustomNode> = [];
   $edges: DagEdge[] = [];
   $groups: DagGroup[] = [];
+  a11ySortedNodes: Array<DagNode|EnhancedDagGroup> = [];
   layout: LayoutOptions = DEFAULT_LAYOUT_OPTIONS;
   dagreGraph?: dagre.graphlib.Graph;
   nodeMap: NodeMap = {nodes: {}, groups: {}};
@@ -651,6 +652,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.graphWidth = maxX + this.nodePad + margin['right'];
     this.graphHeight = maxY + nodeHeight / 2 + this.nodePad + margin['bottom'];
     this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
+
+    this.a11ySortedNodes = [...this.nodes, ...this.groups].sort(
+        (a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
   }
 
   // Only for tests
@@ -840,8 +844,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
    */
   selectNodeById(id?: string): boolean {
     if (id === undefined) return false;
-    const node =
-        this.nodes.find(n => n.id === id) || this.groups.find(g => g.id === id);
+    const node = this.a11ySortedNodes.find(n => n.id === id);
     if (!node) return false;
     if (node === this.selectedNode?.node) return true;
     return this.toggleSelectedNode(node);
@@ -1061,14 +1064,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return to.state === 'RUNNING' ||
         (from.state === 'RUNNING' && this.getNodeType(to) === 'artifact' &&
          convertStateToRuntime(to.state) === 'Runtime');
-  }
-
-  a11ySortedNodes(nodes: DagNode[]) {
-    const sortedNodes = nodes.sort((a, b) => {
-      const y = a.y - b.y;
-      return y || (a.x - b.x);
-    });
-    return sortedNodes;
   }
 
   ensureTargetEntity(

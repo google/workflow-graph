@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ComponentHarness} from '@angular/cdk/testing';
+import {ComponentHarness, TestElement} from '@angular/cdk/testing';
 
 import {DagRawHarness} from './directed_acyclic_graph_raw_harness';
 
@@ -28,6 +28,12 @@ export class DirectedAcyclicGraphHarness extends ComponentHarness {
   /** Fetch the Root level raw renderer in this DAG */
   getRawDag(): Promise<DagRawHarness> {
     return this.locatorFor(DagRawHarness)();
+  }
+
+  /** Get all nodes and groups of the root DAG */
+  getRootNodesAndGroups(): Promise<TestElement[]> {
+    return this.locatorForAll(
+        'ai-dag-raw.root-dag > .dag-component > ai-dag-node, ai-dag-raw.root-dag > .dag-component > article.group')();
   }
 
   /** Simple click event on the DAG Element's SVG Wrapper */

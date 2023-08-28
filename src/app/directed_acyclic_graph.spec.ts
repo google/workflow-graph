@@ -34,14 +34,6 @@ TestBed.initTestEnvironment(
     BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
     {teardown: {destroyAfterEach: true}});
 
-function sleep(t: number) {
-  return new Promise<void>(res => {
-    setTimeout(() => {
-      res();
-    }, t);
-  });
-}
-
 describe('Directed Acyclic Graph Renderer', () => {
   beforeEach(waitForAsync(async () => {
     await TestBed
@@ -78,6 +70,20 @@ describe('Directed Acyclic Graph Renderer', () => {
       expect(fixture.componentInstance.dagRender.edges).toBeDefined();
       expect(harness).toBeDefined();
     });
+
+    it('Nodes and groups are ordered by their coordinates in the DOM (for tab key navigation)',
+       fakeAsync(async () => {
+         const nodes = await harness.getRootNodesAndGroups();
+         const renderedCoordinates = await Promise.all(nodes.map(
+             async node => ({
+               x: Number((await node.getCssValue('left')).replace('px', '')),
+               y: Number((await node.getCssValue('top')).replace('px', '')),
+             })));
+         const sorted = [...renderedCoordinates].sort(
+             (a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
+
+         expect(renderedCoordinates).toEqual(sorted);
+       }));
   });
 });
 
