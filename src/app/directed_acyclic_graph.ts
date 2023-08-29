@@ -645,9 +645,10 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   getNodeOffset(ref: NodeRef) {
     const node = this.resolveReference(ref);
     const offset: Point = {x: 0, y: 0};
+    let groups = this.groups;
     for (const segment of ref.path) {
-      const segGroup =
-          this.groups.find(g => g.id === segment) as EnhancedDagGroup;
+      const segGroup = groups.find(g => g.id === segment) as EnhancedDagGroup;
+      groups = segGroup?.groups ?? [];
       const width = segGroup.expandedDims?.width || segGroup.width;
       const height = segGroup.expandedDims?.height || segGroup.height;
       offset.x += segGroup.x - width / 2;
