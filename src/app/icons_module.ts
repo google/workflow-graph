@@ -16,8 +16,8 @@
  */
 
 import {NgModule} from '@angular/core';
-import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
 
+import {MaterialSharedModule, MatIconRegistry} from './material_shared_module';
 import {UrlSanitizer} from './url_sanitizer';
 
 /**
@@ -66,7 +66,7 @@ type IconsetList = [string, IconSizes, number];
 
 @NgModule({
   imports: [
-    MatIconModule,
+    MaterialSharedModule,
   ],
 })
 export class DagIconsModule {

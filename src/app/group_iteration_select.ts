@@ -18,9 +18,6 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
@@ -30,6 +27,7 @@ import {translateMessage} from './i18n';
 import {fetchIcon, iconForState, iconRescale, iconSizeToPx} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagIconsModule} from './icons_module';
+import {MaterialSharedModule, MatSelectChange} from './material_shared_module';
 import {DagGroup, DagNode, NodeIcon} from './node_spec';
 
 const cssVars = {
@@ -204,9 +202,7 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     CommonModule,
     WorkflowGraphIconModule,
     DagIconsModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatInputModule,
+    MaterialSharedModule,
     ReactiveFormsModule,
   ],
   declarations: [GroupIterationSelector, GroupIterationSelectorFilter],

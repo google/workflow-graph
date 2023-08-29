@@ -18,17 +18,11 @@
 import {CommonModule} from '@angular/common';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatTableModule} from '@angular/material/table';
-import {MatTooltipModule} from '@angular/material/tooltip';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {WorkflowGraphIconModule} from '../icon_wrapper';
+import {MaterialSharedModule} from '../material_shared_module';
 import {UserConfig, UserConfigService} from '../user_config.service';
 
 import {ShortcutPipe} from './shortcut.pipe';
@@ -44,14 +38,8 @@ import {ShortcutService} from './shortcut.service';
   standalone: true,
   imports: [
     CommonModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatTableModule,
-    MatCheckboxModule,
+    MaterialSharedModule,
     ReactiveFormsModule,
-    MatTooltipModule,
-    MatFormFieldModule,
-    MatInputModule,
     WorkflowGraphIconModule,
     ShortcutPipe,
   ],

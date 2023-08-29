@@ -18,10 +18,6 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnInit, Optional, Output, TemplateRef} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {AccessibilityHelpCenter} from './a11y/a11y_help_center';
 import {ShortcutService} from './a11y/shortcut.service';
@@ -30,6 +26,7 @@ import {fetchIcon, iconForState} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagIconsModule} from './icons_module';
 import {DagLogger} from './logger/dag_logger';
+import {MatDialog, MaterialSharedModule} from './material_shared_module';
 import {NgVarModule} from './ng_var_directive';
 import {calculateGraphState, CustomNode, DagGroup, DagNode, getNodeType, IconConfig, NodeState} from './node_spec';
 import {debounce} from './util_functions';
@@ -352,13 +349,10 @@ export class DagToolbar implements OnInit {
   imports: [
     CommonModule,
     WorkflowGraphIconModule,
-    MatSlideToggleModule,
-    MatButtonModule,
     FormsModule,
     DagIconsModule,
     NgVarModule,
-    MatTooltipModule,
-    MatDialogModule,
+    MaterialSharedModule,
   ],
   declarations: [
     DagToolbar,
