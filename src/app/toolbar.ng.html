@@ -1,4 +1,14 @@
 <section [ngClass]="['toolbar', graphState]">
+  <ng-container *ngFor="let customToggleTemplate of leftAlignedCustomToolbarToggleTemplates">
+    <article class="cell toggler">
+      <ng-container
+        *ngTemplateOutlet="customToggleTemplate; context: {
+          nodes,
+          groups
+         }"
+      ></ng-container>
+    </article>
+  </ng-container>
   <ng-container *ngVar="labelGenerator(this, 'graphState') as label">
     <article class="cell state" *ngIf="label !== false">
       <workflow-graph-icon icon="info"></workflow-graph-icon>
