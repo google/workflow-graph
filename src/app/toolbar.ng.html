@@ -152,21 +152,21 @@
       class="icon-btn a11y-help-center"
       (click)="openA11yHelpCenter()"
       matTooltip="Accessibility Help Center"
-      aria-label="Toggle Accessibility Help Center for Workflow Graph"
+      aria-label="Open Accessibility Help Center for Workflow Graph"
     >
       <workflow-graph-icon icon="keyboard" iconset="cloud_ai"></workflow-graph-icon>
     </button>
   </article>
   <article class="cell right minimap" *ngIf="features.minimapToolbarToggle">
-    <button
-      mat-icon-button
-      class="icon-btn minimap"
-      [style.color]="colorForMinimap(enableMinimap)"
-      (click)="toggleMinimapVisibility()"
-      matTooltip="Show / Hide Minimap"
-      aria-label="Toggle minimap view of the graph"
-    >
-      <workflow-graph-icon icon="minimap" iconset="cloud_ai"></workflow-graph-icon>
-    </button>
+    <mat-button-toggle
+        class="icon-btn minimap" 
+        [checked]="enableMinimap" 
+        (change)="toggleMinimapVisibility()" 
+        matTooltip="Show / Hide Minimap"
+        appearance="standard"
+        disableRipple
+        aria-label="Toggle minimap view of the graph">
+      <workflow-graph-icon icon="minimap" iconset="cloud_ai" />
+    </mat-button-toggle>
   </article>
 </section>

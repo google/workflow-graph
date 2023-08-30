@@ -73,11 +73,18 @@ $toolbar-color: #5f6368;
     }
   }
   .icon-btn {
+    --mat-standard-button-toggle-height: 28px;
+    --mat-standard-button-toggle-shape: 50%;
     width: 28px;
     height: 28px;
     line-height: 28px;
     color: $toolbar-color;
     padding: 0;
+    border: 0;
+
+    ::ng-deep .mat-button-toggle-label-content {
+      padding: 0;
+    }
 
     .workflow-graph-icon {
       width: 18px;

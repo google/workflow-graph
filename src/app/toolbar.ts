@@ -334,10 +334,6 @@ export class DagToolbar implements OnInit {
     });
   }
 
-  colorForMinimap(enabled: boolean) {
-    return enabled ? baseColors.blue : baseColors.gray;
-  }
-
   set zoomVal(val: number) {
     const {max, min} = this.zoomStepConfig;
     val = this.clampVal(val, min, max);

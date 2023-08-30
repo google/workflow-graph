@@ -17,6 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -42,6 +43,7 @@ export {MatDialog, MatIconRegistry, MatSelectChange};
     MatSelectModule,
     MatSlideToggleModule,
     MatTableModule,
+    MatButtonToggleModule,
     MatTooltipModule,
   ],
   exports: [
@@ -55,6 +57,7 @@ export {MatDialog, MatIconRegistry, MatSelectChange};
     MatSelectModule,
     MatSlideToggleModule,
     MatTableModule,
+    MatButtonToggleModule,
     MatTooltipModule,
   ],
 
