@@ -25,15 +25,15 @@ import {UrlSanitizer} from './url_sanitizer';
  */
 const AI_ICONSET = 'cloud_ai';
 const AI_LARGE_ICONSET_VERSION = 5;
-const AI_MEDIUM_ICONSET_VERSION = 59;
-const AI_SMALL_ICONSET_VERSION = 59;
+const AI_MEDIUM_ICONSET_VERSION = 64;
+const AI_SMALL_ICONSET_VERSION = 66;
 
 const SHELL_ICONSET = 'shell';
 const SHELL_MEDIUM_ICONSET_VERSION = 8;
-const SHELL_SMALL_ICONSET_VERSION = 179;
+const SHELL_SMALL_ICONSET_VERSION = 210;
 
 const COMMON_ICONSET = 'common';
-const COMMON_ICONSET_VERSION = 8;
+const COMMON_ICONSET_VERSION = 103;
 
 /** Valid sizes for iconsets */
 export type IconSizes = 'small'|'medium'|'large';
