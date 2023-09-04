@@ -1,38 +1,38 @@
-<section [ngClass]="['toolbar', graphState]">
+<menu [ngClass]="['toolbar', graphState]" role="toolbar">
   <ng-container *ngFor="let customToggleTemplate of leftAlignedCustomToolbarToggleTemplates">
-    <article class="cell toggler">
+    <div class="cell toggler">
       <ng-container
         *ngTemplateOutlet="customToggleTemplate; context: {
           nodes,
           groups
          }"
       ></ng-container>
-    </article>
+    </div>
   </ng-container>
   <ng-container *ngVar="labelGenerator(this, 'graphState') as label">
-    <article class="cell state" *ngIf="label !== false">
+    <div class="cell state" *ngIf="label !== false">
       <workflow-graph-icon icon="info"></workflow-graph-icon>
       <ng-container *ngIf="!!label">{{ label }}</ng-container>
       <ng-container *ngIf="!label"> {{ graphState }} Graph </ng-container>
-    </article>
+    </div>
   </ng-container>
-  <article class="cell progress" *ngIf="graphState === 'Runtime'">
+  <div class="cell progress" *ngIf="graphState === 'Runtime'">
     <workflow-graph-icon
       *ngIf="!!icon"
+      role="img"
       [title]="'State: ' + finalState?.toLowerCase()"
       [icon]="fetchIcon(icon, 'name')"
       [iconset]="fetchIcon(icon, 'iconset')"
       [style.color]="fetchIcon(icon, 'color')"
-    ></workflow-graph-icon>
-
+    />
     <ng-container *ngVar="labelGenerator(this, 'stepsCompleted') as label">
       <ng-container *ngIf="!!label">{{ label }}</ng-container>
       <ng-container *ngIf="!label">
         {{ completedSteps }}/{{ totalSteps }} steps completed
       </ng-container>
     </ng-container>
-  </article>
-  <article class="cell toggler" *ngIf="features.collapsibleNodes">
+  </div>
+  <div class="cell toggler" *ngIf="features.collapsibleNodes">
     <mat-slide-toggle
       id="dag-toggle"
       [disabled]="disableToggle"
@@ -46,12 +46,13 @@
         </ng-container>
       </span>
     </mat-slide-toggle>
-  </article>
-  <article class="cell zoom" *ngIf="features.zoomControls">
+  </div>
+  <div class="cell zoom" *ngIf="features.zoomControls">
     <span
       *ngIf="!features.disableZoomPercentageLabel"
       class="value"
-      [title]="'Zoom Level: ' + round(zoomVal * 100) + '%'"
+      aria-label="Zoom level"
+      i18n-aria-label="Zoom level aria-label in toolbar"
     >
       {{ round(zoomVal * 100) + "%" }}
     </span>
@@ -62,7 +63,9 @@
       [color]="fetchIcon(zoomIcons.in, 'color')"
       [disabled]="zoomInDisabled"
       matTooltip="Zoom in"
-      aria-label="Zoom in on the graph"
+      i18n-matTooltip="Zoom in button tooltip text"
+      aria-label="Zoom in"
+      i18n-aria-label="Zoom in button aria label"
     >
       <workflow-graph-icon
         [icon]="fetchIcon(zoomIcons.in, 'name')"
@@ -76,7 +79,9 @@
       [color]="fetchIcon(zoomIcons.out, 'color')"
       [disabled]="zoomOutDisabled"
       matTooltip="Zoom out"
-      aria-label="Zoom out on the graph"
+      i18n-matTooltip="Zoom out button tooltip text"
+      aria-label="Zoom out"
+      i18n-aria-label="Zoom out button aria label"
     >
       <workflow-graph-icon
         [icon]="fetchIcon(zoomIcons.out, 'name')"
@@ -89,15 +94,17 @@
       (click)="zoomReset()"
       [color]="fetchIcon(zoomIcons.reset, 'color')"
       matTooltip="Zoom reset"
-      aria-label="Reset zoom on the graph"
+      i18n-matTooltip="Zoom reset button tooltip text"
+      aria-label="Zoom reset"
+      i18n-aria-label="Zoom reset button aria label"
     >
       <workflow-graph-icon
         [icon]="fetchIcon(zoomIcons.reset, 'name')"
         [iconset]="fetchIcon(zoomIcons.reset, 'iconset')"
       ></workflow-graph-icon>
     </button>
-  </article>
-  <article class="cell toggler" *ngIf="features.fullscreenToggle">
+  </div>
+  <div class="cell toggler" *ngIf="features.fullscreenToggle">
     <button
       mat-icon-button
       *ngIf="!enableFullscreen"
@@ -105,7 +112,9 @@
       (click)="toggleFullscreen()"
       [color]="fetchIcon(fullscreenIcon.open, 'color')"
       matTooltip="Full screen"
-      aria-label="Enable full screen view of the graph"
+      i18n-matTooltip="Full screen button tooltip text"
+      aria-label="Full screen"
+      i18n-aria-label="Full screen button aria label"
     >
       <workflow-graph-icon
         [icon]="fetchIcon(fullscreenIcon.open, 'name')"
@@ -119,54 +128,60 @@
       (click)="toggleFullscreen()"
       [color]="fetchIcon(fullscreenIcon.close, 'color')"
       matTooltip="Exit full screen"
-      aria-label="Disable full screen view of the graph"
+      i18n-matTooltip="Exit full screen button tooltip text"
+      aria-label="Exit full screen"
+      i18n-aria-label="Exit full screen button aria label"
     >
       <workflow-graph-icon
         [icon]="fetchIcon(fullscreenIcon.close, 'name')"
         [iconset]="fetchIcon(fullscreenIcon.close, 'iconset')"
       ></workflow-graph-icon>
     </button>
-  </article>
+  </div>
   <ng-container *ngFor="let customToggleTemplate of customToolbarToggleTemplates">
-    <article class="cell toggler">
+    <div class="cell toggler">
       <ng-container
         *ngTemplateOutlet="customToggleTemplate; context: {
           nodes,
           groups
-         }"
+        }"
       ></ng-container>
-    </article>
+    </div>
   </ng-container>
   <div class="flex"></div>
   <ng-container *ngFor="let customToggleTemplate of rightAlignedCustomToolbarToggleTemplates">
-    <article class="cell toggler">
+    <div class="cell toggler">
       <ng-container *ngTemplateOutlet="customToggleTemplate; context: {
         nodes,
         groups
        }"></ng-container>
-    </article>
+    </div>
   </ng-container>
-  <article class="cell right" *ngIf="features.enableShortcuts">
+  <div class="cell right" *ngIf="features.enableShortcuts">
     <button
       mat-icon-button
       class="icon-btn a11y-help-center"
       (click)="openA11yHelpCenter()"
       matTooltip="Accessibility Help Center"
-      aria-label="Open Accessibility Help Center for Workflow Graph"
+      i18n-matTooltip="Accessibility Help Center button tooltip text"
+      aria-label="Accessibility Help Center"
+      i18n-aria-label="Accessibility Help Center button aria label"
     >
       <workflow-graph-icon icon="keyboard" iconset="cloud_ai"></workflow-graph-icon>
     </button>
-  </article>
-  <article class="cell right minimap" *ngIf="features.minimapToolbarToggle">
+  </div>
+  <div class="cell right minimap" *ngIf="features.minimapToolbarToggle">
     <mat-button-toggle
-        class="icon-btn minimap" 
-        [checked]="enableMinimap" 
-        (change)="toggleMinimapVisibility()" 
-        matTooltip="Show / Hide Minimap"
+        class="icon-btn minimap"
+        [checked]="enableMinimap"
+        (change)="toggleMinimapVisibility()"
         appearance="standard"
         disableRipple
-        aria-label="Toggle minimap view of the graph">
+        matTooltip="Show / Hide Minimap"
+        i18n-matTooltip="Show / Hide Minimap button tooltip text"
+        aria-label="Show / Hide Minimap"
+        i18n-aria-label="Show / Hide Minimap button aria-label">
       <workflow-graph-icon icon="minimap" iconset="cloud_ai" />
     </mat-button-toggle>
-  </article>
-</section>
+  </div>
+</menu>
