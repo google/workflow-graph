@@ -19,11 +19,12 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
   width: 100%;
   display: inline-block;
   position: absolute;
-  bottom: 2px;
+  bottom: 5px;
   left: 0;
   color: #3c4043;
   transform: translateY(100%);
   transition: height 0.25s, border-color 0.25s;
+  pointer-events: all;
   &.untab {
     overflow: hidden;
     > .hidden {

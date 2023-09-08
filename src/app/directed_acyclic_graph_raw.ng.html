@@ -110,7 +110,6 @@
   <ng-container *ngIf="isCustomNode(node)">
     <article
       *ngIf="isDagreInit(node)"
-      [attr.tabindex]="0"
       class="custom-node"
       [attr.node-title]="node.getNodeDisplayName()"
       [style.left.px]="node.x"
@@ -132,13 +131,13 @@
         ></ng-container>
       </ng-container>
       <ng-container *ngIf="!getCustomNodeTemplateFor(node)">
-        <aside class="custom-node-error" role="alert">
+        <div class="custom-node-error" role="alert">
           <span
             >Could not find the <code>templateRef</code> specified for
             <code>{{ node.id }}</code> (template: <code>{{ node.templateRef }}</code
             >)
           </span>
-        </aside>
+        </div>
       </ng-container>
     </article>
   </ng-container>
@@ -236,6 +235,7 @@
           [attr.tabindex]="isGroupExpanded(group) ? 0 : -1"
           role="switch"
           [style.left.px]="getControlNodeFor(group).width / 2"
+          [style.width.px]="getControlNodeFor(group).width"
           [node]="getControlNodeFor(group)"
           [stateService]="stateService"
           [selected]="selectedNode?.node === group"
@@ -262,9 +262,11 @@
               ></ai-dag-node-ref-badge>
             </ng-container>
           </ng-container>
-          <ai-dag-iteration-selector
+        </ai-dag-node>
+        <ai-dag-iteration-selector
             *ngIf="group.treatAsLoop"
             [style.height.px]="isGroupExpanded(group) ? getControlNodeFor(group).height * 0.6 : 0"
+            [style.width.px]="getControlNodeFor(group).width"
             [stateService]="stateService"
             [parentNodeSelected]="selectedNode?.node === group"
             [unTabbable]="!isGroupExpanded(group)"
@@ -272,8 +274,7 @@
             [iterations]="getIterationsFor(group)"
             [(iteration)]="group.selectedLoopId"
             (onIterSelect)="broadcastIterChange(group, (group._cachedSelection = $event)!)"
-          ></ai-dag-iteration-selector>
-        </ai-dag-node>
+          />
       </header>
       <footer class="sub-dag">
         <button

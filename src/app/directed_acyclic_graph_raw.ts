@@ -371,7 +371,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
    * know which element gets toggled by the interactables on the page
    */
   a11yIdFor(node: DagGroup|DagNode) {
-    const pathString = [...this.path, node.id].join('_');
+    const pathString = [...this.path, node.id].join('_').replace(' ', '-');
     return `a11y-id-for-${this.getNodeType(node)}-${pathString}`;
   }
 
@@ -885,7 +885,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   getArrowMarkerId(edge: DagEdge|undefined): string {
     if (!edge || !edge.points) return '';
     const [from, to] = [edge.from, edge.to].map(s => s.replace(/[^\w]/g, '-'));
-    return `arrow_${from}_${to}`;
+    return `${this.path.join('-')}_arrow_${from}_${to}`;
   }
 
   getEdgeMarkerEndId(edge: DagEdge|undefined): string|undefined {

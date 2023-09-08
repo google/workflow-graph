@@ -63,6 +63,7 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
   private readonly destroy = new Subject<void>();
 
   @HostBinding('attr.tabindex') tabindex = 0;
+  @HostBinding('attr.role') role = 'document';
   @ContentChild(DagToolbar) toolbarRef?: DagToolbar;
   @ContentChild(DirectedAcyclicGraph) dagRef?: DirectedAcyclicGraph;
   @Input('features')

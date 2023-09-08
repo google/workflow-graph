@@ -99,13 +99,13 @@
                 node
               }"></ng-container>
               <ng-container *ngIf="!getCustomMinimapNodeTemplateForNode(node)">
-                <aside class="custom-node-error" role="alert">
+                <div class="custom-node-error" role="alert">
                   <span>
                     Could not find the
                     <code>minimapTemplateRef = node['minimapTemplateRef']</code>
                     for node <code>{{node.id}}</code>.
                   </span>
-                </aside>
+                </div>
               </ng-container>
             </ng-container>
           </ng-container>
