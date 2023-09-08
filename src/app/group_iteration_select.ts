@@ -16,8 +16,9 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output, Renderer2, ViewChild} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MatSelect} from '@angular/material/select';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
@@ -71,6 +72,8 @@ type IterationSelectOption = (DagNode|DagGroup)&{hidden?: boolean};
   },
 })
 export class GroupIterationSelector implements OnInit, OnDestroy {
+  @ViewChild('select') select!: MatSelect;
+
   readonly trueWidth =
       iconSizeToPx('large') + cssVars.padding * 2 + cssVars.border * 2;
 
@@ -88,7 +91,6 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   goodItersShown = 0;
   badItersShown = 0;
   $iteration = '';
-  expanded = false;
   focusedOption = '';
   softIteration = '';
   filterValue = '';
@@ -141,7 +143,11 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   @Output() onIterSelect = new EventEmitter<DagNode|DagGroup|undefined>();
   @Input() stateService?: DagStateService;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+      private readonly cdr: ChangeDetectorRef,
+      private readonly stateService: DagStateService,
+      private readonly renderer: Renderer2,
+  ) {}
 
   ngOnInit() {
     this.observers = this.stateService?.listenAll({
@@ -188,6 +194,15 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   filterIterations(value: string) {
     this.filterValue = value;
     this.iterations = this.iterations;
+  }
+
+  openedChange(opened: boolean) {
+    if (opened && this.select.panel) {
+      this.renderer.setAttribute(
+          this.select.panel.nativeElement, 'role', 'dialog');
+      this.renderer.removeAttribute(
+          this.select.panel.nativeElement, 'aria-multiselectable');
+    }
   }
 
   fetchIcon = (icon: NodeIcon, key: keyof NodeIcon) => fetchIcon(icon, key);

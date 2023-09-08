@@ -1,4 +1,5 @@
 <mat-select
+  #select
   [aria-label]="getA11yLabelFor('button')"
   [value]="softIteration"
   (selectionChange)="updateValue($event)"
@@ -6,6 +7,7 @@
   (click)="$event.stopPropagation()"
   class="group-iteration-select"
   panelClass="ai-dag-iteration-select-panel"
+  (openedChange)="openedChange($event)"
 >
   <mat-select-trigger>
     <span class="focus-animator"></span>
@@ -28,19 +30,23 @@
     </div>
   </mat-select-trigger>
   <ai-dag-iteration-selector-filter (onSearch)="filterIterations($event)" />
-  <mat-optgroup [label]="labels.failedIters">
-    <mat-option *ngFor="let i of badIters" [value]="i.id" [class.hidden]="i.hidden">
-      <div *ngIf="getStateIcon(i) as icon" [style.color]="icon && fetchIcon(icon, 'color')">
-        <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
-        [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
-        <span>{{ i.getNodeDisplayName() }}</span>
-      </div>
-    </mat-option>
-    <mat-option disabled i18n="Message displayed when there are no items to display" *ngIf="!badItersShown">
-      No items to display.
-    </mat-option>
-  </mat-optgroup>
-  <mat-optgroup [label]="labels.otherIters">
+  <div role="listbox"
+      aria-multiselectable="false"
+      aria-label="Options"
+      i18n-aria-label="Options aria label for listbox in iteration dropdown">
+    <mat-optgroup [label]="labels.failedIters">
+      <mat-option *ngFor="let i of badIters" [value]="i.id" [class.hidden]="i.hidden">
+        <div *ngIf="getStateIcon(i) as icon" [style.color]="icon && fetchIcon(icon, 'color')">
+          <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
+          [iconset]="icon && fetchIcon(icon, 'iconset')"></workflow-graph-icon>
+          <span>{{ i.getNodeDisplayName() }}</span>
+        </div>
+      </mat-option>
+      <mat-option disabled i18n="Message displayed when there are no items to display" *ngIf="!badItersShown">
+        No items to display.
+      </mat-option>
+    </mat-optgroup>
+    <mat-optgroup [label]="labels.otherIters">
       <mat-option *ngFor="let i of goodIters" [value]="i.id" [class.hidden]="i.hidden">
         <div *ngIf="getStateIcon(i) as icon"  [style.color]="icon && fetchIcon(icon, 'color')">
           <workflow-graph-icon [icon]="icon && fetchIcon(icon, 'name')"
@@ -52,4 +58,5 @@
         No items to display.
       </mat-option>
     </mat-optgroup>
+  </div>
 </mat-select>
