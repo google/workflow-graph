@@ -5,9 +5,7 @@
   [style.width.px]="graphWidth"
   [style.height.px]="graphHeight"
 ></aside>
-<nav
-  aria-label="Directed Acyclic Graph"
-  i18n-aria-label="Area where nodes from the Directed Acyclic Graph can be clicked"
+<div
   [ngClass]="['dag-component', toggleClass(collapsed, 'collapse')]"
   [style.width.px]="graphWidth"
   [style.height.px]="graphHeight"
@@ -104,7 +102,7 @@
       </g>
     </ng-container>
   </svg>
-</nav>
+</div>
 
 <ng-template #renderNode let-node>
   <ng-container *ngIf="isCustomNode(node)">
@@ -131,7 +129,7 @@
         ></ng-container>
       </ng-container>
       <ng-container *ngIf="!getCustomNodeTemplateFor(node)">
-        <div class="custom-node-error" role="alert">
+        <div class="custom-node-error" role="alert" tabindex="0">
           <span
             >Could not find the <code>templateRef</code> specified for
             <code>{{ node.id }}</code> (template: <code>{{ node.templateRef }}</code

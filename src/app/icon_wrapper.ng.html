@@ -5,12 +5,12 @@
 
   <ng-container *ngIf="iconSpec.kind === 'mat-spinner'">
     <mat-spinner
+      inert
       color="primary"
       aria-label="Loading"
       i18n-aria-label="Loading spinner label"
       [diameter]="iconSpec.sizePx"
       [strokeWidth]="iconSpec.sizePx / 10"
-    >
-    </mat-spinner>
+    />
   </ng-container>
 </ng-container>

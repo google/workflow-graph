@@ -35,26 +35,28 @@
     (mousedown)="middleClickResetZoom($event)"
     (dblclick)="resetZoom($event)"
   ></aside>
-  <ai-dag-raw
-    #rootDag
-    class="root-dag"
-    style.transform="translate({{ graphX }}px, {{ graphY }}px) scale({{ zoom }}) "
-    [noEmptySpaceAlloc]="true"
-    [class.panning]="graphPanning"
-    [sizeConfig]="sizeConfig"
-    [nodes]="nodes"
-    [edges]="edges"
-    [groups]="groups"
-    [stateService]="stateService"
-    [hoveredEdge]="hoveredEdge"
-    (graphResize)="resizeGraph($event)"
-    (focusin)="focusElementFiltered($event)"
-    (mousedown)="mousedown = true"
-    (mouseup)="mousedown = false"
-    (mouseleave)="mousedown = false"
-    [class.animate-movement]="animateMove && !graphPanning"
-    [class.minimap-focused]="mmFocused && !mmPressed"
-  ></ai-dag-raw>
+  <aside>
+    <ai-dag-raw
+      #rootDag
+      class="root-dag"
+      style.transform="translate({{ graphX }}px, {{ graphY }}px) scale({{ zoom }}) "
+      [noEmptySpaceAlloc]="true"
+      [class.panning]="graphPanning"
+      [sizeConfig]="sizeConfig"
+      [nodes]="nodes"
+      [edges]="edges"
+      [groups]="groups"
+      [stateService]="stateService"
+      [hoveredEdge]="hoveredEdge"
+      (graphResize)="resizeGraph($event)"
+      (focusin)="focusElementFiltered($event)"
+      (mousedown)="mousedown = true"
+      (mouseup)="mousedown = false"
+      (mouseleave)="mousedown = false"
+      [class.animate-movement]="animateMove && !graphPanning"
+      [class.minimap-focused]="mmFocused && !mmPressed"
+    />
+  </aside>
 </figure>
 <div
   *ngIf="enableMinimap"
@@ -99,7 +101,7 @@
                 node
               }"></ng-container>
               <ng-container *ngIf="!getCustomMinimapNodeTemplateForNode(node)">
-                <div class="custom-node-error" role="alert">
+                <div class="custom-node-error" role="alert" tabindex="0">
                   <span>
                     Could not find the
                     <code>minimapTemplateRef = node['minimapTemplateRef']</code>
