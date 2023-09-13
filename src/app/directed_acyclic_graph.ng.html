@@ -12,7 +12,7 @@
   (scroll)="(dagWrapper.scrollLeft || dagWrapper.scrollTop) && dagWrapper.scrollTo(0, 0)"
   (resize)="handleResizeWithEvent($event)"
 >
-  <svg class="background-grid">
+  <svg class="background-grid" aria-hidden="true">
     <defs>
       <!-- Grid definition -->
       <pattern [id]="getGridPatternUniqueId()" width="8" height="8" patternUnits="userSpaceOnUse">
@@ -60,10 +60,7 @@
 </figure>
 <div
   *ngIf="enableMinimap"
-  role="application"
   class="minimap-wrapper"
-  aria-label="DAG Minimap"
-  i18n-aria-label="Area where DAG preview is shown and you can zoom or pan the graph"
   (wheel)="scrollZoom($event)"
   [class.panning]="graphPanning"
   [class.preview-on-pan]="features.seeThroughMinimapOnPan"
@@ -75,6 +72,9 @@
     [style.minWidth.px]="mmWidth"
     [style.minHeight.px]="mmHeight + 2"
     (click)="mmBgClickPan($event)"
+    role="application"
+    aria-label="DAG Minimap"
+    i18n-aria-label="Area where DAG preview is shown and you can zoom or pan the graph"
   >
     <div class="bounds" [style.height.px]="minimapInnerHeight | async" [style.width.px]="minimapInnerWidth | async">
       <section style.transform="scale({{ mmScale }})" class="dag-preview">
@@ -146,7 +146,7 @@
         (focus)="mmFocused = true"
         (blur)="mmFocused = false"
       ></button>
-      <div class="cdk-visually-hidden" id="mapArrowDesc">
+      <div class="cdk-visually-hidden" id="mapArrowDesc" aria-hidden="true">
         To control the minimap, use the ARROW keys.
       </div>
     </div>
