@@ -781,9 +781,14 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   mmWindowPan(ev: CdkDragMove|Point, freeMove?: boolean) {
     let newPt: Point = {x: 0, y: 0};
 
-    // Minimap graph offset when zoom is under 1
-    const {offsetLeft: mmOffsetLeft = 0, offsetTop: mmOffsetTop = 0} =
-        this.mmViewBox?.nativeElement || {};
+    // Calculating the graph's offset from the top and left edges of the
+    // available canvas, when the zoom is under 1.
+    const offsets = this.zoom > 1 ? {x: 0, y: 0} : {
+      x: (this.graphWidth * this.zoom - this.graphWidth) / -2,
+      y: (this.graphHeight * this.zoom - this.graphHeight) / -2,
+    };
+
+    const {x: mmOffsetLeft, y: mmOffsetTop} = this.convertCanvasPtToMinimap(offsets);
 
     if (isPoint(ev)) {
       if (freeMove) {
