@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
@@ -290,6 +291,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       private readonly differs: KeyValueDiffers,
       private readonly cdr: ChangeDetectorRef,
       readonly userConfigService: UserConfigService,
+      private readonly liveAnnouncer: LiveAnnouncer,
   ) {
     this.updateGraphLayout = debounce(this.updateGraphLayout, 50, this);
     this.updateDAG = this.updateDAG.bind(this);
@@ -867,10 +869,14 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   toggleExpand(group: string|DagGroup, value?: boolean) {
     const id = group instanceof DagGroup ? group.id : group;
     const beforeCt = this.expandedGroups.size;
+
+    // TODO: A11y announcements translation b/300590261
     if (this.isGroupExpanded(group) && value !== true) {
       this.expandedGroups.delete(id);
+      this.liveAnnouncer?.announce('Collapsed');
     } else if (value !== false) {
       this.expandedGroups.add(id);
+      this.liveAnnouncer?.announce('Expanded');
     }
     this.updateGraphLayout();
     return beforeCt !== this.expandedGroups.size;
