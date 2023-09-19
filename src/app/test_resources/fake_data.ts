@@ -108,7 +108,7 @@ export const fakeGraph: DagSkeleton = {
       conditionalQuery: '1 == 1',
       artifactRefs: [
         {id: 'BigTable', path: ['sub1']},
-        {id: 'BigTable', path: ['sub1', 'sub1']},
+        {id: 'BigTable', path: ['sub1', 'subn1']},
       ],
     },
     'CustomNode1': {
@@ -436,7 +436,7 @@ export const fakeGraph: DagSkeleton = {
                               },
                               {
                                 edgeLabel: 'SUB-DAG Nested 1',
-                                id: 'sub1',
+                                id: 'subn1',
                                 type: 'group',
                                 definition: [
                                   {id: 'Output to BigQuery', type: 'execution'},

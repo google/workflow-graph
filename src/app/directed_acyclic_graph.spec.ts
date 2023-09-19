@@ -16,12 +16,12 @@
  */
 
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
-import {Component, ViewChild} from '@angular/core';
-import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
+import {Component, Input, ViewChild} from '@angular/core';
+import {ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
-import {DagNode as Node, GraphSpec} from './node_spec';
+import {DagNode as Node, GraphSpec, NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {fakeGraph} from './test_resources/fake_data';
@@ -84,6 +84,27 @@ describe('Directed Acyclic Graph Renderer', () => {
 
          expect(renderedCoordinates).toEqual(sorted);
        }));
+
+    it('Expands nested graph to follow node.', fakeAsync(() => {
+         fixture = TestBed.createComponent(DagWrapper);
+         fixture.componentRef.setInput(
+             'followNode', {id: 'Fake Exec 1', path: ['sub1', 'subn1']});
+         fixture.detectChanges();
+
+         tick(1000);
+
+         // Shows that the camera moved from (0,0) without error
+         expect(fixture.componentInstance.dagRender.graphX)
+             .not.toBeCloseTo(0, 10);
+         expect(fixture.componentInstance.dagRender.graphY)
+             .not.toBeCloseTo(0, 10);
+
+         // setting followNode continually adds more tasks to the queue (to
+         // lock camera to the node). need to destroy the component then flush
+         // out the tasks
+         fixture.destroy();
+         flush();
+       }));
   });
 });
 
@@ -93,7 +114,8 @@ describe('Directed Acyclic Graph Renderer', () => {
       <ai-dag-renderer #dagRender
           [nodes]="graph.nodes"
           [edges]="graph.edges"
-          [groups]="graph.groups">
+          [groups]="graph.groups"
+          [followNode]="followNode">
       </ai-dag-renderer>
     </div>`,
   styles: [`
@@ -105,4 +127,5 @@ describe('Directed Acyclic Graph Renderer', () => {
 class DagWrapper {
   @ViewChild('dagRender', {static: false}) dagRender!: DirectedAcyclicGraph;
   graph: GraphSpec = FAKE_DATA;
+  @Input() followNode: NodeRef|null = null;
 }
