@@ -25,7 +25,6 @@ import {convertStateToRuntime, DEFAULT_THEME, FeatureToggleOptions, isNoState, i
 import {GroupIterationSelector} from './group_iteration_select';
 import {bgForState, fetchIcon, iconForState, iconRescale} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
-import {DagIconsModule} from './icons_module';
 import {NodeRefBadge} from './node_ref_badge';
 import {DagEdge, DagNode} from './node_spec';
 import {debounce} from './util_functions';
@@ -237,7 +236,6 @@ export class DagNodeEl implements OnInit, OnDestroy {
   imports: [
     CommonModule,
     WorkflowGraphIconModule,
-    DagIconsModule,
     DragDropModule,
   ],
   declarations: [

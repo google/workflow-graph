@@ -26,7 +26,6 @@ import {GroupIterationSelectorFilter} from './group_iteration_select_filter';
 import {translateMessage} from './i18n';
 import {fetchIcon, iconForState, iconRescale, iconSizeToPx} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
-import {DagIconsModule} from './icons_module';
 import {MaterialSharedModule, MatSelectChange} from './material_shared_module';
 import {DagGroup, DagNode, NodeIcon} from './node_spec';
 
@@ -201,7 +200,6 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   imports: [
     CommonModule,
     WorkflowGraphIconModule,
-    DagIconsModule,
     MaterialSharedModule,
     ReactiveFormsModule,
   ],

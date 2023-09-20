@@ -26,7 +26,7 @@ import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
 import {assert, baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
-import {DagIconsModule} from './icons_module';
+import {DagIconsService} from './icons_service';
 import {DagLogger} from './logger/dag_logger';
 import {CustomNode, DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
 import {ResizeEventData, ResizeMonitorModule} from './resize_monitor_directive';
@@ -311,12 +311,13 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       private readonly cdr: ChangeDetectorRef,
       @Optional() private readonly dagLogger: DagLogger|null,
       private readonly shortcutService: ShortcutService,
-  ) {
+      private readonly iconsService: DagIconsService) {
     this.focusElement = debounce(this.focusElement, 50, this);
     this.onVisualUpdate = debounce(this.onVisualUpdate, 50, this);
     this.handleResizeAsync = debounce(this.handleResizeAsync, 50, this);
     this.resetAnimationMode = debounce(this.resetAnimationMode, 1200, this);
     this.uniqueId = `${Date.now()}`;
+    this.iconsService.registerIcons();
   }
 
   /** Provides unique id attribute to grid background pattern declaration. */
@@ -1070,7 +1071,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 @NgModule({
   imports: [
     CommonModule,
-    DagIconsModule,
     DagRawModule,
     DragDropModule,
     ResizeMonitorModule,

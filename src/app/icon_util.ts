@@ -17,7 +17,7 @@
 
 import {DagTheme, IconConfig, isTextIcon, NodeIcon, NodeState} from './data_types_internal';
 import {translateMessage} from './i18n';
-import {sizeMap} from './icons_module';
+import {sizeMap} from './icons_service';
 import {NodeType} from './node_spec';
 
 /**

@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
+import {Injectable} from '@angular/core';
 
-import {MaterialSharedModule, MatIconRegistry} from './material_shared_module';
+import {MatIconRegistry} from './material_shared_module';
 import {UrlSanitizer} from './url_sanitizer';
 
 /**
@@ -64,14 +64,20 @@ export const sizeMap: IconSizeMap = {
  */
 type IconsetList = [string, IconSizes, number];
 
-@NgModule({
-  imports: [
-    MaterialSharedModule,
-  ],
-})
-export class DagIconsModule {
+/** Service used to register DAG icons with Material registry */
+@Injectable({providedIn: 'root'})
+export class DagIconsService {
+  private isInitialized = false;
+
   constructor(
-      iconRegistry: MatIconRegistry, private readonly sanitizer: UrlSanitizer) {
+      private readonly iconRegistry: MatIconRegistry,
+      private readonly sanitizer: UrlSanitizer) {
+    this.registerIcons();
+  }
+
+  registerIcons() {
+    if (this.isInitialized) return;
+
     const icons: IconsetList[] = [
       [AI_ICONSET, 'large', AI_LARGE_ICONSET_VERSION],
       [AI_ICONSET, 'medium', AI_MEDIUM_ICONSET_VERSION],
@@ -84,7 +90,9 @@ export class DagIconsModule {
 
     icons.forEach(([iconset, size, version]) => {
       const url = this.sanitizer.sanitizeUrl(iconset, size, version);
-      iconRegistry.addSvgIconSetInNamespace(`${iconset}-${size}`, url);
+      this.iconRegistry.addSvgIconSetInNamespace(`${iconset}-${size}`, url);
     });
+
+    this.isInitialized = true;
   }
 }

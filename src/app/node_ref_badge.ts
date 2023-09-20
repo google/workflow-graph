@@ -17,13 +17,12 @@
 
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, NgModule, OnDestroy, OnInit} from '@angular/core';
-import {WorkflowGraphIconModule} from './icon_wrapper';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
 import {convertStateToRuntime, isTextIcon} from './data_types_internal';
 import {fetchIcon, iconRescale, iconSizeToPx} from './icon_util';
-import {DagIconsModule} from './icons_module';
+import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagNode, NodeIcon} from './node_spec';
 
 const cssVars = {
@@ -121,7 +120,6 @@ export class NodeRefBadge implements OnInit, OnDestroy {
   imports: [
     CommonModule,
     WorkflowGraphIconModule,
-    DagIconsModule,
   ],
   declarations: [
     NodeRefBadge,

@@ -27,7 +27,6 @@ import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, 
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
-import {DagIconsModule} from './icons_module';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
 import {CustomNode, DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
@@ -1212,7 +1211,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   imports: [
     CommonModule,
     WorkflowGraphIconModule,
-    DagIconsModule,
     DagNodeModule,
     NodeRefBadgeModule,
     GroupIterationSelectorModule,
