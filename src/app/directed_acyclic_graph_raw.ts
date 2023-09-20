@@ -1202,6 +1202,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   convertStateToRuntime = convertStateToRuntime;
   min = Math.min;
   max = Math.max;
+
+  getEdges(node: DagNode|DagGroup): DagEdge[] {
+    return this.edges.filter(e => e.from === node.id);
+  }
 }
 
 @NgModule({

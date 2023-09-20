@@ -50,6 +50,7 @@
     </ng-container>
   </svg>
   <figcaption
+    aria-hidden="true"
     class="edge-label fade-in"
     *ngFor="let l of getEdgeLabels(); trackBy: edgeLabelTrack"
     (mouseenter)="setEdgeHover(l.edge, true)"
@@ -146,6 +147,7 @@
       [style.left.px]="node.x"
       [style.top.px]="node.y"
       [node]="node"
+      [edges]="getEdges(node)"
       [stateService]="stateService"
       [selected]="selectedNode?.node === node"
       (click)="toggleSelectedNode(node, $event)"
@@ -239,6 +241,7 @@
           (click)="toggleSelectedNode(group, $event)"
           (keydown.enter)="toggleSelectedNode(group, $event)"
           (hoveredChanged)="adjustNodeHover(group, $event, 'node')"
+          [edges]="getEdges(group)"
         >
           <ng-container *ngFor="let ref of group.artifactRefs; trackBy: nodeOrGroupTrack">
             <ng-container *ngIf="makeSafeNode(resolveReference(ref)) as resolvedRef">

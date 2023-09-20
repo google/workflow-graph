@@ -22,13 +22,13 @@ import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
 import {convertStateToRuntime, DEFAULT_THEME, FeatureToggleOptions, isNoState, isTextIcon, NODE_HEIGHT, NODE_WIDTH, NodeIcon, NodeState, SVG_ELEMENT_SIZE} from './data_types_internal';
-import {debounce} from './util_functions';
 import {GroupIterationSelector} from './group_iteration_select';
 import {bgForState, fetchIcon, iconForState, iconRescale} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagIconsModule} from './icons_module';
 import {NodeRefBadge} from './node_ref_badge';
-import {DagNode} from './node_spec';
+import {DagEdge, DagNode} from './node_spec';
+import {debounce} from './util_functions';
 
 /**
  * Renders the workflow DAG.
@@ -75,6 +75,8 @@ export class DagNodeEl implements OnInit, OnDestroy {
 
   // Node Related Props
   @Input() node?: DagNode;
+
+  @Input() edges: DagEdge[] = [];
 
   @Input('selected') isSelected = false;
 
@@ -189,8 +191,20 @@ export class DagNodeEl implements OnInit, OnDestroy {
   }
 
   getA11yLabel(node: DagNode) {
+    // TODO: A11y announcements translation b/300590261
     const subTypeLabel = node.subType ? ` (Subtype: ${node.subType})` : '';
-    return `${node.type}${subTypeLabel} - ${node.getNodeDisplayName()}`;
+    let edgeInfo;
+    if (this.edges.length === 0) {
+      edgeInfo = 'No edge.';
+    } else if (this.edges.length === 1) {
+      edgeInfo = '1 edge.';
+    } else {
+      edgeInfo = `${this.edges.length} edges.`;
+    }
+    edgeInfo += this.edges.filter(e => !!e.label).map(e => e.label).join(', ');
+
+    return `${node.type}${subTypeLabel} - ${node.getNodeDisplayName()} - ${
+        edgeInfo}`;
   }
 
   getStateIconWidth(node: DagNode) {
