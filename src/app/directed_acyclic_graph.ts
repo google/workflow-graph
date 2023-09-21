@@ -120,7 +120,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   collapsed = true;
   zoomStepConfig = createDefaultZoomConfig({step: defaultZoomConfig.step / 2});
   themeConfig = DEFAULT_THEME;
-  stateService = new DagStateService(this.resolveReference.bind(this));
   animateMove = false;
   mousedown = false;
   private $customNodeTemplates: Record<string, TemplateRef<any>> = {};
@@ -311,11 +310,13 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       private readonly cdr: ChangeDetectorRef,
       @Optional() private readonly dagLogger: DagLogger|null,
       private readonly shortcutService: ShortcutService,
+      readonly stateService: DagStateService,
       private readonly iconsService: DagIconsService) {
     this.focusElement = debounce(this.focusElement, 50, this);
     this.onVisualUpdate = debounce(this.onVisualUpdate, 50, this);
     this.handleResizeAsync = debounce(this.handleResizeAsync, 50, this);
     this.resetAnimationMode = debounce(this.resetAnimationMode, 1200, this);
+    this.resolveReference = this.resolveReference.bind(this);
     this.uniqueId = `${Date.now()}`;
     this.iconsService.registerIcons();
   }
@@ -380,6 +381,9 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       },
       iterationChange: iter => {
         iter && this.groupIterationChanged.emit(iter);
+      },
+      zoomReset: () => {
+        this.resetZoom();
       },
     });
 

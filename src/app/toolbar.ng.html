@@ -89,7 +89,7 @@
     <button
       mat-icon-button
       class="icon-btn reset"
-      (click)="zoomReset()"
+      (click)="stateService.zoomReset.next()"
       [color]="fetchIcon(zoomIcons.reset, 'color')"
       matTooltip="Zoom reset"
       i18n-matTooltip="Zoom reset button tooltip text"
