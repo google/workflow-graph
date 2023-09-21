@@ -148,6 +148,7 @@
       [style.top.px]="node.y"
       [node]="node"
       [edges]="getEdges(node)"
+      [stateService]="stateService"
       [selected]="selectedNode?.node === node"
       (click)="toggleSelectedNode(node, $event)"
       (keydown.enter)="toggleSelectedNode(node, $event)"
@@ -175,11 +176,12 @@
       <footer class="node-ref">
         <ng-container *ngFor="let ref of node.artifactRefs; trackBy: nodeOrGroupTrack">
           <ai-dag-node-ref-badge
-            *ngIf="makeSafeNode(resolveReference?.(ref)) as resolvedRef"
+            *ngIf="makeSafeNode(resolveReference(ref)) as resolvedRef"
             class="fade-in"
             tabindex="0"
             role="switch"
             [node]="resolvedRef"
+            [stateService]="stateService"
             [collapsed]="hoveredNode !== node"
             [selected]="selectedNode?.node === resolvedRef"
             (click)="refBadgeClick(resolvedRef, ref, $event)"
@@ -234,6 +236,7 @@
           [style.left.px]="getControlNodeFor(group).width / 2"
           [style.width.px]="getControlNodeFor(group).width"
           [node]="getControlNodeFor(group)"
+          [stateService]="stateService"
           [selected]="selectedNode?.node === group"
           (click)="toggleSelectedNode(group, $event)"
           (keydown.enter)="toggleSelectedNode(group, $event)"
@@ -241,12 +244,13 @@
           [edges]="getEdges(group)"
         >
           <ng-container *ngFor="let ref of group.artifactRefs; trackBy: nodeOrGroupTrack">
-            <ng-container *ngIf="makeSafeNode(resolveReference?.(ref)) as resolvedRef">
+            <ng-container *ngIf="makeSafeNode(resolveReference(ref)) as resolvedRef">
               <ai-dag-node-ref-badge
                 class="fade-in"
                 [attr.tabindex]="isGroupExpanded(group) ? 0 : -1"
                 role="switch"
                 [node]="resolvedRef"
+                [stateService]="stateService"
                 [collapsed]="hoveredNode !== group"
                 [selected]="selectedNode?.node === resolvedRef"
                 (click)="refBadgeClick(resolvedRef, ref, $event)"
@@ -263,6 +267,7 @@
             *ngIf="group.treatAsLoop"
             [style.height.px]="isGroupExpanded(group) ? getControlNodeFor(group).height * 0.6 : 0"
             [style.width.px]="getControlNodeFor(group).width"
+            [stateService]="stateService"
             [parentNodeSelected]="selectedNode?.node === group"
             [unTabbable]="!isGroupExpanded(group)"
             [attr.aria-hidden]="!isGroupExpanded(group)"
@@ -293,8 +298,8 @@
           [nodes]="group.nodes"
           [edges]="group.edges"
           [groups]="group.groups"
+          [stateService]="stateService"
           (graphResize)="storeSubDagDims($event, group)"
-          [resolveReference]="resolveReference"
         ></ai-dag-raw>
         <ng-container *ngIf="!!(group.treatAsLoop && group._cachedSelection)">
           <ai-dag-raw
@@ -304,8 +309,8 @@
             [extraPadding]="'loop'"
             [sizeConfig]="sizeConfig"
             [nodes]="[group._cachedSelection]"
+            [stateService]="stateService"
             (graphResize)="storeSubDagDims($event, group)"
-            [resolveReference]="resolveReference"
           ></ai-dag-raw>
           <ai-dag-raw
             #subDag
@@ -316,8 +321,8 @@
             [nodes]="group._cachedSelection.nodes"
             [edges]="group._cachedSelection.edges"
             [groups]="group._cachedSelection.groups"
+            [stateService]="stateService"
             (graphResize)="storeSubDagDims($event, group)"
-            [resolveReference]="resolveReference"
           ></ai-dag-raw>
         </ng-container>
       </footer>

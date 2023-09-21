@@ -139,11 +139,9 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   }
   @Output() iterationChange = new EventEmitter<string>();
   @Output() onIterSelect = new EventEmitter<DagNode|DagGroup|undefined>();
+  @Input() stateService?: DagStateService;
 
-  constructor(
-      private readonly cdr: ChangeDetectorRef,
-      private readonly stateService: DagStateService,
-  ) {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.observers = this.stateService?.listenAll({

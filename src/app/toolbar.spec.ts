@@ -21,7 +21,6 @@ import {Component, TemplateRef, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
-import {DagStateService} from './dag-state.service';
 import {defaultFeatures} from './data_types_internal';
 import {DagNode} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
@@ -62,7 +61,6 @@ describe('DagToolbar', () => {
     let toolbar: DagToolbar;
     let loader: HarnessLoader;
     let rootLoader: HarnessLoader;
-    let stateService: DagStateService;
 
     beforeEach(waitForAsync(async () => {
       fixture = TestBed.createComponent(DagWrapper);
@@ -72,7 +70,6 @@ describe('DagToolbar', () => {
       loader = TestbedHarnessEnvironment.loader(fixture);
       rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
       toolbarHarness = await loader.getHarness(DagToolbarHarness);
-      stateService = fixture.debugElement.injector.get(DagStateService);
     }));
 
     afterEach(fakeAsync(() => {
@@ -140,13 +137,6 @@ describe('DagToolbar', () => {
       await button.click();
       const dialogHarness = await rootLoader.getHarness(A11yHelpCenterHarness);
       expect(dialogHarness).toBeDefined();
-    });
-
-    it('Zoom reset button calls State Service EventEmitter', async () => {
-      spyOn(stateService.zoomReset, 'next');
-      const button = await toolbarHarness.getZoomResetButton();
-      await button.click();
-      expect(stateService.zoomReset.next).toHaveBeenCalled();
     });
   });
 });

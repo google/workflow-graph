@@ -65,11 +65,9 @@ export class NodeRefBadge implements OnInit, OnDestroy {
   @Input() node?: DagNode;
   @Input() collapsed = true;
   @Input() selected = true;
+  @Input() stateService?: DagStateService;
 
-  constructor(
-      private readonly cdr: ChangeDetectorRef,
-      private readonly stateService: DagStateService,
-  ) {}
+  constructor(private readonly cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.observers = this.stateService?.listenAll({

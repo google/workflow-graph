@@ -21,7 +21,6 @@ import {FormsModule} from '@angular/forms';
 
 import {AccessibilityHelpCenter} from './a11y/a11y_help_center';
 import {ShortcutService} from './a11y/shortcut.service';
-import {DagStateService} from './dag-state.service';
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
 import {fetchIcon, iconForState} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -122,7 +121,6 @@ export class DagToolbar implements OnInit {
   themeConfig = DEFAULT_THEME;
   $features = defaultFeatures;
   $zoomStepConfig = defaultZoomConfig;
-  zoomReset: EventEmitter<void>;
 
   $nodes: Array<DagNode|CustomNode> = [];
   $groups: DagGroup[] = [];
@@ -141,6 +139,8 @@ export class DagToolbar implements OnInit {
 
   @Input() zoom = 1;
   @Output() zoomChange = new EventEmitter();
+
+  @Output() readonly resetZoom = new EventEmitter();
 
   @Input('features')
   set features(f: FeatureToggleOptions) {
@@ -214,12 +214,10 @@ export class DagToolbar implements OnInit {
       private readonly dialog: MatDialog,
       private readonly shortcutService: ShortcutService,
       private readonly iconsService: DagIconsService,
-      readonly stateService: DagStateService,
       @Optional() private readonly dagLogger?: DagLogger,
   ) {
     this.iconsService.registerIcons();
     this.calculateStepMetrics = debounce(this.calculateStepMetrics, 50, this);
-    this.zoomReset = this.stateService.zoomReset;
   }
 
   ngOnInit() {
@@ -237,8 +235,7 @@ export class DagToolbar implements OnInit {
         this.zoomOut();
       });
       this.shortcutService.registerShortcutAction('ZOOM_RESET', () => {
-        this.zoomReset.next();
-        this.dagLogger?.logZoom('reset', 'toolbar');
+        this.zoomReset();
       });
       this.shortcutService.registerShortcutAction('TOGGLE_MINIMAP', () => {
         this.toggleMinimapVisibility();
@@ -309,6 +306,11 @@ export class DagToolbar implements OnInit {
   zoomOut() {
     this.zoomVal -= this.zoomStepConfig.step;
     this.dagLogger?.logZoom('out', 'toolbar');
+  }
+
+  zoomReset() {
+    this.resetZoom.emit();
+    this.dagLogger?.logZoom('reset', 'toolbar');
   }
 
   set expandedMode(mode: boolean) {

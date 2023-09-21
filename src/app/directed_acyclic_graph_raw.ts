@@ -139,10 +139,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return !this.dagPath.length;
   }
 
+  @Input() stateService?: DagStateService;
   @Input() noEmptySpaceAlloc = false;
   @Output() groupIterationChanged = new EventEmitter<GroupIterationRecord>();
-
-  @Input() resolveReference?: (ref: NodeRef) => DagNode | DagGroup;
 
   // DAG Props Converted (for interaction with Renderer)
   @Output() graphResize = new EventEmitter<GraphDims>();
@@ -292,7 +291,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       private readonly cdr: ChangeDetectorRef,
       readonly userConfigService: UserConfigService,
       private readonly liveAnnouncer: LiveAnnouncer,
-      private readonly stateService: DagStateService,
   ) {
     this.updateGraphLayout = debounce(this.updateGraphLayout, 50, this);
     this.updateDAG = this.updateDAG.bind(this);
@@ -1060,6 +1058,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     const {nodes, groups} = this.nodeMap;
     const edges = [...nodes[node.id]?.edges, ...groups[node.id]?.edges];
     return edges.map(({to}) => nodes[to] ? nodes[to].node : groups[to]?.group);
+  }
+
+  resolveReference(ref: NodeRef) {
+    return this.stateService?.resolveReference(ref) as DagNode;
   }
 
   animatedEdge(e: DagEdge) {

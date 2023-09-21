@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {EventEmitter, Injectable, TemplateRef} from '@angular/core';
+import {TemplateRef} from '@angular/core';
 import * as _ from 'lodash';
 import {Observable, Subject, Subscription} from 'rxjs';
 import {distinctUntilChanged} from 'rxjs/operators';
@@ -40,9 +40,6 @@ const isNoop = (fn: Function) => fn === passThru;
  * Since services are global singletons, while we will borrow the pattern,
  * we will initialize this manually in the DAG Parent (`ai-dag-renderer`)
  */
-@Injectable({
-  providedIn: 'root',
-})
 export class DagStateService {
   // TODO(b/180560084): Refactor this code using dictionaries
   // TODO(b/180560085): Add tests for this file
@@ -81,7 +78,14 @@ export class DagStateService {
       this.expandPathChange$;
   iterationChange$: Observable<DagStateService['iterationChange']> =
       this.iterationChangeChange$;
-  zoomReset = new EventEmitter();
+
+  /**
+   * Construct a new state service object. This should only be done by the root
+   * level of your DAG (ideally Dag)
+   * @param resolveReference The function that allows any subdag to resolve a
+   *     global node reference using `NodeRef`
+   */
+  constructor(readonly resolveReference: ReferenceResolver) {}
 
   /**
    * Listen to all the various properties inside the DAG Shared state
@@ -102,7 +106,6 @@ export class DagStateService {
         Parameters<DagStateService['listenIterationChange']>[0],
     customNodeTemplates = passThru as
         Parameters<DagStateService['listenCustomNodeTemplates']>[0],
-    zoomReset = passThru,
   }) {
     const observers: Subscription[] = [];
     isNoop(collapsed) || observers.push(this.listenCollapsed(collapsed));
@@ -116,8 +119,6 @@ export class DagStateService {
         observers.push(this.listenIterationChange(iterationChange));
     isNoop(customNodeTemplates) ||
         observers.push(this.listenCustomNodeTemplates(customNodeTemplates));
-    isNoop(zoomReset) || observers.push(this.zoomReset.subscribe(zoomReset));
-
     return observers;
   }
 
@@ -145,7 +146,6 @@ export class DagStateService {
       this.featuresChange$.unsubscribe();
       this.expandPathChange$.unsubscribe();
       this.customNodeTemplatesChange$.unsubscribe();
-      this.zoomReset.unsubscribe();
     }
   }
 
