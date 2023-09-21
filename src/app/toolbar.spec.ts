@@ -23,6 +23,7 @@ import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angul
 
 import {ScreenshotTest} from '../screenshot_test';
 
+import {DagStateService} from './dag-state.service';
 import {defaultFeatures} from './data_types_internal';
 import {DagNode} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
@@ -63,6 +64,7 @@ describe('DagToolbar', () => {
     let toolbar: DagToolbar;
     let loader: HarnessLoader;
     let rootLoader: HarnessLoader;
+    let stateService: DagStateService;
     let screenShot: ScreenshotTest;
 
     beforeEach(waitForAsync(async () => {
@@ -73,6 +75,7 @@ describe('DagToolbar', () => {
       loader = TestbedHarnessEnvironment.loader(fixture);
       rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
       toolbarHarness = await loader.getHarness(DagToolbarHarness);
+      stateService = fixture.debugElement.injector.get(DagStateService);
 
       screenShot = new ScreenshotTest(module.id);
     }));
@@ -148,6 +151,13 @@ describe('DagToolbar', () => {
       await button.click();
       const dialogHarness = await rootLoader.getHarness(A11yHelpCenterHarness);
       expect(dialogHarness).toBeDefined();
+    });
+
+    it('Zoom reset button calls State Service EventEmitter', async () => {
+      spyOn(stateService.zoomReset, 'next');
+      const button = await toolbarHarness.getZoomResetButton();
+      await button.click();
+      expect(stateService.zoomReset.next).toHaveBeenCalled();
     });
   });
 });
