@@ -20,6 +20,8 @@ import {Component, Input} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
+import {ScreenshotTest} from '../screenshot_test';
+
 import {NodeState} from './data_types_internal';
 import {DagNodeStateBadgeModule} from './node_state_badge';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
@@ -31,56 +33,62 @@ TestBed.initTestEnvironment(
     {teardown: {destroyAfterEach: true}});
 
 describe('Node State Badge', () => {
-  describe('States', () => {
-    let fixture: ComponentFixture<DagNodeStateBadgeHost>;
-    let harness: DagNodeStateBadgeHarness;
+  let fixture: ComponentFixture<DagNodeStateBadgeHost>;
+  let harness: DagNodeStateBadgeHarness;
+  let screenShot: ScreenshotTest;
 
-    beforeEach(waitForAsync(async () => {
-      await TestBed
-          .configureTestingModule({
-            declarations: [DagNodeStateBadgeHost],
-            imports: [
-              ...TEST_IMPORTS,
-              DagNodeStateBadgeModule,
-            ],
-            providers: [...TEST_PROVIDERS],
-          })
-          .compileComponents();
-      fixture = TestBed.createComponent(DagNodeStateBadgeHost);
-      fixture.componentInstance.nodeState = 'PENDING';
-      fixture.detectChanges();
-      const loader = TestbedHarnessEnvironment.loader(fixture);
-      harness = await loader.getHarness(DagNodeStateBadgeHarness);
-    }));
+  beforeEach(waitForAsync(async () => {
+    await TestBed
+        .configureTestingModule({
+          declarations: [DagNodeStateBadgeHost],
+          imports: [
+            ...TEST_IMPORTS,
+            DagNodeStateBadgeModule,
+          ],
+          providers: [...TEST_PROVIDERS],
+        })
+        .compileComponents();
+    fixture = TestBed.createComponent(DagNodeStateBadgeHost);
+    fixture.componentInstance.nodeState = 'PENDING';
+    fixture.detectChanges();
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+    harness = await loader.getHarness(DagNodeStateBadgeHarness);
 
-    afterEach(fakeAsync(() => {
-      fixture.destroy();
-    }));
+    screenShot = new ScreenshotTest(module.id);
+  }));
 
-    it('PENDING - Renders an icon and the given label text',
-       fakeAsync(async () => {
+  afterEach(fakeAsync(() => {
+    fixture.destroy();
+  }));
+
+  describe('PENDING', () => {
+    it('Renders an icon and the given label text', fakeAsync(async () => {
          fixture.componentInstance.nodeState = 'PENDING';
          fixture.detectChanges();
          expect(await harness.getIcon()).toBeDefined();
          expect(await harness.getText()).toEqual('Pending');
        }));
 
-    it('NO_STATE_STATIC - Renders an icon and the given label text',
-       fakeAsync(async () => {
-         fixture.componentInstance.nodeState = 'NO_STATE_STATIC';
-         fixture.detectChanges();
-         expect(await harness.hasIcon()).toBeFalse();
-         expect(await harness.getText()).toEqual('');
-       }));
-
-    it('NO_STATE_RUNTIME - Renders nothing for NO_STATE_RUNTIME',
-       fakeAsync(async () => {
-         fixture.componentInstance.nodeState = 'NO_STATE_RUNTIME';
-         fixture.detectChanges();
-         expect(await harness.hasIcon()).toBeFalse();
-         expect(await harness.getText()).toEqual('');
-       }));
+    it('Renders correctly (screenshot)', async () => {
+      await screenShot.expectMatch('pending');
+    });
   });
+
+  it('NO_STATE_STATIC - Renders an icon and the given label text',
+     fakeAsync(async () => {
+       fixture.componentInstance.nodeState = 'NO_STATE_STATIC';
+       fixture.detectChanges();
+       expect(await harness.hasIcon()).toBeFalse();
+       expect(await harness.getText()).toEqual('');
+     }));
+
+  it('NO_STATE_RUNTIME - Renders nothing for NO_STATE_RUNTIME',
+     fakeAsync(async () => {
+       fixture.componentInstance.nodeState = 'NO_STATE_RUNTIME';
+       fixture.detectChanges();
+       expect(await harness.hasIcon()).toBeFalse();
+       expect(await harness.getText()).toEqual('');
+     }));
 });
 
 @Component({

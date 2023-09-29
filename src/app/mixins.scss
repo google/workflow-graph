@@ -11,6 +11,9 @@ $pulse-color: $active-color;
 $ace-font-weight-medium: 500;
 $ace-font-weight-bold: 700;
 
+/* Fonts */
+$default-font: Roboto, 'Helvetica Neue', sans-serif;
+
 /* Animations */
 @keyframes spin {
   0% {

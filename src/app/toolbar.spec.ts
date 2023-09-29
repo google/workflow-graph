@@ -21,6 +21,8 @@ import {Component, TemplateRef, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
+import {ScreenshotTest} from '../screenshot_test';
+
 import {defaultFeatures} from './data_types_internal';
 import {DagNode} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
@@ -61,6 +63,7 @@ describe('DagToolbar', () => {
     let toolbar: DagToolbar;
     let loader: HarnessLoader;
     let rootLoader: HarnessLoader;
+    let screenShot: ScreenshotTest;
 
     beforeEach(waitForAsync(async () => {
       fixture = TestBed.createComponent(DagWrapper);
@@ -70,15 +73,23 @@ describe('DagToolbar', () => {
       loader = TestbedHarnessEnvironment.loader(fixture);
       rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
       toolbarHarness = await loader.getHarness(DagToolbarHarness);
+
+      screenShot = new ScreenshotTest(module.id);
     }));
 
     afterEach(fakeAsync(() => {
       fixture.destroy();
     }));
 
-    it('Renders correctly', async () => {
-      expect(toolbar).toBeDefined();
-      expect(toolbarHarness).toBeDefined();
+    describe('Default', () => {
+      it('Toolbar and harness are defined', async () => {
+        expect(toolbar).toBeDefined();
+        expect(toolbarHarness).toBeDefined();
+      });
+
+      it('Renders correctly (screenshot)', async () => {
+        await screenShot.expectMatch('renders_correctly');
+      });
     });
 
     it('Calculated node states correctly', () => {

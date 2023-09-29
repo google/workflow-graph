@@ -2,6 +2,9 @@
  * Dag scaffolding base style definitions
  */
 
+/* Mixin and deps imports */
+@import './mixins';
+
 ai-dag-scaffold {
   flex: 1 1 0%;
   display: flex;

@@ -1,9 +1,13 @@
+/* Mixin and deps imports */
+@import './mixins';
+
 .ai-dag-node-state-badge {
   align-items: center;
   border-radius: 12px;
   display: inline-flex;
   font-size: 12px;
   height: 28px;
+  font-family: $default-font;
 
   .icon {
     padding: 0 4px;

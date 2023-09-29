@@ -15,13 +15,18 @@
  * limitations under the License.
  */
 
-import {HttpClientModule} from '@angular/common/http';
-import {provideNoopAnimations} from '@angular/platform-browser/animations';
+const SCREEN_WIDTH = 1440;
 
-export const TEST_PROVIDERS = [
-  provideNoopAnimations(),
-];
+/** Screenshot testing */
+export class ScreenshotTest {
+  constructor(moduleId: string) {}
 
-export const TEST_IMPORTS = [
-  HttpClientModule,
-];
+  async expectMatch(name: string, element = 'body') {
+    /**
+     * This is an empty matcher because the screenshots are generated internally
+     * and no open-source alternative is set up yet.
+     * TODO: b/303376415
+     */
+    return;
+  }
+}
