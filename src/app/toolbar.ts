@@ -24,7 +24,6 @@ import {ShortcutService} from './a11y/shortcut.service';
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
 import {fetchIcon, iconForState} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
-import {DagIconsService} from './icons_service';
 import {DagLogger} from './logger/dag_logger';
 import {MatDialog, MaterialSharedModule} from './material_shared_module';
 import {NgVarModule} from './ng_var_directive';
@@ -213,10 +212,8 @@ export class DagToolbar implements OnInit {
       private readonly cdr: ChangeDetectorRef,
       private readonly dialog: MatDialog,
       private readonly shortcutService: ShortcutService,
-      private readonly iconsService: DagIconsService,
       @Optional() private readonly dagLogger?: DagLogger,
   ) {
-    this.iconsService.registerIcons();
     this.calculateStepMetrics = debounce(this.calculateStepMetrics, 50, this);
   }
 

@@ -22,7 +22,6 @@ import {takeUntil} from 'rxjs/operators';
 import {ShortcutService} from './a11y/shortcut.service';
 import {baseColors, BLUE_THEME, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
-import {DagIconsService} from './icons_service';
 import {DagLogger, DagLoggerModule} from './logger/dag_logger';
 import {DagToolbar} from './toolbar';
 import {UserConfig, UserConfigService} from './user_config.service';
@@ -83,11 +82,9 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
   constructor(
       private readonly userConfigService: UserConfigService,
       private readonly shortcutService: ShortcutService,
-      private readonly iconsService: DagIconsService,
       private readonly el: ElementRef) {}
 
   ngOnInit() {
-    this.iconsService.registerIcons();
     this.userConfigService.init(this.userConfig);
     this.userConfigService.config.pipe(takeUntil(this.destroy))
         .subscribe((userConfig: UserConfig) => {

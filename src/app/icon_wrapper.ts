@@ -18,6 +18,7 @@
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, Component, HostBinding, Input, NgModule, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
 
+import {DagIconsService} from './icons_service';
 import {MaterialSharedModule} from './material_shared_module';
 
 const SIZE_ICON_LARGE = 32;
@@ -78,6 +79,10 @@ export class WorkflowGraphIcon implements OnChanges {
 
   /** An internal specification for what icon this component will render. */
   iconSpec?: IconSpec;
+
+  constructor(private readonly iconsService: DagIconsService) {
+    this.iconsService.registerIcons();
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (this.icon === 'working') {
