@@ -20,7 +20,8 @@ import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cd
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import {BehaviorSubject, Subscription} from 'rxjs';
+import {BehaviorSubject, Subject, Subscription} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
@@ -90,6 +91,8 @@ interface CameraMoveOpts {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
+  destroy = new Subject<void>();
+
   readonly nodePad = 10;
 
   // DOM Elements
@@ -119,7 +122,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   collapsed = true;
   zoomStepConfig = createDefaultZoomConfig({step: defaultZoomConfig.step / 2});
   themeConfig = DEFAULT_THEME;
-  stateService = new DagStateService(this.resolveReference.bind(this));
   animateMove = false;
   mousedown = false;
   private $customNodeTemplates: Record<string, TemplateRef<any>> = {};
@@ -167,7 +169,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   lastResizeEv: ResizeEventData = {width: 0, height: 0};
   minimapInnerWidth = new BehaviorSubject(this.mmWidth);
   minimapInnerHeight = new BehaviorSubject(this.mmHeight);
-
+  zoomReset$?: Subscription;
 
   @Input('theme')
   set theme(theme: DagTheme) {
@@ -309,11 +311,14 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   constructor(
       private readonly cdr: ChangeDetectorRef,
       @Optional() private readonly dagLogger: DagLogger|null,
-      private readonly shortcutService: ShortcutService) {
+      private readonly shortcutService: ShortcutService,
+      readonly stateService: DagStateService,
+  ) {
     this.focusElement = debounce(this.focusElement, 50, this);
     this.onVisualUpdate = debounce(this.onVisualUpdate, 50, this);
     this.handleResizeAsync = debounce(this.handleResizeAsync, 50, this);
     this.resetAnimationMode = debounce(this.resetAnimationMode, 1200, this);
+    this.resolveReference = this.resolveReference.bind(this);
     this.uniqueId = `${Date.now()}`;
   }
 
@@ -380,6 +385,9 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       },
     });
 
+    this.zoomReset$ = this.stateService.zoomReset.pipe(takeUntil(this.destroy))
+                          .subscribe(() => this.resetZoom());
+
     this.shortcutService.registerShortcutAction(
         'CANVAS_UP', () => this.stepCanvasOffset('up'));
     this.shortcutService.registerShortcutAction(
@@ -391,7 +399,9 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.stateService.destroyAll(this.observers, true);
+    this.stateService.destroyAll(this.observers);
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   ngAfterViewInit() {

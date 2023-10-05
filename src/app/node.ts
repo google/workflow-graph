@@ -91,12 +91,13 @@ export class DagNodeEl implements OnInit, OnDestroy {
 
   @Input() collapsed = true;
 
-  @Input() stateService?: DagStateService;
-
   @Output() hoveredChanged = new EventEmitter<boolean>();
   observers: Subscription[] = [];
 
-  constructor(private readonly cdr: ChangeDetectorRef) {
+  constructor(
+      private readonly cdr: ChangeDetectorRef,
+      private readonly stateService: DagStateService,
+  ) {
     this.detectChanges = debounce(this.detectChanges, 50, this);
   }
 
