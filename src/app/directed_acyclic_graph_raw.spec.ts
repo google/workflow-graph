@@ -75,39 +75,40 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(harness).toBeDefined();
        }));
 
-    it('Selection and data binding for nodes works', waitForAsync(async () => {
+    it('Selection and data binding for nodes works', fakeAsync(async () => {
          await harness.clickArtifactNode('TransformedTable');
          expect(fixture.componentInstance.dagRaw.selectedNode?.node
                     .getNodeDisplayName())
              .toBe('TransformedTable');
        }));
 
-    it('Preserves selection data on reassignment', waitForAsync(async () => {
+    it('Preserves selection data on reassignment', fakeAsync(async () => {
          await harness.clickArtifactNode('TransformedTable');
          const {dagRaw} = fixture.componentInstance;
          const newNode = new DagNode('test', 'artifact');
          const newEdge: DagEdge = {from: 'TransformedTable', to: newNode.id};
          dagRaw.nodes = [...FAKE_DATA.nodes, newNode];
          dagRaw.edges = [...FAKE_DATA.edges, newEdge];
+         flush();
 
          expect(dagRaw.selectedNode?.node.getNodeDisplayName())
              .toBe('TransformedTable');
        }));
 
     it('Unselect node when a node is clicked again on the graph',
-       waitForAsync(async () => {
+       fakeAsync(async () => {
          await harness.clickArtifactNode('TransformedTable');
          expect(fixture.componentInstance.dagRaw.selectedNode).not.toBeNull();
          await harness.clickArtifactNode('TransformedTable');
          expect(fixture.componentInstance.dagRaw.selectedNode).toBeNull();
        }));
 
-    it('Custom Node renders correctly', waitForAsync(async () => {
+    it('Custom Node renders correctly', fakeAsync(async () => {
          await harness.clickCustomNode('CustomNode1');
          expect(fixture.componentInstance.dagRaw.selectedNode).toBeNull();
        }));
 
-    it('Distracting animations are stoppable', waitForAsync(async () => {
+    it('Distracting animations are stoppable', fakeAsync(async () => {
          fixture.componentInstance.dagRaw.userConfigService.update(
              {a11y: {disableAnimations: true}});
          const animatedEdges = await harness.getEdges('.animated.running');
@@ -222,8 +223,8 @@ describe('Directed Acyclic Graph Raw', () => {
       <ai-dag-raw #dagRaw
           [nodes]="graph.nodes"
           [edges]="graph.edges"
-          [groups]="graph.groups"
-      />
+          [groups]="graph.groups">
+      </ai-dag-raw>
     </div>`,
   styles: [`
     .container {

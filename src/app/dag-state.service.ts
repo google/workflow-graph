@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {EventEmitter, Injectable, OnDestroy, TemplateRef} from '@angular/core';
+import {TemplateRef} from '@angular/core';
 import * as _ from 'lodash';
 import {Observable, Subject, Subscription} from 'rxjs';
 import {distinctUntilChanged} from 'rxjs/operators';
@@ -40,11 +40,9 @@ const isNoop = (fn: Function) => fn === passThru;
  * Since services are global singletons, while we will borrow the pattern,
  * we will initialize this manually in the DAG Parent (`ai-dag-renderer`)
  */
-@Injectable({providedIn: 'root'})
-export class DagStateService implements OnDestroy {
+export class DagStateService {
   // TODO(b/180560084): Refactor this code using dictionaries
   // TODO(b/180560085): Add tests for this file
-  // TODO(b/303633560): Serving more Workflow Graph (toolbar+graph) per page
   private collapsed = true;
   private selectedNode: SelectedNode|null = null;
   private theme = DEFAULT_THEME;
@@ -53,8 +51,6 @@ export class DagStateService implements OnDestroy {
   private customNodeTemplates: Record<string, TemplateRef<any>> = {};
   private expandPath: string[] = [];
   private iterationChange!: GroupIterationRecord;
-
-  readonly zoomReset = new EventEmitter();
 
   private readonly collapsedChange$ =
       new Subject<DagStateService['collapsed']>();
@@ -82,6 +78,14 @@ export class DagStateService implements OnDestroy {
       this.expandPathChange$;
   iterationChange$: Observable<DagStateService['iterationChange']> =
       this.iterationChangeChange$;
+
+  /**
+   * Construct a new state service object. This should only be done by the root
+   * level of your DAG (ideally Dag)
+   * @param resolveReference The function that allows any subdag to resolve a
+   *     global node reference using `NodeRef`
+   */
+  constructor(readonly resolveReference: ReferenceResolver) {}
 
   /**
    * Listen to all the various properties inside the DAG Shared state
@@ -134,16 +138,15 @@ export class DagStateService implements OnDestroy {
     for (const obs of observers) {
       obs.unsubscribe();
     }
-  }
-
-  ngOnDestroy() {
-    this.collapsedChange$.unsubscribe();
-    this.selectedNodeChange$.unsubscribe();
-    this.themeChange$.unsubscribe();
-    this.layoutChange$.unsubscribe();
-    this.featuresChange$.unsubscribe();
-    this.expandPathChange$.unsubscribe();
-    this.customNodeTemplatesChange$.unsubscribe();
+    if (destroyStateService) {
+      this.collapsedChange$.unsubscribe();
+      this.selectedNodeChange$.unsubscribe();
+      this.themeChange$.unsubscribe();
+      this.layoutChange$.unsubscribe();
+      this.featuresChange$.unsubscribe();
+      this.expandPathChange$.unsubscribe();
+      this.customNodeTemplatesChange$.unsubscribe();
+    }
   }
 
   private listenCollapsed(fn: StateListener<DagStateService['collapsed']>) {
