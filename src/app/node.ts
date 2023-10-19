@@ -17,7 +17,7 @@
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
@@ -91,12 +91,13 @@ export class DagNodeEl implements OnInit, OnDestroy {
 
   @Input() collapsed = true;
 
-  @Input() stateService?: DagStateService;
-
   @Output() hoveredChanged = new EventEmitter<boolean>();
   observers: Subscription[] = [];
 
-  constructor(private readonly cdr: ChangeDetectorRef) {
+  constructor(
+      private readonly cdr: ChangeDetectorRef,
+      @Optional() private readonly stateService?: DagStateService,
+  ) {
     this.detectChanges = debounce(this.detectChanges, 50, this);
   }
 
@@ -244,6 +245,7 @@ export class DagNodeEl implements OnInit, OnDestroy {
   exports: [
     DagNodeEl,
   ],
+
 })
 export class DagNodeModule {
 }

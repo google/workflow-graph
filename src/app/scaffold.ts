@@ -20,6 +20,7 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
+import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
 import {DagLogger, DagLoggerModule} from './logger/dag_logger';
@@ -53,6 +54,7 @@ export {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     DagLogger,
+    STATE_SERVICE_PROVIDER,
   ],
   encapsulation: ViewEncapsulation.None,
 })

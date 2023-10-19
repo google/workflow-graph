@@ -16,7 +16,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, NgModule, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, NgModule, OnDestroy, OnInit, Optional} from '@angular/core';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
@@ -65,9 +65,11 @@ export class NodeRefBadge implements OnInit, OnDestroy {
   @Input() node?: DagNode;
   @Input() collapsed = true;
   @Input() selected = true;
-  @Input() stateService?: DagStateService;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+      private readonly cdr: ChangeDetectorRef,
+      @Optional() private readonly stateService?: DagStateService,
+  ) {}
 
   ngOnInit() {
     this.observers = this.stateService?.listenAll({

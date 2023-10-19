@@ -16,7 +16,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
 import {Subscription} from 'rxjs';
 
@@ -139,9 +139,11 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   }
   @Output() iterationChange = new EventEmitter<string>();
   @Output() onIterSelect = new EventEmitter<DagNode|DagGroup|undefined>();
-  @Input() stateService?: DagStateService;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+      private readonly cdr: ChangeDetectorRef,
+      @Optional() private readonly stateService?: DagStateService,
+  ) {}
 
   ngOnInit() {
     this.observers = this.stateService?.listenAll({

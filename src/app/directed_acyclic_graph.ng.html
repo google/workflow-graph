@@ -46,7 +46,6 @@
       [nodes]="nodes"
       [edges]="edges"
       [groups]="groups"
-      [stateService]="stateService"
       [hoveredEdge]="hoveredEdge"
       (graphResize)="resizeGraph($event)"
       (focusin)="focusElementFiltered($event)"
@@ -55,6 +54,7 @@
       (mouseleave)="mousedown = false"
       [class.animate-movement]="animateMove && !graphPanning"
       [class.minimap-focused]="mmFocused && !mmPressed"
+      [resolveReference]="resolveReference"
     />
   </aside>
 </figure>

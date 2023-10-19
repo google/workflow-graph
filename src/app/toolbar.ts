@@ -21,6 +21,8 @@ import {FormsModule} from '@angular/forms';
 
 import {AccessibilityHelpCenter} from './a11y/a11y_help_center';
 import {ShortcutService} from './a11y/shortcut.service';
+import {DagStateService} from './dag-state.service';
+import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
 import {fetchIcon, iconForState} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -98,6 +100,9 @@ const DIALOG_MAX_WIDTH = 600;
   templateUrl: 'toolbar.ng.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {'class': 'ai-dag-toolbar'},
+  providers: [
+    STATE_SERVICE_PROVIDER,
+  ],
 })
 export class DagToolbar implements OnInit {
   graphState: RuntimeState = 'Static';
@@ -138,8 +143,6 @@ export class DagToolbar implements OnInit {
 
   @Input() zoom = 1;
   @Output() zoomChange = new EventEmitter();
-
-  @Output() readonly resetZoom = new EventEmitter();
 
   @Input('features')
   set features(f: FeatureToggleOptions) {
@@ -212,6 +215,7 @@ export class DagToolbar implements OnInit {
       private readonly cdr: ChangeDetectorRef,
       private readonly dialog: MatDialog,
       private readonly shortcutService: ShortcutService,
+      private readonly stateService: DagStateService,
       @Optional() private readonly dagLogger?: DagLogger,
   ) {
     this.calculateStepMetrics = debounce(this.calculateStepMetrics, 50, this);
@@ -306,7 +310,7 @@ export class DagToolbar implements OnInit {
   }
 
   zoomReset() {
-    this.resetZoom.emit();
+    this.stateService.zoomReset.emit();
     this.dagLogger?.logZoom('reset', 'toolbar');
   }
 
