@@ -141,6 +141,8 @@ export class DagToolbar implements OnInit {
 
   @Output() readonly resetZoom = new EventEmitter();
 
+  @Input() rightAlignMainControls = false;
+
   @Input('features')
   set features(f: FeatureToggleOptions) {
     this.$features = f;
