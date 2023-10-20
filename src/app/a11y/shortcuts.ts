@@ -106,8 +106,8 @@ export const DEFAULT_SHORTCUTS: ShortcutList<Shortcut> = {
     name: 'A11Y_HELP_CENTER',
     desc: 'Open the Accessibility Help Center',
     keys: {
-      master: 'KeyH',
-      mac: 'KeyH',
+      master: 'KeyA',
+      mac: 'KeyA',
       windows: undefined,
       linux: undefined,
     },

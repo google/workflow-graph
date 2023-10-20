@@ -89,7 +89,8 @@ export function getRuntimeStateFromNodes(nodes: Array<DagNode|CustomNode>):
 
 const fakeLabelGenerator: DagToolbarLabelGenerator = (t, label) => {};
 
-const DIALOG_MAX_WIDTH = 600;
+const DIALOG_MAX_WIDTH = '100vw';
+const DIALOG_WIDTH = '600px';
 
 /**
  * Renders the workflow DAG.
@@ -334,6 +335,7 @@ export class DagToolbar implements OnInit {
   openA11yHelpCenter() {
     this.dialog.open(AccessibilityHelpCenter, {
       maxWidth: DIALOG_MAX_WIDTH,
+      width: DIALOG_WIDTH,
     });
   }
 

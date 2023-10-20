@@ -45,7 +45,8 @@ import {ShortcutService} from './shortcut.service';
   ],
 })
 export class AccessibilityHelpCenter implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['enabled', 'desc', 'shortcut', 'edit'];
+  // TODO: Remapping shortcuts b/289193145
+  displayedColumns: string[] = ['enabled', 'desc', 'shortcut' /*, 'edit'*/];
   dataSource = Object.values(this.shortcutService.shortcuts);
   form = this.fb.group({
     shortcuts: this.fb.group(
