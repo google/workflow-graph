@@ -92,9 +92,6 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
         .subscribe((userConfig: UserConfig) => {
           this.userConfigChange.emit(userConfig);
         });
-    if (this.features?.enableShortcuts) {
-      this.shortcutService.enableShortcuts(this.el);
-    }
   }
 
   ngAfterContentInit() {
@@ -118,6 +115,11 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
       if (!component) continue;
       component.features = this.features || component.features;
       component.theme = this.theme || component.theme;
+    }
+    if (this.features?.enableShortcuts) {
+      this.shortcutService.enableShortcuts(this.el);
+    } else {
+      this.shortcutService.disableShortcuts();
     }
   }
 }

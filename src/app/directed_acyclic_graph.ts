@@ -258,6 +258,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   @Input('features')
   set features(f: FeatureToggleOptions) {
     this.$features = f;
+    this.propagateFeatures();
     this.stateService.setFeatures(f);
   }
   get features() {
@@ -391,15 +392,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
     this.zoomReset$ = this.stateService.zoomReset.pipe(takeUntil(this.destroy))
                           .subscribe(() => this.resetZoom());
-
-    this.shortcutService.registerShortcutAction(
-        'CANVAS_UP', () => this.stepCanvasOffset('up'));
-    this.shortcutService.registerShortcutAction(
-        'CANVAS_RIGHT', () => this.stepCanvasOffset('right'));
-    this.shortcutService.registerShortcutAction(
-        'CANVAS_DOWN', () => this.stepCanvasOffset('down'));
-    this.shortcutService.registerShortcutAction(
-        'CANVAS_LEFT', () => this.stepCanvasOffset('left'));
   }
 
   ngOnDestroy() {
@@ -984,6 +976,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   }
 
   private zoomingTo(zoom: number, to?: Point) {
+    if (!this.dagWrapper) return;
     const {min, max} = this.zoomStepConfig;
     zoom = clampVal(zoom, min, max);
     if (this.zoom === zoom) return;
@@ -1077,6 +1070,23 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   convertStateToRuntime = convertStateToRuntime;
   min = Math.min;
   max = Math.max;
+
+  /**
+   * Propagate DAG Features to elements, manually (either on init or after
+   * change)
+   */
+  propagateFeatures() {
+    if (this.features.enableShortcuts) {
+      this.shortcutService.registerShortcutAction(
+          'CANVAS_UP', () => this.stepCanvasOffset('up'));
+      this.shortcutService.registerShortcutAction(
+          'CANVAS_RIGHT', () => this.stepCanvasOffset('right'));
+      this.shortcutService.registerShortcutAction(
+          'CANVAS_DOWN', () => this.stepCanvasOffset('down'));
+      this.shortcutService.registerShortcutAction(
+          'CANVAS_LEFT', () => this.stepCanvasOffset('left'));
+    }
+  }
 }
 
 @NgModule({

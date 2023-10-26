@@ -96,12 +96,16 @@ export class ShortcutService implements OnDestroy {
   }
 
   enableShortcuts(ref: ElementRef) {
-    this.keySubscription?.unsubscribe();
+    this.disableShortcuts();
     this.keySubscription =
         observableFromEvent<KeyboardEvent>(ref.nativeElement, 'keydown')
             .subscribe(e => {
               this.handleShortcut(e);
             });
+  }
+
+  disableShortcuts() {
+    this.keySubscription?.unsubscribe();
   }
 
   ngOnDestroy() {

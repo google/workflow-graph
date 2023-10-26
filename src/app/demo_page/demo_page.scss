@@ -1,0 +1,119 @@
+@use '@angular/material' as mat;
+
+$my-primary: mat.define-palette(mat.$blue-palette, 500);
+$my-accent: mat.define-palette(mat.$blue-palette, A200, A100, A400);
+
+$graph-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
+
+@include mat.divider-theme($graph-theme);
+@include mat.form-field-theme($graph-theme);
+
+:host {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  height: 100vh;
+}
+
+h2 {
+  font-family: Google Sans, Roboto;
+  padding: .5em;
+  margin: 0;
+  background: #2196f3;
+  color: white;
+  font-weight: 500;
+}
+
+.demo-container {
+  padding: 16px;
+}
+
+.demo-main {
+  display: flex;
+  flex-direction: row;
+}
+
+.demo-component {
+  width: calc(100vw - 436px);
+  height: calc(100vh - 300px);
+  min-height: 920px;
+}
+
+.demo-controls {
+  flex: 0 0 auto;
+  width: 390px;
+  padding: 8px;
+
+  .demo-button {
+    margin: 4px 8px;
+  }
+
+  mat-form-field {
+    margin: 4px 8px;
+    &.demo-select {
+      width: 40%;
+    }
+  }
+
+  .demo-control-group {
+    margin-bottom: 16px;
+  }
+}
+
+.demo-control-header {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  margin: 16px;
+  font-size: large;
+}
+
+.demo-icon-button {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+  color: #5f6368;
+}
+
+.demo-dialog-surface {
+  background: white;
+  width: 100%;
+  height: 100%;
+}
+
+.demo-toolbar-button {
+  height: 28px;
+  background-color: #1a73e8;
+  border: none;
+  color: white;
+  padding-right: 16px;
+  border-radius: 2px;
+  font-family: roboto;
+  font-size: 12.5px;
+}
+
+.demo-toolbar-button:hover {
+  background-color: white;
+  color: #1a73e8;
+  cursor: pointer;
+}
+
+.demo-toolbar-toggle {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: white;
+  color: #5f6368;
+  border-radius: 50%;
+}
+
+.demo-toolbar-toggle:hover {
+  background-color: #efefef;
+  cursor: pointer;
+}

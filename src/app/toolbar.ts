@@ -16,7 +16,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, OnInit, Optional, Output, TemplateRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, NgModule, Optional, Output, TemplateRef} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 
 import {AccessibilityHelpCenter} from './a11y/a11y_help_center';
@@ -105,7 +105,7 @@ const DIALOG_WIDTH = '600px';
     STATE_SERVICE_PROVIDER,
   ],
 })
-export class DagToolbar implements OnInit {
+export class DagToolbar {
   graphState: RuntimeState = 'Static';
   disableToggle = true;
   completedSteps: number = 0;
@@ -150,6 +150,7 @@ export class DagToolbar implements OnInit {
   @Input('features')
   set features(f: FeatureToggleOptions) {
     this.$features = f;
+    this.propagateFeatures();
     this.detectChanges();
   }
   get features() {
@@ -222,29 +223,6 @@ export class DagToolbar implements OnInit {
       @Optional() private readonly dagLogger?: DagLogger,
   ) {
     this.calculateStepMetrics = debounce(this.calculateStepMetrics, 50, this);
-  }
-
-  ngOnInit() {
-    if (this.features.enableShortcuts) {
-      this.shortcutService.registerShortcutAction('A11Y_HELP_CENTER', () => {
-        this.openA11yHelpCenter();
-      });
-      this.shortcutService.registerShortcutAction('EXPAND_ARTIFACTS', () => {
-        this.expandedMode = !this.expandedMode;
-      });
-      this.shortcutService.registerShortcutAction('ZOOM_IN', () => {
-        this.zoomIn();
-      });
-      this.shortcutService.registerShortcutAction('ZOOM_OUT', () => {
-        this.zoomOut();
-      });
-      this.shortcutService.registerShortcutAction('ZOOM_RESET', () => {
-        this.zoomReset();
-      });
-      this.shortcutService.registerShortcutAction('TOGGLE_MINIMAP', () => {
-        this.toggleMinimapVisibility();
-      });
-    }
   }
 
   detectChanges() {
@@ -356,6 +334,33 @@ export class DagToolbar implements OnInit {
   fetchIcon = (icon: IconConfig, key: keyof IconConfig) => fetchIcon(icon, key);
 
   round = Math.round;
+
+  /**
+   * Propagate DAG Features to elements, manually (either on init or after
+   * change)
+   */
+  propagateFeatures() {
+    if (this.features.enableShortcuts) {
+      this.shortcutService.registerShortcutAction('A11Y_HELP_CENTER', () => {
+        this.openA11yHelpCenter();
+      });
+      this.shortcutService.registerShortcutAction('EXPAND_ARTIFACTS', () => {
+        this.expandedMode = !this.expandedMode;
+      });
+      this.shortcutService.registerShortcutAction('ZOOM_IN', () => {
+        this.zoomIn();
+      });
+      this.shortcutService.registerShortcutAction('ZOOM_OUT', () => {
+        this.zoomOut();
+      });
+      this.shortcutService.registerShortcutAction('ZOOM_RESET', () => {
+        this.zoomReset();
+      });
+      this.shortcutService.registerShortcutAction('TOGGLE_MINIMAP', () => {
+        this.toggleMinimapVisibility();
+      });
+    }
+  }
 }
 
 @NgModule({

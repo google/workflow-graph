@@ -20,7 +20,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
-import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
+import {DagModePageModule} from './demo_page/demo_page';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +28,7 @@ import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    WorkflowGraphWrapperModule,
+    DagModePageModule,
   ],
 })
 export class AppModule {

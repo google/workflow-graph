@@ -1127,10 +1127,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     ];
   }
 
-  makeSafeNode(node: DagNode, isControlNode?: boolean): DagNode;
-  makeSafeNode(node: undefined, isControlNode?: boolean): undefined;
-  makeSafeNode(node: DagNode|undefined, isControlNode = false) {
-    if (!node) return;
+  makeSafeNode(node: DagNode|DagGroup|undefined, isControlNode?: boolean):
+      DagNode|undefined {
+    if (!node || node instanceof DagGroup) return;
     type ExpandedNode = DagNode&{origIcon?: NodeIcon};
     const expNode = node as ExpandedNode;
     const origIcon = expNode.origIcon =

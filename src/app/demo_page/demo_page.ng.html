@@ -1,0 +1,688 @@
+<div class="demo-main">
+  <ai-dag-scaffold
+    class="demo-component"
+    [theme]="currTheme"
+    *ngIf="currDataset"
+    [features]="dagFeatures"
+    [userConfig]="userConfig"
+    (userConfigChange)="userConfigChange.next($event)"
+    >
+    <ai-dag-toolbar
+      [nodes]="currDataset.nodes"
+      [groups]="currDataset.groups"
+      [(expanded)]="expandedMode"
+      [(zoom)]="zoom"
+      [(enableMinimap)]="enableMinimap"
+      (fullscreenModeChange)="openModal(dagTemplate)"
+      [zoomStepConfig]="zoomConfig"
+      [customToolbarToggleTemplates]="[toggleReset, toggleAdd]"
+      [features]="dagFeatures"
+    />
+    <ai-dag-sidebar />
+    <ai-dag-renderer
+      #dagRef
+      [collapsedArtifacts]="!expandedMode"
+      [(zoom)]="zoom"
+      [optimizeForOrm]="optimizeForOrm"
+      [loading]="dagLoading"
+      [enableMinimap]="enableMinimap"
+      [minimapPosition]="minimapPosition"
+      [zoomStepConfig]="zoomConfig"
+      [layout]="dagreOptions"
+      [(selectedNode)]="selectedNode"
+      [followNode]="followSelectedNode ? selectedNodeToRef() : null"
+      [nodes]="currDataset.nodes"
+      [edges]="currDataset.edges"
+      [groups]="currDataset.groups"
+      [customNodeTemplates]="makeObject(['outlineBasic', outlineBasic], ['embedYt', embedYt])"
+    />
+    <ng-template
+      #toggleReset
+    >
+      <button
+        class="demo-toolbar-toggle"
+        (click)="resetGraph()"
+      >
+        <workflow-graph-icon icon="group-iterative" iconset="cloud_ai" size="small">
+        </workflow-graph-icon>
+      </button>
+    </ng-template>
+
+    <ng-template
+      #toggleAdd
+    >
+      <button
+        class="demo-toolbar-button"
+        [style.margin-right.px]='16'
+        title="Will add new Artifact under the current selectedNode or at the end"
+        aria-label="Add Artifact"
+        [disabled]="selectedNode && getNodeType(selectedNode.node) === 'artifact'"
+        (click)="addNode(selectedNode, 'artifact')"
+      >
+        Add Artifact
+        <workflow-graph-icon
+          [style.margin-left.px]='4'
+          [style.margin-right.px]='-12'
+          [icon]="defaultIcons.artifact.name!"
+          [iconset]="defaultIcons.artifact.iconset!"
+          [size]="'small'"
+        />
+      </button>
+      <button
+        class="demo-toolbar-button"
+        title="Will add new Execution under the current selectedNode or at the end"
+        aria-label="Add Execution"
+        (click)="addNode(selectedNode, 'execution')"
+      >
+        Add Execution
+        <workflow-graph-icon
+          [style.margin-left.px]='4'
+          [style.margin-right.px]='-12'
+          [icon]="defaultIcons.execution.name!"
+          [iconset]="defaultIcons.execution.iconset!"
+          [size]="'small'"
+        />
+      </button>
+    </ng-template>
+    <ng-template #outlineBasic
+      let-node="node"
+      let-updateDAG="updateDAG"
+      let-toggleSelection="toggleSelection"
+    >
+      <div
+        [style.position]="'absolute'"
+        [style.top]="'0'"
+        [style.left]="'0'"
+        [style.right]="'0'"
+        [style.bottom]="'0'"
+        [style.overflow]="'auto'"
+        [style.padding.em]=".5"
+        [style.background]="'repeating-linear-gradient(45deg,
+          rgba(0, 0, 0, 0.005),
+          rgba(0, 0, 0, 0.005) 5px,
+          rgba(0, 0, 0, 0.05) 5px,
+          rgba(0, 0, 0, 0.05) 10px) #fff'"
+        [style.display]="'flex'"
+        [style.flex-direction]="'column'"
+        [style.border]="(selectedNode?.node === node ? 3 : 1) + 'px solid rgb(26, 115, 232)'"
+        [style.transition]="'width .25s, height .25s, border .25s'"
+        (focusin)="[$event.preventDefault(), $event.stopPropagation()]"
+      >
+        <div [style.display]="'flex'" [style.align-items]="'center'">
+          <b>Custom node {{node.id}}</b>
+          <div [style.flex]="1"></div>
+        </div>
+        <small [style.flex]="1">
+          This node can be programmed to show anything on the DAG, and be styled
+          any way you would like! There's another custom node on this DAG, can
+          you find it?
+        </small>
+        <div>
+          <div><small><b>Interact with this node</b></small></div>
+          <button mat-stroked-button
+            [style.background]="'white'"
+            (click)="updateDAG(node.height = node.height + 25)"
+          >
+            <workflow-graph-icon
+              [style.margin-left.px]='12'
+              icon="add"
+              iconset="common"
+              size="small">
+            </workflow-graph-icon>
+          </button>
+          <button mat-stroked-button
+            [style.background]="'white'"
+            (click)="updateDAG(node.height = node.height - 25)"
+          >
+            <workflow-graph-icon
+              [style.margin-left.px]='12'
+              icon="remove"
+              iconset="common"
+              size="small">
+            </workflow-graph-icon>
+          </button>
+          <button mat-stroked-button
+            [style.background]="'white'"
+            [style.font-size.px]="9"
+            (click)="updateDAG(node.hideEdgeMarkers = !node.hideEdgeMarkers)"
+          >
+            Edge-Markers: {{!node.hideEdgeMarkers}}
+          </button>
+          <button mat-stroked-button
+            [style.background]="'white'"
+            [style.font-size.px]="9"
+            (click)="[
+              node.includeInStepCount = !node.includeInStepCount,
+              currDataset.nodes = currDataset.nodes.slice(0)
+            ]"
+          >
+            Toolbar Count Inclusion: {{node.includeInStepCount}}
+          </button>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #embedYt let-node="node" let-updateDAG="updateDAG">
+      <section
+        [style.position]="'absolute'"
+        [style.top]="'0'"
+        [style.left]="'0'"
+        [style.right]="'0'"
+        [style.bottom]="'0'"
+      >
+        <button mat-stroked-button *ngIf="!node.options.showVid"
+            [style.background]="'white'"
+            [style.font-size.px]="11"
+            (click)="[
+              node.options.showVid = true,
+              node.width = 560, node.height = 315,
+              updateDAG()
+            ]"
+          >
+            (CustomNode2) Show embedded Youtube Video?
+        </button>
+        <iframe *ngIf="node.options.showVid"
+          [style.width.%]="100"
+          [style.height.%]="100"
+          src="https://www.youtube.com/embed/AFvR8RKzi2k"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write;
+            encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+        <button mat-stroked-button *ngIf="node.options.showVid"
+          [style.position]="'absolute'"
+          [style.right.em]="1"
+          [style.top.px]="0"
+          [style.transform]="'translateY(-50%)'"
+          [style.background]="'red'"
+          (click)="[
+            node.options.showVid = false,
+            node.width = 280, node.height = 37,
+            updateDAG()
+          ]"
+        >
+          <workflow-graph-icon icon="close" iconset="common" size="small"/>
+        </button>
+      </section>
+    </ng-template>
+  </ai-dag-scaffold>
+  <mat-divider [vertical]="true" />
+  <div class="demo-controls">
+    <div class="demo-control-group">
+      <p class="demo-control-header">
+        Select Dataset
+      </p>
+      <mat-form-field>
+        <mat-select
+          [value]="datasetName"
+          (selectionChange)="onDatasetChanged($event)"
+        >
+          <mat-option value="Default Dataset">Default Dataset</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-divider />
+    <div class="demo-control-group">
+      <p class="demo-control-header">
+        DAG Features
+      </p>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Status Icons</mat-label>
+        <mat-select
+          [(ngModel)]="statusIcons"
+          (selectionChange)="setCurrDataset()"
+        >
+          <mat-option
+            [value]="'Show'"
+          >
+            Show
+          </mat-option>
+          <mat-option
+            [value]="'Hide'"
+          >
+            Hide
+          </mat-option>
+          <mat-option
+            [value]="'No Runtime'"
+          >
+            No Runtime
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Minimap Position</mat-label>
+        <mat-select
+          [(ngModel)]="minimapPosition"
+          (selectionChange)="setMinimapPosition($event.value)"
+        >
+          <mat-option
+            [value]="'top'"
+          >
+            Top (default)
+          </mat-option>
+          <mat-option
+            [value]="'bottom'"
+          >
+            Bottom
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-slide-toggle
+        class="demo-button"
+        [checked]="dagFeatures.scrollToZoom"
+        (change)="setDagFeature('scrollToZoom', $event.checked)"
+      >
+        Scroll-to-zoom
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        class="demo-button"
+        [checked]="dagLoading"
+        (change)="dagLoading = $event.checked"
+      >
+        Toggle Loading State
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        class="demo-button"
+        [checked]="dagFeatures.selectedArtifactsAreExpanded"
+        (change)="setDagFeature('selectedArtifactsAreExpanded', $event.checked)"
+      >
+        Selected Artifacts Remain Expanded
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        class="demo-button"
+        [checked]="dagFeatures.enableShortcuts"
+        (change)="setDagFeature('enableShortcuts', $event.checked)"
+      >
+        Accessibility features
+      </mat-slide-toggle>
+    </div>
+    <mat-divider />
+    <div class="demo-control-group">
+      <p class="demo-control-header">
+        Styles
+      </p>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Select an option</mat-label>
+        <mat-select
+          [(ngModel)]="selectedThemeName"
+          (selectionChange)="setCurrTheme()"
+        >
+          <mat-option
+            *ngFor="let theme of themeNames"
+            [value]="theme"
+          >
+            {{theme}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Select an option</mat-label>
+        <mat-select
+          [(ngModel)]="selectedEdgeStyle"
+          (selectionChange)="setCurrTheme(true)"
+        >
+          <mat-option
+            *ngFor="let edgeStyle of edgeStyles"
+            [value]="edgeStyle"
+          >
+            {{edgeStyle}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-slide-toggle
+        [checked]="customArtifactColors"
+        class="demo-button"
+        (change)="customArtifactColors = $event.checked; setCurrDataset()"
+      >
+        Custom Artifact Colors
+      </mat-slide-toggle>
+    </div>
+    <mat-divider />
+    <div class="demo-control-group">
+      <p class="demo-control-header">
+        Graph Configuration
+      </p>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Rank Direction</mat-label>
+        <mat-select
+          [(ngModel)]="dagreOptions.rankDirection"
+          (selectionChange)="setDagreOption('rankDirection', $event.value)"
+        >
+          <mat-option
+            *ngFor="let rankDirection of rankDirections"
+            [value]="rankDirection[1]"
+          >
+            {{rankDirection[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Rank Alignment</mat-label>
+        <mat-select
+          [(ngModel)]="dagreOptions.rankAlignment"
+          (selectionChange)="setDagreOption('rankAlignment', $event.value)"
+        >
+          <mat-option
+            *ngFor="let rankAlignment of rankAlignments"
+            [value]="rankAlignment[1]"
+          >
+            {{rankAlignment[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Ranker</mat-label>
+        <mat-select
+          [(ngModel)]="dagreOptions.ranker"
+          (selectionChange)="setDagreOption('ranker', $event.value)"
+        >
+          <mat-option
+            *ngFor="let ranker of rankers"
+            [value]="ranker[1]"
+          >
+            {{ranker[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Rank Separation</mat-label>
+        <mat-select
+          [(ngModel)]="dagreOptions.rankSeparation"
+          (selectionChange)="setDagreOption('rankSeparation', $event.value)"
+        >
+          <mat-option
+            *ngFor="let rankSeparation of separations"
+            [value]="rankSeparation[1]"
+          >
+            {{rankSeparation[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Edge Separation</mat-label>
+        <mat-select
+          [(ngModel)]="dagreOptions.edgeSeparation"
+          (selectionChange)="setDagreOption('edgeSeparation', $event.value)"
+        >
+          <mat-option
+            *ngFor="let edgeSeparation of separations"
+            [value]="edgeSeparation[1]"
+          >
+            {{edgeSeparation[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Node Separation</mat-label>
+        <mat-select
+          [(ngModel)]="dagreOptions.nodeSeparation"
+          (selectionChange)="setDagreOption('nodeSeparation', $event.value)"
+        >
+          <mat-option
+            *ngFor="let nodeSeparation of separations"
+            [value]="nodeSeparation[1]"
+          >
+            {{nodeSeparation[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <mat-divider />
+    <div class="demo-control-group">
+      <p class="demo-control-header">
+        Zoom Configuration
+      </p>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Min Zoom</mat-label>
+        <mat-select
+          [(ngModel)]="zoomConfig.min"
+          (selectionChange)="setZoomOption('min', $event.value)"
+        >
+          <mat-option
+            *ngFor="let minZoom of minZooms"
+            [value]="minZoom[1]"
+          >
+            {{minZoom[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Max Zoom</mat-label>
+        <mat-select
+          [(ngModel)]="zoomConfig.max"
+          (selectionChange)="setZoomOption('max', $event.value.value)"
+        >
+          <mat-option
+            *ngFor="let maxZoom of maxZooms"
+            [value]="maxZoom[1]"
+          >
+            {{maxZoom[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field
+        *ngIf="dagFeatures.zoomControls || dagFeatures.scrollToZoom"
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Zoom Steps</mat-label>
+        <mat-select
+          [(ngModel)]="zoomConfig.step"
+          (selectionChange)="setZoomOption('step', $event.value)"
+        >
+          <mat-option
+            *ngFor="let zoomStep of zoomSteps"
+            [value]="zoomStep[1]"
+          >
+            {{zoomStep[0]}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+
+<ng-template #dagTemplate>
+  <div class="demo-dialog-surface">
+    <button mat-icon-button aceTooltip="Close" class="close-button" [mat-dialog-close]="true">
+      <workflow-graph-icon icon="close" iconset="common" size="small"/>
+    </button>
+    <ai-dag-scaffold
+        fxFlex
+        [theme]="currTheme"
+        *ngIf="currDataset"
+        [features]="dagFeatures"
+        [userConfig]="userConfig"
+        (userConfigChange)="userConfigChange.next($event)"
+      >
+      <ai-dag-toolbar
+        [nodes]="currDataset.nodes"
+        [groups]="currDataset.groups"
+        [(expanded)]="expandedMode"
+        [(zoom)]="zoom"
+        [(enableMinimap)]="enableMinimap"
+        [enableFullscreen]="true"
+        (fullscreenModeChange)="closeModal()"
+        [zoomStepConfig]="zoomConfig"
+        [features]="dagFeatures"
+      />
+      <ai-dag-sidebar />
+      <ai-dag-renderer
+        #dagRef
+        [collapsedArtifacts]="!expandedMode"
+        [(zoom)]="zoom"
+        [optimizeForOrm]="optimizeForOrm"
+        [loading]="dagLoading"
+        [enableMinimap]="enableMinimap"
+        [minimapPosition]="minimapPosition"
+        [zoomStepConfig]="zoomConfig"
+        [layout]="dagreOptions"
+        [(selectedNode)]="selectedNode"
+        [followNode]="followSelectedNode ? selectedNodeToRef() : null"
+        [nodes]="currDataset.nodes"
+        [edges]="currDataset.edges"
+        [groups]="currDataset.groups"
+        [customNodeTemplates]="makeObject(['outlineBasic', outlineBasic], ['embedYt', embedYt])"
+      />
+      <ng-template #outlineBasic
+        let-node="node"
+        let-updateDAG="updateDAG"
+        let-toggleSelection="toggleSelection"
+      >
+        <div
+          [style.position]="'absolute'"
+          [style.top]="'0'"
+          [style.left]="'0'"
+          [style.right]="'0'"
+          [style.bottom]="'0'"
+          [style.overflow]="'auto'"
+          [style.padding.em]=".5"
+          [style.background]="'repeating-linear-gradient(45deg,
+            rgba(0, 0, 0, 0.005),
+            rgba(0, 0, 0, 0.005) 5px,
+            rgba(0, 0, 0, 0.05) 5px,
+            rgba(0, 0, 0, 0.05) 10px) #fff'"
+          [style.display]="'flex'"
+          [style.flex-direction]="'column'"
+          [style.border]="(selectedNode?.node === node ? 3 : 1) + 'px solid rgb(26, 115, 232)'"
+          [style.transition]="'width .25s, height .25s, border .25s'"
+          (focusin)="[$event.preventDefault(), $event.stopPropagation()]"
+        >
+          <div [style.display]="'flex'" [style.align-items]="'center'">
+            <b>Custom node {{node.id}}</b>
+            <div [style.flex]="1"></div>
+          </div>
+          <small [style.flex]="1">
+            This node can be programmed to show anything on the DAG, and be styled
+            any way you would like! There's another custom node on this DAG, can
+            you find it?
+          </small>
+          <div>
+            <div><small><b>Interact with this node</b></small></div>
+            <button mat-stroked-button
+              [style.background]="'white'"
+              (click)="updateDAG(node.height = node.height + 25)"
+            >
+              <workflow-graph-icon
+                [style.margin-left.px]='12'
+                icon="add"
+                iconset="common"
+                size="small">
+              </workflow-graph-icon>
+            </button>
+            <button mat-stroked-button
+              [style.background]="'white'"
+              (click)="updateDAG(node.height = node.height - 25)"
+            >
+              <workflow-graph-icon
+                [style.margin-left.px]='12'
+                icon="remove"
+                iconset="common"
+                size="small">
+              </workflow-graph-icon>
+            </button>
+            <button mat-stroked-button
+              [style.background]="'white'"
+              [style.font-size.px]="9"
+              (click)="updateDAG(node.hideEdgeMarkers = !node.hideEdgeMarkers)"
+            >
+              Edge-Markers: {{!node.hideEdgeMarkers}}
+            </button>
+            <button mat-stroked-button
+              [style.background]="'white'"
+              [style.font-size.px]="9"
+              (click)="[
+                node.includeInStepCount = !node.includeInStepCount,
+                currDataset.nodes = currDataset.nodes.slice(0)
+              ]"
+            >
+              Toolbar Count Inclusion: {{node.includeInStepCount}}
+            </button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #embedYt let-node="node" let-updateDAG="updateDAG">
+        <section
+          [style.position]="'absolute'"
+          [style.top]="'0'"
+          [style.left]="'0'"
+          [style.right]="'0'"
+          [style.bottom]="'0'"
+        >
+          <button mat-stroked-button *ngIf="!node.options.showVid"
+              [style.background]="'white'"
+              [style.font-size.px]="11"
+              (click)="[
+                node.options.showVid = true,
+                node.width = 560, node.height = 315,
+                updateDAG()
+              ]"
+            >
+              (CustomNode2) Show embedded Youtube Video?
+          </button>
+          <iframe *ngIf="node.options.showVid"
+            [style.width.%]="100"
+            [style.height.%]="100"
+            src="https://www.youtube.com/embed/AFvR8RKzi2k"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write;
+              encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+          <button mat-stroked-button *ngIf="node.options.showVid"
+            [style.position]="'absolute'"
+            [style.right.em]="1"
+            [style.top.px]="0"
+            [style.transform]="'translateY(-50%)'"
+            [style.background]="'red'"
+            (click)="[
+              node.options.showVid = false,
+              node.width = 280, node.height = 37,
+              updateDAG()
+            ]"
+          >
+            <workflow-graph-icon icon="close" iconset="common" size="small"/>
+          </button>
+        </section>
+      </ng-template>
+    </ai-dag-scaffold>
+  </div>
+</ng-template>

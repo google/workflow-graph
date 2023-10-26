@@ -33,7 +33,7 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
 @Component({
   selector: 'workflow-graph',
   template: `
-  <ai-dag-scaffold [features]="features" [userConfig]="userConfig" (userConfigChange)="userConfigChange.emit($event)">
+  <ai-dag-scaffold [features]="features" [userConfig]="userConfig" (userConfigChange)="userConfigChange.next($event)">
     <ai-dag-toolbar
       [nodes]="graphSpec.nodes"
       [(expanded)]="expandedMode"
@@ -41,11 +41,9 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
       [(zoom)]="zoom"
       [features]="features"
       *ngIf="enableToolbar"
-      (resetZoom)="renderer.resetZoom()"
     >
     </ai-dag-toolbar>
     <ai-dag-renderer
-      #renderer
       [enableMinimap]="enableMinimap"
       [loading]="loading"
       [nodes]="graphSpec.nodes"
