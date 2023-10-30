@@ -218,7 +218,7 @@
           [value]="datasetName"
           (selectionChange)="onDatasetChanged($event)"
         >
-          <mat-option value="Default Dataset">Default Dataset</mat-option>
+          <mat-option *ngFor="let name of datasetNames" [value]="name">{{name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>

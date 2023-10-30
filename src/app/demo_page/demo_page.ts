@@ -37,7 +37,9 @@ import {fakeGraph as exampleDagDemo} from '../test_resources/fake_data';
 import {DagTheme, DagToolbarModule} from '../toolbar';
 import {UserConfig} from '../user_config.service';
 
+import {fakeGraph as recursiveGraphDemo} from './demo_datasets/recursive_graph';
 import {DagDatasetSettings} from './demo_datasets/shared';
+import {fakeGraph as singleNodeDemo} from './demo_datasets/single_node';
 
 interface Options<T> {
   [name: string]: T;
@@ -48,10 +50,14 @@ const LOCAL_STORAGE_KEY = 'workflow_graph_user_config';
 const datasets: Options<GraphSpec> = {
   'Default Dataset':
       DagNode.createFromSkeleton(exampleDagDemo.skeleton, exampleDagDemo.state),
+  'Single Node':
+      DagNode.createFromSkeleton(singleNodeDemo.skeleton, singleNodeDemo.state),
+  'Recursive Graph': DagNode.createFromSkeleton(
+      recursiveGraphDemo.skeleton, recursiveGraphDemo.state),
 };
 
 const datasetOptions: Options<DagDatasetSettings> = {
-  'Default Dataset': {}
+  'Default Dataset': {},
 };
 
 const themes: Options<DagTheme> = {
@@ -183,6 +189,7 @@ export class DagDemoPage {
 
   // Product related dropdowns
   datasets = datasets;
+  datasetNames = Object.keys(datasets);
   datasetName?: keyof typeof datasets;
   currDataset?: GraphSpec;
   statusIcons: StatusIcons = 'Show';
