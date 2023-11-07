@@ -37,6 +37,7 @@ import {fakeGraph as exampleDagDemo} from '../test_resources/fake_data';
 import {DagTheme, DagToolbarModule} from '../toolbar';
 import {UserConfig} from '../user_config.service';
 
+import {fakeGraph as artifactInNestedLoopDemo} from './demo_datasets/artifact_in_nested_loop';
 import {fakeGraph as recursiveGraphDemo} from './demo_datasets/recursive_graph';
 import {DagDatasetSettings} from './demo_datasets/shared';
 import {fakeGraph as singleNodeDemo} from './demo_datasets/single_node';
@@ -47,6 +48,8 @@ interface Options<T> {
 
 const LOCAL_STORAGE_KEY = 'workflow_graph_user_config';
 
+const DEFAULT_DATASET = 'Default Dataset';
+
 const datasets: Options<GraphSpec> = {
   'Default Dataset':
       DagNode.createFromSkeleton(exampleDagDemo.skeleton, exampleDagDemo.state),
@@ -54,6 +57,8 @@ const datasets: Options<GraphSpec> = {
       DagNode.createFromSkeleton(singleNodeDemo.skeleton, singleNodeDemo.state),
   'Recursive Graph': DagNode.createFromSkeleton(
       recursiveGraphDemo.skeleton, recursiveGraphDemo.state),
+  'Artifact in nested loop': DagNode.createFromSkeleton(
+      artifactInNestedLoopDemo.skeleton, artifactInNestedLoopDemo.state),
 };
 
 const datasetOptions: Options<DagDatasetSettings> = {
@@ -225,7 +230,7 @@ export class DagDemoPage {
   destroy = new Subject<void>();
 
   constructor(public dialog: MatDialog) {
-    this.setCurrDataset('Default Dataset', true);
+    this.setCurrDataset(DEFAULT_DATASET, true);
     this.resetAll();
   }
 

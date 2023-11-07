@@ -215,7 +215,7 @@
       [style.height.px]="(group.height! - group.padY!)"
     >
       <header
-        *ngIf="group.hasControlNode"
+        *ngIf="group.hasControlNode && getControlNodeFor(group)"
         class="control-node-scaffold fade-in"
         [style.width.px]="getControlNodeFor(group).width"
         [style.height.px]="getControlNodeFor(group).height"

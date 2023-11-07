@@ -559,11 +559,16 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   }
 
   /** Resolved a `NodeRef` to its actual node (be it a group or a node) */
-  resolveReference(ref: NodeRef): DagNode|DagGroup {
-    const destLoc = DagGroup.navigatePath(this as GraphSpec, ref.path);
-    const {nodes, edges, groups} = destLoc;
-    const nodeMap = DagNode.createNodeMap(nodes, edges, groups);
-    return nodeMap.nodes[ref.id]?.node || nodeMap.groups[ref.id]?.group;
+  resolveReference(ref: NodeRef): DagNode|DagGroup|undefined {
+    try {
+      const destLoc = DagGroup.navigatePath(this as GraphSpec, ref.path);
+      const {nodes, edges, groups} = destLoc;
+      const nodeMap = DagNode.createNodeMap(nodes, edges, groups);
+      return nodeMap.nodes[ref.id]?.node || nodeMap.groups[ref.id]?.group;
+    } catch (error) {
+      console.error(error);
+      return;
+    }
   }
 
   async sleep(time: number) {
@@ -647,7 +652,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
    * offset_
    */
   getNodeOffset(ref: NodeRef) {
-    const node = this.resolveReference(ref);
+    const node = this.resolveReference(ref)!;
     const offset: Point = {x: 0, y: 0};
     let groups = this.groups;
     for (const segment of ref.path) {
