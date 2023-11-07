@@ -80,16 +80,11 @@ export class WorkflowGraphWrapper implements WorkflowGraphProps {
   }
   @Input()
   set selectedNode(node: NodeRef|null) {
-    const resolvedNode = node && this.graph.resolveReference(node);
-
-    if (resolvedNode) {
-      this.graph.selectedNode = {
-        node: resolvedNode,
-        path: node.path,
-      };
-    } else {
-      this.graph.selectedNode = null;
-    }
+    const resolvedNode = node && {
+      node: this.graph.resolveReference(node),
+      path: node.path,
+    };
+    this.graph.selectedNode = resolvedNode;
   }
   @Input() followNode: NodeRef|null = null;
   @Input() hoveredEdge?: DagEdge;
