@@ -19,7 +19,6 @@
   backface-visibility: hidden;
   transform: translateZ(0);
   -webkit-font-smoothing: subpixel-antialiased;
-  -webkit-filter: blur(0.000001px);
 }
 
 :host(.panning) .dag-component {
