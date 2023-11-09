@@ -142,7 +142,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   @Input() noEmptySpaceAlloc = false;
   @Output() groupIterationChanged = new EventEmitter<GroupIterationRecord>();
 
-  @Input() resolveReference?: (ref: NodeRef) => DagNode | DagGroup;
+  @Input() resolveReference?: (ref: NodeRef) => DagNode | DagGroup | undefined;
 
   // DAG Props Converted (for interaction with Renderer)
   @Output() graphResize = new EventEmitter<GraphDims>();
