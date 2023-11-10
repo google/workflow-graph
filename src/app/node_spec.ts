@@ -568,6 +568,7 @@ export class DagNode implements
   options: Options = {};
   description: string = '';
   descriptionTooltip: string = '';
+  // TODO(b/304716390) rename this field to nodeRefs
   artifactRefs = [] as NodeRef[];
   /** X Position, Value of `-1` represents an unset value */
   x = -1;
