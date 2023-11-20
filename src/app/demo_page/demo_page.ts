@@ -182,7 +182,7 @@ export class DagDemoPage {
   minimapPosition: MinimapPosition = 'top';
   followSelectedNode = false;
   selectedNode: SelectedNode|null = null;
-  zoom = 0.6;
+  zoom = 1;
   zoomConfig = {...defaultZoomConfig};
   dagFeatures = {...defaultFeatures};
   dagreOptions = {...DEFAULT_DAGRE_CONFIG};

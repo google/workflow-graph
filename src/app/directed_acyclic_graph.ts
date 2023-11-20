@@ -26,10 +26,11 @@ import {takeUntil} from 'rxjs/operators';
 import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {assert, baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
+import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, convertStateToRuntime, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
 import {DagLogger} from './logger/dag_logger';
-import {CustomNode, DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
+import {Minimap, MinimapModule} from './minimap/minimap';
+import {DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
 import {ResizeEventData, ResizeMonitorModule} from './resize_monitor_directive';
 import {DagSidebar} from './sidebar';
 import {debounce} from './util_functions';
@@ -94,20 +95,19 @@ interface CameraMoveOpts {
     STATE_SERVICE_PROVIDER,
   ],
 })
-export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
+export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   destroy = new Subject<void>();
 
   readonly nodePad = 10;
 
   // DOM Elements
-  @ViewChild('mmViewBox') private readonly mmViewBox!: ElementRef;
   @ViewChild('dagWrapper') private readonly dagWrapper!: ElementRef;
+  @ViewChild('minimap') private readonly minimap?: Minimap;
   @ViewChild('rootDag') private readonly rootDag?: DagRaw;
   @ContentChild(DagSidebar) readonly sidebarRef?: DagSidebar;
 
   // Dag Related Props
   private $sizeConfig = SVG_ELEMENT_SIZE();
-  private dims = this.sizeConfig.dims;
   private $nodes: DagNode[] = [];
   private $edges: DagEdge[] = [];
   private $groups: DagGroup[] = [];
@@ -146,33 +146,9 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   private observers: Subscription[] = [];
   private $selectedNode: SelectedNode|null = null;
 
-  // Minimap Props
-  mmX: number = 0;
-  mmY: number = 0;
-  private $lazymmPos: Point = {x: 0, y: 0};
-  set lazymmPos(val: Point) {
-    this.$lazymmPos = val;
-    this.mmX = val.x;
-    this.mmY = val.y;
-  }
-  get lazymmPos() {
-    return this.$lazymmPos;
-  }
-  lazymmY: number = 0;
-  mmLazyZoom: number = this.zoom;
-  mmWidth: number = 0;
-  mmHeight: number = 0;
-  mmScale: number = 0;
-  mmWinScale: number = 0;
-  mmWinWidth: number = 0;
-  mmWinHeight: number = 0;
-  mmPressed = false;
-  mmFocused = false;
   canvasWidth: number = 0;
   canvasHeight: number = 0;
   lastResizeEv: ResizeEventData = {width: 0, height: 0};
-  minimapInnerWidth = new BehaviorSubject(this.mmWidth);
-  minimapInnerHeight = new BehaviorSubject(this.mmHeight);
   zoomReset$?: Subscription;
 
   @Input('theme')
@@ -203,7 +179,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
   @Input('sizeConfig')
   set sizeConfig(config) {
     this.$sizeConfig = config;
-    this.dims = config.dims;
   }
   get sizeConfig() {
     return this.$sizeConfig;
@@ -358,7 +333,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
         break;
       default:
     }
-    this.mmWindowPan(this.convertCanvasPtToMinimap(newPt));
+    this.windowPan(newPt);
   }
 
   ngOnInit() {
@@ -398,11 +373,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     this.stateService.destroyAll(this.observers);
     this.destroy.next();
     this.destroy.complete();
-  }
-
-  ngAfterViewInit() {
-    if (!this.enableMinimap || !this.rootDagInitialized) return;
-    assert(this.mmViewBox instanceof ElementRef, 'mmViewBox set by @ViewChild');
   }
 
   /**
@@ -511,10 +481,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     }
   }
 
-  nodeOrGroupTrack(index: number, n: DagNode|DagGroup) {
-    return n.id;
-  }
-
   /**
    * Expand all `sub-dag`s along the path specified
    *
@@ -546,18 +512,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     };
   }
 
-  getSidebarDims(dims: MinimapPosition) {
-    if (dims !== this.minimapPosition) {
-      return 0;
-    }
-    const pad = 12;
-    const sidebarOffset = this.mmHeight + 2 * pad;
-    if (!this.lastResizeEv.height) {
-      return sidebarOffset;
-    }
-    return Math.min(sidebarOffset, this.lastResizeEv.height / 2);
-  }
-
   /** Resolved a `NodeRef` to its actual node (be it a group or a node) */
   resolveReference(ref: NodeRef): DagNode|DagGroup|undefined {
     try {
@@ -577,51 +531,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     });
   }
 
-  /** Keyboard controls for minimap navigation */
-  kbdMinimapPan(event: KeyboardEvent) {
-    const {mmX, mmY} = this;
-    const {key, shiftKey, ctrlKey} = event;
-    const pt: Point = {x: mmX, y: mmY};
-    let scrollAmt: number;
-
-    // Modifier on move intensity
-    if (shiftKey && ctrlKey) {
-      scrollAmt = 50;
-    } else if (ctrlKey) {
-      scrollAmt = 20;
-    } else if (shiftKey) {
-      scrollAmt = 1;
-    } else {
-      scrollAmt = 5;
-    }
-
-    // Directional point translation
-    switch (key) {
-      case 'ArrowLeft':
-        pt.x -= scrollAmt;
-        break;
-      case 'ArrowRight':
-        pt.x += scrollAmt;
-        break;
-      case 'ArrowUp':
-        pt.y -= scrollAmt;
-        break;
-      case 'ArrowDown':
-        pt.y += scrollAmt;
-        break;
-      default:
-        return;
-    }
-
-    this.mmWindowPan(pt);
-  }
-
-  /** ViewBox controls for minimap navigation */
-  viewBoxMinimapPan(ev: CdkDragMove) {
-    this.dagLogger?.logPanning(
-        'drag_minimap', this.zoom, ev.pointerPosition.x, ev.pointerPosition.y);
-    this.mmWindowPan(ev);
-  }
 
   /**
    * Brings the target reference node as close to the center of the DAG as
@@ -742,9 +651,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
 
   /**
    * Handle Resizing checks for minimap for Graph
-   *
-   * `mmLazyZoom` is created to only updated minimap's zoom when this function
-   * actually updates the view
    */
   private handleResizeSync(withoutPanning?: boolean) {
     const resizeEventData = this.lastResizeEv;
@@ -752,33 +658,15 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     const zoom = Math.min(this.zoom, 1);
     const canvasWidth = Math.max(width, this.graphWidth * zoom);
     const canvasHeight = Math.max(height, this.graphHeight * zoom);
-    const mmWidth = this.dims.minimapWidth;
-    const mmScale = mmWidth / this.graphWidth;
-    const mmWinHeight = mmScale * height;
-    const mmWinWidth = mmScale * width;
-    const mmHeight = this.graphHeight * mmScale;
     Object.assign(this, {
-      mmLazyZoom: zoom,
-      mmWidth,
-      mmHeight,
-      mmScale,
-      mmWinWidth,
-      mmWinHeight,
       canvasWidth,
       canvasHeight,
     });
     // Reposition the DAG so it's within bounds (account for features)
     if (!withoutPanning) {
-      if (this.enableMinimap) {
-        this.mmBgClickPan();
-      } else {
-        this.graphPan('validate');
-      }
+      this.graphPan('validate');
     }
-    this.minimapInnerWidth.next(
-        this.graphWidth * this.mmScale * Math.min(this.mmLazyZoom, 1));
-    this.minimapInnerHeight.next(
-        this.graphHeight * this.mmScale * Math.min(this.mmLazyZoom, 1));
+
     this.detectChanges();
     this.onVisualUpdate();
   }
@@ -788,49 +676,27 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
    * @param freeMove Turning off dag area boundaries control. If true, can pan
    *     out of the visible minimap area.
    */
-  mmWindowPan(ev: CdkDragMove|Point, freeMove?: boolean) {
-    let newPt: Point = {x: 0, y: 0};
-
-    // Calculating the graph's offset from the top and left edges of the
-    // available canvas, when the zoom is under 1.
-    const offsets = this.zoom > 1 ? {x: 0, y: 0} : {
-      x: (this.graphWidth * this.zoom - this.graphWidth) / -2,
-      y: (this.graphHeight * this.zoom - this.graphHeight) / -2,
-    };
-
-    const {x: mmOffsetLeft, y: mmOffsetTop} = this.convertCanvasPtToMinimap(offsets);
-
-    if (isPoint(ev)) {
-      if (freeMove) {
-        // Positioning the view area to the given coordinates without control
-        this.lazymmPos = newPt = ev;
-      } else {
-        const {x, y} = ev;
-        const {winH, winW} = this.getMinimapWindowDims();
-
-        // This point should be a minimap scoped point.
-        const clampedPt = {
-          x: clampVal(
-                 x, -mmOffsetLeft,
-                 Math.max(this.mmWidth - winW) - mmOffsetTop) ||
-              0,
-          y: clampVal(
-                 y, -mmOffsetLeft,
-                 Math.max(this.mmHeight - winH) - mmOffsetTop) ||
-              0,
-        };
-        this.lazymmPos = newPt = clampedPt;
-      }
+  windowPan(newPosition: Point, freeMove?: boolean) {
+    if (freeMove) {
+      this.graphX = -newPosition.x;
+      this.graphY = -newPosition.y;
     } else {
-      if (!this.enableMinimap) return;  // Cannot happen, confidence check
-      const {offsetLeft, offsetTop} = ev.source.element.nativeElement;
-      const {x, y} = nanSafePt(ev.source.getFreeDragPosition());
-      this.mmX = newPt.x = x + offsetLeft - mmOffsetLeft;
-      this.mmY = newPt.y = y + offsetTop - mmOffsetTop;
+      // Calculating the graph's offset from the top and left edges of the
+      // available canvas, when the zoom is under 1.
+      const offsets = this.zoom >= 1 ? {x: 0, y: 0} : {
+        x: (this.graphWidth * this.zoom - this.graphWidth) / -2,
+        y: (this.graphHeight * this.zoom - this.graphHeight) / -2,
+      };
+
+      this.graphX = -clampVal(
+          newPosition.x, -offsets.x,
+          (this.graphWidth * Math.max(this.zoom, 1) - this.lastResizeEv.width -
+           offsets.x));
+      this.graphY = -clampVal(
+          newPosition.y, -offsets.y,
+          this.graphHeight * Math.max(this.zoom, 1) - this.lastResizeEv.height -
+              offsets.y);
     }
-    newPt = this.convertMinimapPtToCanvas(newPt);
-    this.graphX = -newPt.x;
-    this.graphY = -newPt.y;
     this.detectChanges();
   }
 
@@ -851,7 +717,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
       pt.x -= width / 2;
       pt.y -= height / 2;
     }
-    const mmPt = this.convertCanvasPtToMinimap(pt);
 
     // Animation
     this.resetAnimationMode();  // We run this immediately, since it will
@@ -859,7 +724,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     this.animateMove = animate;
     this.detectChanges();
     await this.sleep(10);
-    this.mmWindowPan(mmPt);
+    this.windowPan(pt);
     this.detectChanges();
     animate && await this.sleep(1000);
   }
@@ -873,28 +738,6 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     this.detectChanges();
   }
 
-  /**
-   * Click to pan Minimap Window to that location
-   *
-   * If run without args, then just realign the ViewWindow within it's bounds
-   */
-  mmBgClickPan(ev?: MouseEvent) {
-    assert(
-        this.enableMinimap,
-        '`mmBgClickPan` should only run when minimap is enabled!');
-    const $mmWindow = this.mmViewBox?.nativeElement;
-    if (ev && ev.target === $mmWindow) return;
-    const {winH, winW} = this.getMinimapWindowDims();
-    const {offsetLeft = 0, offsetTop = 0} = this.mmViewBox?.nativeElement || {};
-    // Pan while offsetting click by half of the width
-    // We're also converting a center aligned point to a top-left point
-    // When zoom is under 1, we must deduct the offset of the viewbox
-    const x = ev ? ev.offsetX - winW / 2 - offsetLeft : this.mmX;
-    const y = ev ? ev.offsetY - winH / 2 - offsetTop : this.mmY;
-
-    this.dagLogger?.logPanning('click_minimap', this.zoom, x, y);
-    this.mmWindowPan({x, y});
-  }
 
   /** Graph Panning handler, updates the minimap as well */
   graphPan(stage: 'start', ev: CdkDragStart): void;
@@ -929,7 +772,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     }
     let {graphX: x, graphY: y} = this;
     if (stage === 'validate') {
-      this.mmWindowPan(this.convertCanvasPtToMinimap({x: -x, y: -y}));
+      this.windowPan({x: -x, y: -y});
       return;
     }
     if (!this.graphPanning) return;
@@ -938,30 +781,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     y = (ctx.graph.y + currClick.y) * -1;
     this.dagLogger?.logPanning(
         'drag_graph', this.zoom, this.graphX, this.graphY);
-    this.mmWindowPan(this.convertCanvasPtToMinimap({x, y}));
-  }
-  /** Get dimensions on minimap window */
-  getMinimapWindowDims() {
-    const zoom = Math.max(this.zoom, 1);
-    const winW = this.mmWinWidth / zoom;
-    const winH = this.mmWinHeight / zoom;
-    return {winW, winH};
-  }
-  /** Minimap to Canvas Point Conversion */
-  convertCanvasPtToMinimap(pt: Point): Point {
-    const ratio = this.mmScale / Math.max(this.zoom, 1);
-    return {
-      x: pt.x * ratio,
-      y: pt.y * ratio,
-    };
-  }
-  /** Canvas to Minimap Point Conversion */
-  convertMinimapPtToCanvas(pt: Point): Point {
-    const ratio = this.mmScale / Math.max(this.zoom, 1);
-    return {
-      x: pt.x / ratio,
-      y: pt.y / ratio,
-    };
+    this.windowPan({x, y});
   }
 
   /** Handles zooming done via scroll events */
@@ -1009,7 +829,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     position.x += relativePos.x * diffX;
     position.y += relativePos.y * diffY;
 
-    this.mmWindowPan(this.convertCanvasPtToMinimap(position), true);
+    this.windowPan(position, true);
 
     this.zoom = zoom;
     this.zoomChange.emit(zoom);
@@ -1030,7 +850,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     }
     this.onZoomSet = 1;
     // Safe resetting the pan position
-    this.mmWindowPan({x: this.mmX, y: this.mmY});
+    this.windowPan({x: -this.graphX, y: -this.graphY});
   }
 
   middleClickResetZoom($e: MouseEvent) {
@@ -1040,41 +860,10 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     this.resetZoom($e);
   }
 
-  /** Macro to toggle CSS Classes on an element on or off */
-  toggleClass(state: boolean, className: string) {
-    return state ? className : '';
-  }
-
-  getNodeType(node: DagNode|DagGroup) {
-    return node instanceof DagNode ? node.type : 'group';
-  }
-
-  classNameState(node: DagNode|DagGroup): string {
-    return node.state.toLowerCase();
-  }
-
-  hasCustomMinimapNodeTemplateForNode(node: DagNode): boolean {
-    if (node instanceof CustomNode) {
-      return !!node.minimapTemplateRef;
-    }
-    return false;
-  }
-
-  getCustomMinimapNodeTemplateForNode(node: DagNode): TemplateRef<any>|null {
-    if (node instanceof CustomNode) {
-      const templateRefName = node.minimapTemplateRef;
-      if (!templateRefName) return null;
-      return this.customMinimapNodeTemplates[templateRefName];
-    }
-    return null;
-  }
 
   // We're okay not sending a resolver because we do not handle rendering here,
   // and deep validation is not required to mark the graph as dirty
   isDagreInit = (element: DagFieldType) => isDagreInit(element);
-  convertStateToRuntime = convertStateToRuntime;
-  min = Math.min;
-  max = Math.max;
 
   /**
    * Propagate DAG Features to elements, manually (either on init or after
@@ -1100,6 +889,7 @@ export class DirectedAcyclicGraph implements AfterViewInit, OnInit, OnDestroy {
     DagRawModule,
     DragDropModule,
     ResizeMonitorModule,
+    MinimapModule,
   ],
   declarations: [
     DirectedAcyclicGraph,

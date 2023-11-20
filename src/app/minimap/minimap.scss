@@ -1,0 +1,126 @@
+/*
+ * Minimap style definitions
+ */
+
+ /* Mixin and deps imports */
+@import '../mixins.scss';
+
+:host {
+  &.panning {
+    &.preview-on-pan {
+      opacity: 0.5;
+    }
+    .minimap {
+      pointer-events: none;
+    }
+  }
+  &[minimap-position='bottom'] {
+    order: 1;
+    margin-top: auto;
+  }
+  transition: opacity $graph-change-speed, top 0.08s, transform 0.04s;
+  transition-delay: 0, 0, 0.04s;
+  width: 100%;
+  padding: 1em;
+  pointer-events: none;
+  display: flex;
+  &:before {
+    content: '';
+    display: block;
+    flex: 1 1 0%;
+  }
+  .minimap {
+    pointer-events: all;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(#000, 0.005),
+        rgba(#000, 0.005) 2px,
+        rgba(#000, 0.05) 2px,
+        rgba(#000, 0.05) 4px
+      )
+      white;
+    border: 1px solid $minimap-primary-color;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .bounds {
+      pointer-events: none;
+      width: 100%;
+      background: white;
+      overflow: hidden;
+      .dag-preview {
+        transform-origin: 0 0;
+        /* This property is overriden by UI */
+        transform: scale(0.08);
+        .dag {
+          position: absolute;
+          top: 0;
+          left: 0;
+          /* This property is overriden by UI */
+          transform: scale(0.5);
+          ::ng-deep {
+            .node {
+              position: absolute;
+              // The 4px is a ghost offset, I am not sure why it exists
+              transform: translate(-50%, calc(-50% - 4px));
+              background: #607d8b;
+              border: 3px solid transparent;
+              &.artifact {
+                border: 10px solid #607d8b;
+                background: transparent;
+              }
+              &.group {
+                border: 40px double #607d8b;
+                background: transparent;
+              }
+              &.query-minimap-node.time-critical {
+                border: #607d8b 10px solid;
+                background: #fedfc8;
+              }
+              &.query-minimap-node.processing-critical {
+                border: #607d8b 10px solid;
+                background: #feefc3;
+              }
+              &.query-minimap-node.time-critical.processing-critical {
+                border: #607d8b 10px solid;
+                background: #fdd5a0;
+              }
+            }
+          }
+        }
+      }
+    }
+    .view-window {
+      pointer-events: auto;
+      color: $minimap-primary-color;
+      cursor: move;
+      background: currentColor;
+      opacity: 0.2;
+      transition: opacity $graph-change-speed;
+      position: absolute;
+      border-color: transparent;
+      border-style: solid;
+      &:active {
+        transition: opacity $graph-change-speed;
+      }
+      &:not(.no-animations) {
+        &:hover {
+          opacity: 0.27;
+        }
+        &:active {
+          opacity: 0.35;
+        }
+      }
+      &:focus-visible {
+        opacity: 0.35;
+      }
+    }
+  }
+}
+
+* {
+  box-sizing: border-box;
+}

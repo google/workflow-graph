@@ -1,0 +1,83 @@
+<div
+  class="minimap fade-in"
+  [style.minWidth.px]="width"
+  [style.minHeight.px]="height + 2"
+  role="application"
+  aria-label="DAG Minimap"
+  i18n-aria-label="Area where DAG preview is shown and you can zoom or pan the graph"
+  (click)="clickPan($event)"
+>
+  <div class="bounds" [style.height.px]="contentHeight" [style.width.px]="contentWidth">
+    <section style.transform="scale({{ scale }})" class="dag-preview">
+      <!-- This element will scale smaller than the parent container when zoom is above 1 -->
+      <section  style.transform="scale({{ contentScale }})" class="dag">
+        <ng-container *ngFor="let node of nodes; trackBy: nodeOrGroupTrack">
+          <ng-container *ngIf="!hasCustomMinimapNodeTemplateForNode(node)">
+            <article
+              [ngClass]="[
+                'node',
+                node.type,
+                classNameState(node),
+                convertStateToRuntime(node.state).toLowerCase()
+              ]"
+              [class.selected-node] = "selectedNode?.node == node"
+              [style.left.px]="node.x"
+              [style.top.px]="node.y"
+              [style.width.px]="node.width"
+              [style.height.px]="node.height"
+            ></article>
+          </ng-container>
+          <ng-container *ngIf="hasCustomMinimapNodeTemplateForNode(node)">
+            <ng-container *ngTemplateOutlet="getCustomMinimapNodeTemplateForNode(node); context: {
+              node
+            }"></ng-container>
+            <ng-container *ngIf="!getCustomMinimapNodeTemplateForNode(node)">
+              <div class="custom-node-error" role="alert" tabindex="0">
+                <span>
+                  Could not find the
+                  <code>minimapTemplateRef = node['minimapTemplateRef']</code>
+                  for node <code>{{node.id}}</code>.
+                </span>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <article
+          *ngFor="let group of groups; trackBy: nodeOrGroupTrack"
+          [ngClass]="[
+            'node',
+            getNodeType(group),
+            classNameState(group),
+            convertStateToRuntime(group.state).toLowerCase()
+          ]"
+          [style.left.px]="group.x"
+          [style.top.px]="group.y"
+          [style.width.px]="group.width"
+          [style.height.px]="group.height"
+        ></article>
+      </section>
+    </section>
+    <!-- Empty Click handler is needed on this element to support role="button" -->
+    <button
+      #viewbox
+      cdkDrag
+      cdkDragBoundary=".minimap"
+      tabindex="0"
+      aria-label="Minimap ViewBox"
+      i18n-aria-label="The minimap view box that allows quick panning across the DAG"
+      aria-describedby="mapArrowDesc"
+      class="view-window"
+      [class.no-animations]="!features.minimapHoverAnimations"
+      [style.width.px]="viewboxWidth"
+      [style.height.px]="viewboxHeight"
+      (cdkDragStarted)="isDragging = true"
+      (cdkDragEnded)="isDragging = false"
+      [cdkDragFreeDragPosition]="{x: viewboxX, y: viewboxY}"
+      (cdkDragMoved)="dragPan($event)"
+      (keydown)="keyboardPan($event)"
+    ></button>
+    <div class="cdk-visually-hidden" id="mapArrowDesc" aria-hidden="true">
+      To control the minimap, use the ARROW keys.
+    </div>
+  </div>
+</div>

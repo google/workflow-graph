@@ -18,7 +18,6 @@
       [customToolbarToggleTemplates]="[toggleReset, toggleAdd]"
       [features]="dagFeatures"
     />
-    <ai-dag-sidebar />
     <ai-dag-renderer
       #dagRef
       [collapsedArtifacts]="!expandedMode"
@@ -35,7 +34,9 @@
       [edges]="currDataset.edges"
       [groups]="currDataset.groups"
       [customNodeTemplates]="makeObject(['outlineBasic', outlineBasic], ['embedYt', embedYt])"
-    />
+    >
+      <ai-dag-sidebar />
+    </ai-dag-renderer>
     <ng-template
       #toggleReset
     >
@@ -544,7 +545,6 @@
         [zoomStepConfig]="zoomConfig"
         [features]="dagFeatures"
       />
-      <ai-dag-sidebar />
       <ai-dag-renderer
         #dagRef
         [collapsedArtifacts]="!expandedMode"
@@ -561,7 +561,9 @@
         [edges]="currDataset.edges"
         [groups]="currDataset.groups"
         [customNodeTemplates]="makeObject(['outlineBasic', outlineBasic], ['embedYt', embedYt])"
-      />
+      >
+        <ai-dag-sidebar />
+      </ai-dag-renderer>
       <ng-template #outlineBasic
         let-node="node"
         let-updateDAG="updateDAG"
