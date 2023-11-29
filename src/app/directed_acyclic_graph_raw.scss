@@ -142,15 +142,12 @@
     pointer-events: all;
     &.custom-node {
       transition: width $graph-change-speed, height $graph-change-speed,
-        top $graph-change-speed, left $graph-change-speed;
-    }
-    &:not(.control-node) {
-      @include offsetCenter;
+        transform $graph-change-speed;
     }
   }
 
   .faux-node-outline {
-    transition: left $graph-change-speed, top $graph-change-speed;
+    transition: transform $graph-change-speed;
     position: absolute;
     z-index: 2;
     @include offsetCenter;
@@ -179,7 +176,7 @@
     border-radius: 17px;
     color: #bdc1c6;
     transition: width $graph-change-speed, height $graph-change-speed,
-      color 0.25s, top $graph-change-speed, left $graph-change-speed;
+      color 0.25s, transform $graph-change-speed;
     &:hover,
     &.expanded {
       color: $minimap-primary-color;
@@ -358,7 +355,7 @@
   }
 
   .edge-label {
-    transition: top $graph-change-speed, left $graph-change-speed;
+    transition: transform $graph-change-speed;
     position: absolute;
     font-size: 14px;
     max-width: 12em;

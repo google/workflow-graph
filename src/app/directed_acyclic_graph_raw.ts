@@ -23,7 +23,7 @@ import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
-import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, LayoutOptions, NodeIcon, PadType, RankAlignment, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, LayoutOptions, NodeIcon, PadType, PointWithTransform, RankAlignment, SVG_ELEMENT_SIZE} from './data_types_internal';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -39,6 +39,14 @@ import {debounce} from './util_functions';
 /** Get the Euclidean Distance between 2 points */
 export function euclideanDistance(a: Point, b: Point) {
   return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+}
+
+/**
+ * Get translate string for positioning to the desired coordinates and center
+ * item over it
+ */
+function getTransformTranslateString(x: number, y: number) {
+  return `translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
 }
 
 /** Dimension config for a raw DAG */
@@ -510,10 +518,13 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     for (const node of this.nodes) {
       node.x += -xOffset + this.nodePad + margin['left'];
       node.y += this.nodePad + margin['top'];
+      node.cssTransform = getTransformTranslateString(node.x, node.y);
     }
     for (const group of this.groups) {
       group.x += -xOffset + this.nodePad + margin['left'];
       group.y += this.nodePad + margin['top'];
+      group.cssTransform =
+          getTransformTranslateString(group.x, group.y + group.padY! / 2);
     }
     for (const edge of this.edges) {
       if (this.theme.edgeStyle === 'snapped') {
@@ -633,10 +644,13 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     for (const node of this.nodes) {
       node.x += -xOffset + this.nodePad + margin['left'];
       node.y += this.nodePad + margin['top'];
+      node.cssTransform = getTransformTranslateString(node.x, node.y);
     }
     for (const group of this.groups) {
       group.x += -xOffset + this.nodePad + margin['left'];
       group.y += this.nodePad + margin['top'];
+      group.cssTransform =
+          getTransformTranslateString(group.x, group.y + group.padY! / 2);
     }
     for (const edge of this.edges) {
       if (this.theme.edgeStyle === 'snapped') {
@@ -1022,9 +1036,12 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
              }))
         .filter(({label, mid}) => label && mid);
   }
-  getMiddleEdgePoint(edge: DagEdge): Point|undefined {
+  getMiddleEdgePoint(edge: DagEdge): PointWithTransform|undefined {
     const {points = []} = edge;
-    if (points.length < 1) return points[0];
+    if (points.length < 1) {
+      return undefined;
+    }
+
     const distances = points
                           .map((p, i) => {
                             if (!i) return 0;
@@ -1046,7 +1063,11 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
         x: ptA.x + (ptB.x - ptA.x) * ratio,
         y: ptA.y + (ptB.y - ptA.y) * ratio,
       };
-      return midPoint as Point;
+      return {
+        x: midPoint.x,
+        y: midPoint.y,
+        cssTransform: getTransformTranslateString(midPoint.x, midPoint.y)
+      } as PointWithTransform;
     }
     // This code path is impossible
     return;

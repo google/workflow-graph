@@ -9,7 +9,7 @@
 
 :host {
   cursor: pointer;
-  transition: top 0.25s, left 0.25s;
+  transition: transform 0.25s;
 
   &:focus-visible {
     outline: none;

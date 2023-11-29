@@ -21,8 +21,7 @@
                 convertStateToRuntime(node.state).toLowerCase()
               ]"
               [class.selected-node] = "selectedNode?.node == node"
-              [style.left.px]="node.x"
-              [style.top.px]="node.y"
+              [style.transform]="node.cssTransform"
               [style.width.px]="node.width"
               [style.height.px]="node.height"
             ></article>
@@ -50,8 +49,7 @@
             classNameState(group),
             convertStateToRuntime(group.state).toLowerCase()
           ]"
-          [style.left.px]="group.x"
-          [style.top.px]="group.y"
+          [style.transform]="group.cssTransform"
           [style.width.px]="group.width"
           [style.height.px]="group.height"
         ></article>

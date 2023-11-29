@@ -55,8 +55,7 @@
     *ngFor="let l of getEdgeLabels(); trackBy: edgeLabelTrack"
     (mouseenter)="setEdgeHover(l.edge, true)"
     (mouseleave)="setEdgeHover(l.edge, false)"
-    [style.left.px]="l.mid!.x"
-    [style.top.px]="l.mid!.y"
+    [style.transform]="l.mid.cssTransform"
   >
     {{ l.label }}
   </figcaption>
@@ -110,8 +109,7 @@
       *ngIf="isDagreInit(node)"
       class="custom-node"
       [attr.node-title]="node.getNodeDisplayName()"
-      [style.left.px]="node.x"
-      [style.top.px]="node.y"
+      [style.transform]="node.cssTransform"
       [style.width.px]="node.width"
       [style.height.px]="node.height"
       [style.overflow]="'none'"
@@ -144,8 +142,7 @@
       *ngIf="isDagreInit(node)"
       tabindex="0"
       role="switch"
-      [style.left.px]="node.x"
-      [style.top.px]="node.y"
+      [style.transform]="node.cssTransform"
       [node]="node"
       [edges]="getEdges(node)"
       [selected]="selectedNode?.node === node"
@@ -159,8 +156,7 @@
     *ngIf="isDagreInit(node)"
     role="presentation"
     class="faux-node-outline"
-    [style.left.px]="node.x"
-    [style.top.px]="node.y"
+    [style.transform]="node.cssTransform"
     [style.width.px]="
       isCustomNode(node) ? node.width : dims.getNodeWidth(node.state, node.conditionalQuery)
     "
@@ -200,8 +196,7 @@
       class="group-border fade-in"
       role="presentation"
       [class.expanded]="isGroupExpanded(group)"
-      [style.left.px]="group.x"
-      [style.top.px]="group.y + group.padY! / 2"
+      [style.transform]="group.cssTransform"
       [style.width.px]="group.width"
       [style.height.px]="group.height - group.padY!"
     ></aside>
@@ -209,8 +204,7 @@
       [attr.id]="a11yIdFor(group)"
       [ngClass]="['group', classNameState(group)]"
       [class.expanded]="isGroupExpanded(group)"
-      [style.left.px]="group.x!"
-      [style.top.px]="group.y! + group.padY! / 2"
+      [style.transform]="group.cssTransform"
       [style.width.px]="group.width!"
       [style.height.px]="(group.height! - group.padY!)"
     >

@@ -106,6 +106,13 @@ export interface Point {
 }
 
 /**
+ * Represents a point on the UI with the transform: translate(...) calculated
+ */
+export interface PointWithTransform extends Point {
+  cssTransform: string;
+}
+
+/**
  * Represents the a coordinate object type
  */
 export interface Dimension {

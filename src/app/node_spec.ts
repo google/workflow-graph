@@ -263,6 +263,7 @@ export class DagGroup implements
   selectedLoopId = '';
   x = -1;
   y = -1;
+  cssTransform = '';
   width = 0;
   height = 0;
 
@@ -576,6 +577,7 @@ export class DagNode implements
   y = -1;
   width = 0;
   height = 0;
+  cssTransform = '';
 
   constructor(
       id: string, type: NodeType, state: NodeState = 'NO_STATE_STATIC', {
