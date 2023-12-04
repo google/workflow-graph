@@ -16,20 +16,20 @@
  */
 
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
-import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, LayoutOptions, NodeIcon, PadType, PointWithTransform, RankAlignment, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, LayoutOptions, NodeIcon, PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
-import {CustomNode, DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
+import {CustomNode, DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, SelectedNode} from './node_spec';
 import {UserConfigService} from './user_config.service';
 import {debounce} from './util_functions';
 
@@ -47,6 +47,51 @@ export function euclideanDistance(a: Point, b: Point) {
  */
 function getTransformTranslateString(x: number, y: number) {
   return `translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
+}
+
+// Adds additional props for dagre graph spacing
+function setNodeSizeProps(
+    node: DagNode|CustomNode, dims: SizeConfig['dims'], collapsed: boolean) {
+  const {
+    getNodeWidth,
+    height: nodeHeight,
+    condensedIconWidth,
+  } = dims;
+
+  if (node instanceof CustomNode) return node;
+  let width = getNodeWidth(node.state, node.conditionalQuery);
+  const isCollapsedArtifact = node.type === 'artifact' && collapsed;
+  if (isCollapsedArtifact) {
+    width = condensedIconWidth;
+  } else if (node.type === 'artifact') {
+    width = getNodeWidth('NO_STATE_STATIC', '');
+  }
+  const height = isCollapsedArtifact ? width : nodeHeight;
+  return Object.assign(node, {width, height});
+}
+
+// Adds additional props for dagre graph spacing
+function setGroupSizeProps(
+    group: DagGroup,
+    dims: SizeConfig['dims'],
+    nodePad: number,
+    expandedGroups: Set<string>,
+) {
+  const {getNodeWidth, height: nodeHeight} = dims;
+  const expandedGroup = group as EnhancedDagGroup;
+  let width = getNodeWidth(group.state, group.conditionalQuery) + 6 * nodePad;
+  let height = nodeHeight + 5 * nodePad;
+  // Size of protrusion outside the border for a group
+  let padY = 0;
+  const {expandedDims} = expandedGroup;
+  if (expandedGroups.has(group.id)) {
+    padY = group.hasControlNode ? nodeHeight / 2 : 0;
+    [width, height] = [
+      Math.max(width, expandedDims?.width || 0),
+      Math.max(height + padY, (expandedDims?.height || 0) + padY),
+    ];
+  }
+  return Object.assign(expandedGroup, {width, height, padY});
 }
 
 /** Dimension config for a raw DAG */
@@ -74,6 +119,7 @@ export type EnhancedDagGroup = DagGroup&Dimension&Point&{
  * edges positions are moved based this distance.
  */
 const REVERSE_EDGE_CONTROL_DISTANCE = 200;
+type Orientation = 'center'|'right'|'left';
 
 /**
  * Renders the workflow DAG.
@@ -86,6 +132,7 @@ const REVERSE_EDGE_CONTROL_DISTANCE = 200;
 })
 export class DagRaw implements DoCheck, OnInit, OnDestroy {
   readonly nodePad = 10;
+  @ViewChildren(CdkDrag) draggableComponents?: QueryList<CdkDrag>;
 
   // Dag Related Props
   private path: string[] = [];
@@ -117,6 +164,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   controlNodes: Record<string, DagNode> = {};
   private objDiffers:
       {[s: string]: KeyValueDiffer<string, DagNode|DagGroup>} = {};
+
+  isDragging = false;
 
   /**
    * The Path used to uniquely identify subdags
@@ -159,6 +208,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   set extraPadding(padType: PadType) {
     this.$extraPadding = padType;
     this.calculateDims();
+    this.updateGraphLayout();
   }
   get extraPadding() {
     return this.$extraPadding;
@@ -357,7 +407,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     } else {
       this.$dimsCache = this.sizeConfig.getLeanDims(this.extraPadding);
     }
-    this.updateGraphLayout();
   }
 
   makePathTo(id: string|string[]) {
@@ -460,95 +509,21 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   updateGraphLayoutFromNodesChange() {
     if (!this.nodes.length && !this.groups.length) return;
     const g = this.dagreGraph!;
-    const {
-      getNodeWidth,
-      height: nodeHeight,
-      iconSpaceWidth,
-      condensedIconWidth,
-    } = this.dims;
-
-    // Adds additional props for dagre graph spacing
-    const enhanceNode = (node: DagNode|CustomNode) => {
-      if (node instanceof CustomNode) return node;
-      let width = getNodeWidth(node.state, node.conditionalQuery);
-      const isCollapsedArtifact = node.type === 'artifact' && this.collapsed;
-      if (isCollapsedArtifact) {
-        width = condensedIconWidth;
-      } else if (node.type === 'artifact') {
-        width = getNodeWidth('NO_STATE_STATIC', '');
-      }
-      const height = isCollapsedArtifact ? width : nodeHeight;
-      return Object.assign(node, {width, height});
-    };
-
     for (const node of this.nodes) {
-      g.setNode(node.id, enhanceNode(node));
+      g.setNode(node.id, setNodeSizeProps(node, this.dims, this.collapsed));
     }
-
     dagre.layout(g);
 
-    type Orientation = 'center'|'right'|'left';
-    const getDim = (dim: 'x'|'y', orient: Orientation = 'center'): number[] => {
-      let nodeOff = (node: CustomNode|DagNode|DagGroup) => {
-        const type = this.getNodeType(node);
-        if (type === 'group' || node instanceof CustomNode) {
-          return (dim === 'x' ? node.width : node.height) / 2;
-        }
-        if (orient === 'center' || dim !== 'x') return 0;
-        if (type === 'artifact' && this.collapsed) return iconSpaceWidth;
-        return getNodeWidth(node.state, node.conditionalQuery) / 2;
-      };
-      if (orient === 'left') {
-        const tmp = nodeOff;
-        nodeOff = (...a) => -tmp(...a);
-      }
-      return [
-        this.nodes.map(n => n[dim] + nodeOff(n)),
-        this.groups.map(g => g[dim] + nodeOff(g)),
-        this.edges.map(e => e.points!.map(p => p[dim])),
-      ].flat(3)
-          .filter(i => !isNaN(i));
-    };
 
-    const xOffset = Math.min(...getDim('x', 'left'));
-    const {graphMargin} = this.dims;
-    const margin =
-        Object.fromEntries((['left', 'right', 'top', 'bottom'] as Direction[])
-                               .map(i => [i, getMargin(graphMargin, i)]));
-    for (const node of this.nodes) {
-      node.x += -xOffset + this.nodePad + margin['left'];
-      node.y += this.nodePad + margin['top'];
-      node.cssTransform = getTransformTranslateString(node.x, node.y);
-    }
-    for (const group of this.groups) {
-      group.x += -xOffset + this.nodePad + margin['left'];
-      group.y += this.nodePad + margin['top'];
-      group.cssTransform =
-          getTransformTranslateString(group.x, group.y + group.padY! / 2);
-    }
-    for (const edge of this.edges) {
-      if (this.theme.edgeStyle === 'snapped') {
-        this.snapEdgeConnectionPoints(edge);
-      } else {
-        for (const p of edge.points!) {
-          p.x += -xOffset + this.nodePad + margin['left'];
-          p.y += this.nodePad + margin['top'];
-        }
-      }
-      this.resnapPointsForGroups(edge);
-    }
-
-    const maxX = Math.max(...getDim('x', 'right'));
-    const maxY = Math.max(...getDim('y'));
-    this.graphWidth = maxX + this.nodePad + margin['right'];
-    this.graphHeight = maxY + nodeHeight / 2 + this.nodePad + margin['bottom'];
-    this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
+    this.positionAllElementsOnGraph();
+    this.updateGraphSize();
   }
 
   // This method is debounced in the constructor by 50ms
   updateGraphLayout() {
     this.updateGraphLayoutSync();
   }
+
   updateGraphLayoutSync() {
     if (!this.nodes.length && !this.groups.length) return;
     this.getNodesAndWatch();
@@ -557,55 +532,20 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
     g.setGraph(this.convertToDagreOptions(this.layout));
 
-    const {
-      getNodeWidth,
-      height: nodeHeight,
-      iconSpaceWidth,
-      condensedIconWidth,
-    } = this.dims;
-
-    // Adds additional props for dagre graph spacing
-    const enhanceNode = (node: DagNode|CustomNode) => {
-      if (node instanceof CustomNode) return node;
-      let width = getNodeWidth(node.state, node.conditionalQuery);
-      const isCollapsedArtifact = node.type === 'artifact' && this.collapsed;
-      if (isCollapsedArtifact) {
-        width = condensedIconWidth;
-      } else if (node.type === 'artifact') {
-        width = getNodeWidth('NO_STATE_STATIC', '');
-      }
-      const height = isCollapsedArtifact ? width : nodeHeight;
-      return Object.assign(node, {width, height});
-    };
-    // Adds additional props for dagre graph spacing
-    const enhanceGroup = (group: DagGroup) => {
-      const expandedGroup = group as EnhancedDagGroup;
-      let width =
-          getNodeWidth(group.state, group.conditionalQuery) + 6 * this.nodePad;
-      let height = nodeHeight + 5 * this.nodePad;
-      // Size of protrusion outside the border for a group
-      let padY = 0;
-      const {expandedDims} = expandedGroup;
-      if (this.expandedGroups.has(group.id)) {
-        padY = group.hasControlNode ? nodeHeight / 2 : 0;
-        [width, height] = [
-          Math.max(width, expandedDims?.width || 0),
-          Math.max(height + padY, (expandedDims?.height || 0) + padY),
-        ];
-      }
-      return Object.assign(expandedGroup, {width, height, padY});
-    };
 
     for (const node of Object.values(this.controlNodes)) {
       // We DO NOT want these in Dagre, but we do want width and height
       // calculcated for the view
-      enhanceNode(node);
+      setNodeSizeProps(node, this.dims, this.collapsed);
     }
     for (const node of this.nodes) {
-      g.setNode(node.id, enhanceNode(node));
+      g.setNode(node.id, setNodeSizeProps(node, this.dims, this.collapsed));
     }
     for (const group of this.groups) {
-      g.setNode(group.id, enhanceGroup(group));
+      g.setNode(
+          group.id,
+          setGroupSizeProps(
+              group, this.dims, this.nodePad, this.expandedGroups));
     }
     for (const e of this.edges) {
       g.setEdge(e.from, e.to, e);
@@ -613,34 +553,41 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
     dagre.layout(g);
 
-    type Orientation = 'center'|'right'|'left';
-    const getDim = (dim: 'x'|'y', orient: Orientation = 'center'): number[] => {
-      let nodeOff = (node: CustomNode|DagNode|DagGroup) => {
-        const type = this.getNodeType(node);
-        if (type === 'group' || node instanceof CustomNode) {
-          return (dim === 'x' ? node.width : node.height) / 2;
-        }
-        if (orient === 'center' || dim !== 'x') return 0;
-        if (type === 'artifact' && this.collapsed) return iconSpaceWidth;
-        return getNodeWidth(node.state, node.conditionalQuery) / 2;
-      };
-      if (orient === 'left') {
-        const tmp = nodeOff;
-        nodeOff = (...a) => -tmp(...a);
-      }
-      return [
-        this.nodes.map(n => n[dim] + nodeOff(n)),
-        this.groups.map(g => g[dim] + nodeOff(g)),
-        this.edges.map(e => e.points!.map(p => p[dim])),
-      ].flat(3)
-          .filter(i => !isNaN(i));
-    };
+    this.positionAllElementsOnGraph();
+    this.updateGraphSize();
 
-    const xOffset = Math.min(...getDim('x', 'left'));
+    this.a11ySortedNodes = [...this.nodes, ...this.groups].sort(
+        (a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
+  }
+
+  updateGraphSize() {
+    const {
+      height: nodeHeight,
+    } = this.dims;
+    const margin = this.getGraphMargin();
+    const rightMostPointX = Math.max(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('x', 'right'));
+    const topMostPointY =
+        Math.max(...this.getAllGraphItemsCoordinateForAxisAndOrientation('y'));
+    this.graphWidth = rightMostPointX + this.nodePad + margin['right'];
+    this.graphHeight =
+        topMostPointY + nodeHeight / 2 + this.nodePad + margin['bottom'];
+    this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
+  }
+
+  getGraphMargin() {
     const {graphMargin} = this.dims;
-    const margin =
-        Object.fromEntries((['left', 'right', 'top', 'bottom'] as Direction[])
-                               .map(i => [i, getMargin(graphMargin, i)]));
+    return Object.fromEntries(
+               (['left', 'right', 'top', 'bottom'] as Direction[])
+                   .map(i => [i, getMargin(graphMargin, i)])) as
+        {[key in Direction]: number};
+  }
+
+  positionAllElementsOnGraph() {
+    const margin = this.getGraphMargin();
+
+    const xOffset = Math.min(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('x', 'left'));
     for (const node of this.nodes) {
       node.x += -xOffset + this.nodePad + margin['left'];
       node.y += this.nodePad + margin['top'];
@@ -663,15 +610,30 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       }
       this.resnapPointsForGroups(edge);
     }
+  }
 
-    const maxX = Math.max(...getDim('x', 'right'));
-    const maxY = Math.max(...getDim('y'));
-    this.graphWidth = maxX + this.nodePad + margin['right'];
-    this.graphHeight = maxY + nodeHeight / 2 + this.nodePad + margin['bottom'];
-    this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
-
-    this.a11ySortedNodes = [...this.nodes, ...this.groups].sort(
-        (a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
+  getAllGraphItemsCoordinateForAxisAndOrientation(
+      dim: 'x'|'y', orient: Orientation = 'center'): number[] {
+    const {getNodeWidth, iconSpaceWidth} = this.dims;
+    let nodeOff = (node: CustomNode|DagNode|DagGroup) => {
+      const type = this.getNodeType(node);
+      if (type === 'group' || node instanceof CustomNode) {
+        return (dim === 'x' ? node.width : node.height) / 2;
+      }
+      if (orient === 'center' || dim !== 'x') return 0;
+      if (type === 'artifact' && this.collapsed) return iconSpaceWidth;
+      return getNodeWidth(node.state, node.conditionalQuery) / 2;
+    };
+    if (orient === 'left') {
+      const tmp = nodeOff;
+      nodeOff = (...a) => -tmp(...a);
+    }
+    return [
+      this.nodes.map(n => n[dim] + nodeOff(n)),
+      this.groups.map(g => g[dim] + nodeOff(g)),
+      this.edges.map(e => e.points!.map(p => p[dim])),
+    ].flat(3)
+        .filter(i => !isNaN(i));
   }
 
   // Only for tests
