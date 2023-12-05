@@ -18,42 +18,30 @@
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {DagRaw, DagRawModule} from './directed_acyclic_graph_raw';
 import {DagEdge, DagNode as Node, DagNode, GraphSpec} from './node_spec';
-import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DagRawHarness} from './test_resources/directed_acyclic_graph_raw_harness';
 import {fakeGraph} from './test_resources/fake_data';
+import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
     Node.createFromSkeleton(fakeGraph.skeleton, fakeGraph.state);
 
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
-
 describe('Directed Acyclic Graph Raw', () => {
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [DagWrapper],
-          imports: [
-            ...TEST_IMPORTS,
-            DagRawModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [DagRawModule],
+    });
   }));
 
   describe('UI', () => {
-    let fixture: ComponentFixture<DagWrapper>;
+    let fixture: ComponentFixture<TestComponent>;
     let harness: DagRawHarness;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(DagWrapper);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       await fixture.whenStable();
       fixture.componentInstance.dagRaw.updateGraphLayout();
@@ -116,11 +104,11 @@ describe('Directed Acyclic Graph Raw', () => {
   });
 
   describe('Internals', () => {
-    let fixture: ComponentFixture<DagWrapper>;
+    let fixture: ComponentFixture<TestComponent>;
     let renderer: DagRaw;
 
     beforeEach(() => {
-      fixture = TestBed.createComponent(DagWrapper);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       renderer = fixture.componentInstance.dagRaw;
     });
@@ -231,7 +219,7 @@ describe('Directed Acyclic Graph Raw', () => {
       width: 400px;
     }`],
 })
-class DagWrapper {
+class TestComponent {
   @ViewChild('dagRaw', {static: false}) dagRaw!: DagRaw;
   graph: GraphSpec = FAKE_DATA;
 }

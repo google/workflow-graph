@@ -19,7 +19,6 @@ import {HarnessLoader} from '@angular/cdk/testing';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, TemplateRef, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {ScreenshotTest} from '../screenshot_test';
 
@@ -27,8 +26,8 @@ import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {defaultFeatures} from './data_types_internal';
 import {DagNode} from './node_spec';
-import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {A11yHelpCenterHarness} from './test_resources/a11y_help_center_harness';
+import {initTestBed} from './test_resources/test_utils';
 import {DagToolbarHarness} from './test_resources/toolbar_harness';
 import {DagToolbar, DagToolbarModule} from './toolbar';
 
@@ -40,27 +39,16 @@ const FAKE_DATA = [
   new DagNode('E', 'execution'),
 ];
 
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
-
 describe('DagToolbar', () => {
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [DagWrapper],
-          imports: [
-            ...TEST_IMPORTS,
-            DagToolbarModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [DagToolbarModule],
+    });
   }));
 
   describe('Component', () => {
-    let fixture: ComponentFixture<DagWrapper>;
+    let fixture: ComponentFixture<TestComponent>;
     let toolbarHarness: DagToolbarHarness;
     let toolbar: DagToolbar;
     let loader: HarnessLoader;
@@ -69,7 +57,7 @@ describe('DagToolbar', () => {
     let screenShot: ScreenshotTest;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(DagWrapper);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
 
       toolbar = fixture.componentInstance.dagToolbar;
@@ -185,7 +173,7 @@ describe('DagToolbar', () => {
       width: 400px;
     }`],
 })
-class DagWrapper {
+class TestComponent {
   @ViewChild('dagToolbar', {static: false}) dagToolbar!: DagToolbar;
   nodes: DagNode[] = FAKE_DATA;
   @ViewChild('rightAlignedTemplate', {static: false})

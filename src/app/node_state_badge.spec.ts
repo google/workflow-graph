@@ -18,37 +18,25 @@
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, Input} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {ScreenshotTest} from '../screenshot_test';
 
 import {NodeState} from './data_types_internal';
 import {DagNodeStateBadgeModule} from './node_state_badge';
-import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DagNodeStateBadgeHarness} from './test_resources/node_state_badge_harness';
-
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
+import {initTestBed} from './test_resources/test_utils';
 
 describe('Node State Badge', () => {
-  let fixture: ComponentFixture<DagNodeStateBadgeHost>;
+  let fixture: ComponentFixture<TestComponent>;
   let harness: DagNodeStateBadgeHarness;
   let screenShot: ScreenshotTest;
 
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [DagNodeStateBadgeHost],
-          imports: [
-            ...TEST_IMPORTS,
-            DagNodeStateBadgeModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
-    fixture = TestBed.createComponent(DagNodeStateBadgeHost);
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [DagNodeStateBadgeModule],
+    });
+    fixture = TestBed.createComponent(TestComponent);
     fixture.componentInstance.nodeState = 'PENDING';
     fixture.detectChanges();
     const loader = TestbedHarnessEnvironment.loader(fixture);
@@ -95,6 +83,6 @@ describe('Node State Badge', () => {
   template:
       '<ai-dag-node-state-badge #badge [nodeState]="nodeState"></ai-dag-node-state-badge>'
 })
-class DagNodeStateBadgeHost {
+class TestComponent {
   @Input({required: true}) nodeState!: NodeState;
 }

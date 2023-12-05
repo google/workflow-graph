@@ -19,45 +19,33 @@ import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component} from '@angular/core';
 import {ComponentFixture, discardPeriodicTasks, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {MatSelectHarness} from '@angular/material/select/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {DagGroup, DagNode as Node, DagNode, GraphSpec} from './node_spec';
-import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {fakeGraph} from './test_resources/fake_data';
 import {DagGroupIterationOverlayHarness} from './test_resources/group_iteration_select_harness';
+import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
     Node.createFromSkeleton(fakeGraph.skeleton, fakeGraph.state);
 
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
-
 describe('Iteration Selector', () => {
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [GroupIterationSelect],
-          imports: [
-            ...TEST_IMPORTS,
-            GroupIterationSelectorModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [GroupIterationSelectorModule],
+    });
   }));
 
   describe('Tests after opening select input', () => {
     const SEARCH_DEBOUNCE_TIME = 51;
 
-    let fixture: ComponentFixture<GroupIterationSelect>;
+    let fixture: ComponentFixture<TestComponent>;
     let select: MatSelectHarness;
     let overlay: DagGroupIterationOverlayHarness;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(GroupIterationSelect);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
 
       const loader = TestbedHarnessEnvironment.loader(fixture);
@@ -141,7 +129,7 @@ describe('Iteration Selector', () => {
     }
   `],
 })
-class GroupIterationSelect {
+class TestComponent {
   iterations: Array<(DagNode | DagGroup)> =
       [...FAKE_DATA.groups[1].groups, ...FAKE_DATA.groups[1].nodes];
 }

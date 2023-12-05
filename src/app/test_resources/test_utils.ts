@@ -15,8 +15,37 @@
  * limitations under the License.
  */
 
-// Returns user agent specific keyboard event to test Ctrl/Cmd + Key shortcuts
-// in any environment
+import {TestBed, TestModuleMetadata} from '@angular/core/testing';
+import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
+
+import {TEST_IMPORTS, TEST_PROVIDERS} from '../test_providers';
+
+/** Initialize TestBed */
+export async function initTestBed(moduleDef: TestModuleMetadata) {
+  TestBed.resetTestEnvironment();
+  TestBed.initTestEnvironment(
+      BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
+      {teardown: {destroyAfterEach: true}});
+
+  await TestBed
+      .configureTestingModule({
+        ...moduleDef,
+        imports: [
+          ...TEST_IMPORTS,
+          ...(moduleDef.imports || []),
+        ],
+        providers: [
+          ...TEST_PROVIDERS,
+          ...(moduleDef.providers || []),
+        ],
+      })
+      .compileComponents();
+}
+
+/**
+ * Returns user agent specific keyboard event to test Ctrl/Cmd + Key shortcuts
+ * in any environment
+ */
 export function keyWithCtrlOrCommand(code: string): KeyboardEventInit {
   const isMac = navigator.userAgent.includes('Mac');
   return {code, ctrlKey: !isMac, metaKey: isMac};

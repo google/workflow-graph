@@ -19,37 +19,27 @@ import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
 import {MatSelectHarness} from '@angular/material/select/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {ScreenshotTest} from '../../screenshot_test';
 import {TEST_IMPORTS, TEST_PROVIDERS} from '../test_providers';
 import {DemoPageHarness} from '../test_resources/demo_page_harness';
+import {initTestBed} from '../test_resources/test_utils';
 
 import {DagModePageModule} from './demo_page';
 
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
 
 describe('Demo Page', () => {
-  let fixture: ComponentFixture<DemoPage>;
+  let fixture: ComponentFixture<TestComponent>;
   let harness: DemoPageHarness;
   let datasetInput: MatSelectHarness;
   let screenShot: ScreenshotTest;
 
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [DemoPage],
-          imports: [
-            ...TEST_IMPORTS,
-            DagModePageModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
-    fixture = TestBed.createComponent(DemoPage);
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [DagModePageModule],
+    });
+    fixture = TestBed.createComponent(TestComponent);
     const loader = TestbedHarnessEnvironment.loader(fixture);
     harness = await loader.getHarness(DemoPageHarness);
     datasetInput = await harness.getDatasetInput();
@@ -89,5 +79,5 @@ describe('Demo Page', () => {
 });
 
 @Component({template: '<dag-demo-page />'})
-class DemoPage {
+class TestComponent {
 }

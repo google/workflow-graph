@@ -25,35 +25,25 @@ import {DagNode as Node, GraphSpec, NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {fakeGraph} from './test_resources/fake_data';
+import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
     Node.createFromSkeleton(fakeGraph.skeleton, fakeGraph.state);
 
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
-
 describe('Directed Acyclic Graph Renderer', () => {
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [DagWrapper],
-          imports: [
-            ...TEST_IMPORTS,
-            DirectedAcyclicGraphModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [DirectedAcyclicGraphModule],
+    });
   }));
 
   describe('UI', () => {
-    let fixture: ComponentFixture<DagWrapper>;
+    let fixture: ComponentFixture<TestComponent>;
     let harness: DirectedAcyclicGraphHarness;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(DagWrapper);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
 
       const loader = TestbedHarnessEnvironment.loader(fixture);
@@ -86,7 +76,7 @@ describe('Directed Acyclic Graph Renderer', () => {
        }));
 
     it('Expands nested graph to follow node.', fakeAsync(() => {
-         fixture = TestBed.createComponent(DagWrapper);
+         fixture = TestBed.createComponent(TestComponent);
          fixture.componentRef.setInput(
              'followNode', {id: 'Fake Exec 1', path: ['sub1', 'subn1']});
          fixture.detectChanges();
@@ -124,7 +114,7 @@ describe('Directed Acyclic Graph Renderer', () => {
       width: 1200px;
     }`],
 })
-class DagWrapper {
+class TestComponent {
   @ViewChild('dagRender', {static: false}) dagRender!: DirectedAcyclicGraph;
   graph: GraphSpec = FAKE_DATA;
   @Input() followNode: NodeRef|null = null;

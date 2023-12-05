@@ -18,46 +18,32 @@
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
-import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {fakeGraph} from './test_resources/fake_data';
-import {keyWithCtrlOrCommand} from './test_resources/test_utils';
+import {initTestBed, keyWithCtrlOrCommand} from './test_resources/test_utils';
 import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
-
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
 
 describe('Workflow graph wrapper', () => {
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [DagWrapper],
-          imports: [
-            ...TEST_IMPORTS,
-            WorkflowGraphWrapperModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [WorkflowGraphWrapperModule],
+    });
   }));
 
   describe('Shortcut tests', () => {
-    let fixture: ComponentFixture<DagWrapper>;
+    let fixture: ComponentFixture<TestComponent>;
     let dag: DirectedAcyclicGraphHarness;
     let scaffold: HTMLElement;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(DagWrapper);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
 
       const loader = TestbedHarnessEnvironment.loader(fixture);
       dag = await loader.getHarness(DirectedAcyclicGraphHarness);
       scaffold = fixture.nativeElement.querySelector('ai-dag-scaffold');
-
     }));
 
     afterEach(fakeAsync(() => {
@@ -91,7 +77,7 @@ describe('Workflow graph wrapper', () => {
       display: flex;
     }`],
 })
-class DagWrapper {
+class TestComponent {
   dagSpec = {skeleton: fakeGraph.skeleton, meta: fakeGraph.state};
   features = {enableShortcuts: true};
 }

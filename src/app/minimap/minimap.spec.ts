@@ -18,13 +18,12 @@
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {ScreenshotTest} from '../../screenshot_test';
 import {MinimapPosition} from '../data_types_internal';
 import {GraphSpec} from '../node_spec';
-import {TEST_IMPORTS, TEST_PROVIDERS} from '../test_providers';
 import {MinimapHarness} from '../test_resources/minimap_harness';
+import {initTestBed} from '../test_resources/test_utils';
 
 import {MinimapModule} from './minimap';
 import {graph} from './test_resources/fake_data';
@@ -33,28 +32,16 @@ const MINIMAP_WIDTH = 150;
 const TEST_WIN_WIDTH = 1513;
 const TEST_WIN_HEIGHT = 884;
 
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
-
 describe('Minimap', () => {
-  let fixture: ComponentFixture<TestModule>;
+  let fixture: ComponentFixture<TestComponent>;
   let screenShot: ScreenshotTest;
   let harness: MinimapHarness;
 
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [TestModule],
-          imports: [
-            ...TEST_IMPORTS,
-            MinimapModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
-
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [MinimapModule],
+    });
     screenShot = new ScreenshotTest(module.id);
   }));
 
@@ -62,7 +49,7 @@ describe('Minimap', () => {
       .forEach((dataset) => {
         describe(dataset.name, () => {
           beforeEach(waitForAsync(async () => {
-            fixture = TestBed.createComponent(TestModule);
+            fixture = TestBed.createComponent(TestComponent);
             fixture.componentInstance.graph = dataset.graph;
             fixture.componentInstance.graphWidth = dataset.graphWidth;
             fixture.componentInstance.graphHeight = dataset.graphHeight;
@@ -173,7 +160,7 @@ describe('Minimap', () => {
         width: 150px;
       }`],
 })
-class TestModule {
+class TestComponent {
   TEST_WIN_WIDTH = TEST_WIN_WIDTH;
   TEST_WIN_HEIGHT = TEST_WIN_HEIGHT;
   graph!: GraphSpec;

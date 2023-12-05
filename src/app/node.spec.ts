@@ -18,13 +18,12 @@
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {GENERIC_ARTIFACT_ICON, IconConfig} from './data_types_internal';
 import {DagNodeEl, DagNodeModule} from './node';
 import {DagNode} from './node_spec';
-import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DagNodeElHarness} from './test_resources/node_harness';
+import {initTestBed} from './test_resources/test_utils';
 
 const fakeNode = new DagNode('test', 'artifact', 'RUNNING', {
   description: 'This is a test Node',
@@ -35,33 +34,22 @@ const fakeNode = new DagNode('test', 'artifact', 'RUNNING', {
   icon: GENERIC_ARTIFACT_ICON,
 });
 
-TestBed.resetTestEnvironment();
-TestBed.initTestEnvironment(
-    BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-    {teardown: {destroyAfterEach: true}});
-
 describe('DAG Node', () => {
   beforeEach(waitForAsync(async () => {
-    await TestBed
-        .configureTestingModule({
-          declarations: [DagWrapper],
-          imports: [
-            ...TEST_IMPORTS,
-            DagNodeModule,
-          ],
-          providers: [...TEST_PROVIDERS],
-        })
-        .compileComponents();
+    await initTestBed({
+      declarations: [TestComponent],
+      imports: [DagNodeModule],
+    });
   }));
 
 
   describe('UI', () => {
-    let fixture: ComponentFixture<DagWrapper>;
+    let fixture: ComponentFixture<TestComponent>;
     let harness: DagNodeElHarness;
     let nodeEl: DagNodeEl;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(DagWrapper);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       nodeEl = fixture.componentInstance.nodeEl;
       const loader = TestbedHarnessEnvironment.loader(fixture);
@@ -105,11 +93,11 @@ describe('DAG Node', () => {
   });
 
   describe('Internals', () => {
-    let fixture: ComponentFixture<DagWrapper>;
+    let fixture: ComponentFixture<TestComponent>;
     let nodeEl: DagNodeEl;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(DagWrapper);
+      fixture = TestBed.createComponent(TestComponent);
       fixture.detectChanges();
       nodeEl = fixture.componentInstance.nodeEl;
     }));
@@ -180,7 +168,7 @@ describe('DAG Node', () => {
       width: 400px;
     }`],
 })
-class DagWrapper {
+class TestComponent {
   @ViewChild('node', {static: false}) nodeEl!: DagNodeEl;
   isSelected = false;
   fakeNode: DagNode = fakeNode;
