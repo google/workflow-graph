@@ -37,4 +37,23 @@ export class MinimapHarness extends ComponentHarness {
   getContentElement() {
     return this.locatorFor('.dag')();
   }
+
+  async dragViewbox(position: {x: number, y: number}) {
+    const viewBox = await this.getViewbox();
+    const {left: sourceX, top: sourceY} = await viewBox.getDimensions();
+    const targetX = sourceX + position.x;
+    const targetY = sourceY + position.y;
+
+    await viewBox.dispatchEvent('mousedown', {
+      // The mouse button being pressed needs to be the primary mouse button
+      button: 0,
+      pageX: sourceX,
+      pageY: sourceY,
+    });
+    // We need to move twice: first to 'start' moving, then for the target
+    // item to be sorted into its new position.
+    await viewBox.dispatchEvent('mousemove', {pageX: targetX, pageY: targetY});
+    await viewBox.dispatchEvent('mousemove', {pageX: targetX, pageY: targetY});
+    await viewBox.dispatchEvent('mouseup', {pageX: targetX, pageY: targetY});
+  }
 }

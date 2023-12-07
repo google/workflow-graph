@@ -65,8 +65,8 @@ export class Minimap implements OnChanges {
   @Input() zoom = 1;
   @Input() x = 0;
   @Input() y = 0;
-  
-  @Output() private readonly windowPan = new EventEmitter<Point>();
+
+  @Output() readonly windowPan = new EventEmitter<Point>();
 
   @ViewChild('viewbox') private readonly viewbox!: ElementRef;
 
@@ -99,8 +99,9 @@ export class Minimap implements OnChanges {
     this.contentHeight = this.height * this.contentScale;
 
     // Converting the initial viewbox position to the scale of minimap. If the
-    // zoom is above 1 the viewbox size is reduced in the minimap, so we
-    // increase the x,y coordinates (by dividing with the zoom)
+    // zoom is above 1, the minimap (and the viewbox's position) is not scaled
+    // anymore in parallel with the graph, so we have to decrease the x,y
+    // coordinates (by dividing with the zoom) to get the right positions.
     this.viewboxX = this.scale * -this.x / Math.max(this.zoom, 1);
     this.viewboxY = this.scale * -this.y / Math.max(this.zoom, 1);
   }
@@ -137,8 +138,8 @@ export class Minimap implements OnChanges {
 
   private panByMinimapPos(position: Point) {
     this.windowPan.emit({
-      x: position.x / this.scale * Math.max(this.zoom, 1),
-      y: position.y / this.scale * Math.max(this.zoom, 1),
+      x: Math.round(position.x / this.scale * Math.max(this.zoom, 1)),
+      y: Math.round(position.y / this.scale * Math.max(this.zoom, 1)),
     });
   }
 

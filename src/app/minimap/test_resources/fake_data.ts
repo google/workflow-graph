@@ -15,16 +15,11 @@
  * limitations under the License.
  */
 
-/**
- * @fileoverview This file contains all the fake data json payloads for the
- * various testing scenarios
- */
-
 import {GraphSpec} from '../../node_spec';
 
 /**
  * A Fake GraphSpec to test Minimap component. It is containing the x, y, width
- * and hight properties too which are essential for the Minimap rendering.
+ * and hight properties too, which are essential for the Minimap rendering.
  * By default these are calculated in the DagRaw component.
  */
 export const graph: GraphSpec = {
