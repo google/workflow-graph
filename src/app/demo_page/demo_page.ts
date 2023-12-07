@@ -485,9 +485,6 @@ export class DagDemoPage {
     group.edges = [...group.edges, newEdge];
     this.currDataset.groups = [...this.currDataset.groups];
   }
-  makeObject(...entries: Array<[string, TemplateRef<any>]>) {
-    return Object.fromEntries(entries);
-  }
   resetGraph() {
     this.setCurrDataset(this.datasetName!, true);
   }

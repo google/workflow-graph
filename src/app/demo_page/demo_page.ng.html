@@ -33,7 +33,7 @@
       [nodes]="currDataset.nodes"
       [edges]="currDataset.edges"
       [groups]="currDataset.groups"
-      [customNodeTemplates]="makeObject(['outlineBasic', outlineBasic], ['embedYt', embedYt])"
+      [customNodeTemplates]="{'outlineBasic': this.outlineBasic, 'embedYt': embedYt}"
     >
       <ai-dag-sidebar />
     </ai-dag-renderer>
@@ -560,7 +560,7 @@
         [nodes]="currDataset.nodes"
         [edges]="currDataset.edges"
         [groups]="currDataset.groups"
-        [customNodeTemplates]="makeObject(['outlineBasic', outlineBasic], ['embedYt', embedYt])"
+        [customNodeTemplates]="{'outlineBasic': this.outlineBasic, 'embedYt': embedYt}"
       >
         <ai-dag-sidebar />
       </ai-dag-renderer>
