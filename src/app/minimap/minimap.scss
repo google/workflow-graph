@@ -18,8 +18,7 @@
     order: 1;
     margin-top: auto;
   }
-  transition: opacity $graph-change-speed, top 0.08s, transform 0.04s;
-  transition-delay: 0, 0, 0.04s;
+  transition: opacity $graph-change-speed;
   width: 100%;
   padding: 1em;
   pointer-events: none;
@@ -46,6 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: height 0.08s;
     .bounds {
       pointer-events: none;
       width: 100%;
