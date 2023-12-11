@@ -55,7 +55,7 @@
     *ngFor="let l of getEdgeLabels(); trackBy: edgeLabelTrack"
     (mouseenter)="setEdgeHover(l.edge, true)"
     (mouseleave)="setEdgeHover(l.edge, false)"
-    [style.transform]="l.mid.cssTransform"
+    [style.transform]="l.mid?.cssTransform"
   >
     {{ l.label }}
   </figcaption>
