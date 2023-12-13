@@ -16,7 +16,7 @@
  */
 
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {CdkDrag, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule, DragRef} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
@@ -345,6 +345,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return this.$customNodeTemplates;
   }
 
+  @Input() zoom = 1;
+
   constructor(
       private readonly differs: KeyValueDiffers,
       private readonly cdr: ChangeDetectorRef,
@@ -517,6 +519,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
     this.positionAllElementsOnGraph();
     this.updateGraphSize();
+    this.resetDraggedNodes();
   }
 
   // This method is debounced in the constructor by 50ms
@@ -559,6 +562,16 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
     this.a11ySortedNodes = [...this.nodes, ...this.groups].sort(
         (a, b) => a.y === b.y ? a.x - b.x : a.y - b.y);
+
+    this.resetDraggedNodes();
+  }
+
+  resetDraggedNodes() {
+    this.draggableComponents?.forEach(component => {
+      if (component.data?.dragged) {
+        component.reset();
+      }
+    });
   }
 
   updateGraphSize() {
@@ -1186,6 +1199,71 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   getEdges(node: DagNode|DagGroup): DagEdge[] {
     return this.edges.filter(e => e.from === node.id);
   }
+
+
+  previousDistance: Point = {x: 0, y: 0};
+  dragPosition = {x: 0, y: 0};
+
+  onNodeMoved(node: DagNode, event: CdkDragMove) {
+    const edgesFrom: DagEdge[] = this.edges.filter(e => e.from === node.id);
+    const edgesTo: DagEdge[] = this.edges.filter(e => e.to === node.id);
+
+    const distance = {
+      x: event.distance.x + this.pickupPositionInElement.x,
+      y: event.distance.y + this.pickupPositionInElement.y
+    };
+
+    const deltaX = (distance.x - this.previousDistance.x);
+    const deltaY = (distance.y - this.previousDistance.y);
+
+    edgesFrom.forEach(e => {
+      e!.points!.at(0)!.x += deltaX;
+      e!.points!.at(0)!.y += deltaY;
+    });
+    edgesTo.forEach(e => {
+      e!.points!.at(-1)!.x += deltaX;
+      e!.points!.at(-1)!.y += deltaY;
+    });
+
+    this.previousDistance = distance;
+  }
+
+  onNodeDragStarted(node: DagNode, event: CdkDragStart) {
+    this.previousDistance = {x: 0, y: 0};
+    this.pickupPositionInElement = {x: 0, y: 0};
+    event.source.data = {dragged: true};
+    this.isDragging = true;
+  }
+
+  onNodeDragEnded(node: DagNode, event: CdkDragEnd) {
+    this.isDragging = false;
+  }
+
+  pickupPositionInElement = {x: 0, y: 0};
+  dragConstrainPoint =
+      (point: Point, dragRef: DragRef, dimensions: ClientRect,
+       pickupPositionInElement: Point) => {
+        let zoomMoveXDifference = 0;
+        let zoomMoveYDifference = 0;
+
+        // console.log(pickupPositionInElement);
+        if (this.zoom !== 1) {
+          zoomMoveXDifference =
+              (1 - this.zoom) * dragRef.getFreeDragPosition().x;
+          zoomMoveYDifference =
+              (1 - this.zoom) * dragRef.getFreeDragPosition().y;
+        }
+
+        this.pickupPositionInElement = pickupPositionInElement;
+
+        const x =
+            point.x - pickupPositionInElement.x + zoomMoveXDifference as number;
+        const y =
+            point.y - pickupPositionInElement.y + zoomMoveYDifference as number;
+
+
+        return {x, y};
+      };
 }
 
 @NgModule({

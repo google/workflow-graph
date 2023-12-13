@@ -9,6 +9,7 @@
   [ngClass]="['dag-component', toggleClass(collapsed, 'collapse')]"
   [style.width.px]="graphWidth"
   [style.height.px]="graphHeight"
+  [class.dragging]="isDragging"
 >
   <svg class="edge canvas" aria-hidden="true">
     <ng-container *ngFor="let e of edges; trackBy: edgeTrack">
@@ -149,6 +150,11 @@
       (click)="toggleSelectedNode(node, $event)"
       (keydown.enter)="toggleSelectedNode(node, $event)"
       (hoveredChanged)="adjustNodeHover(node, $event, 'node')"
+      (cdkDragMoved)="onNodeMoved(node, $event)"
+      (cdkDragStarted)="onNodeDragStarted(node, $event)"
+      (cdkDragEnded)="onNodeDragEnded(node, $event)"
+      cdkDrag
+      [cdkDragConstrainPosition]="dragConstrainPoint"
     >
     </ai-dag-node>
   </ng-container>
