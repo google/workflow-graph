@@ -546,6 +546,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
           group.id,
           setGroupSizeProps(
               group, this.dims, this.nodePad, this.expandedGroups));
+      Object.assign(group, {expanded: this.expandedGroups.has(group.id)});
     }
     for (const e of this.edges) {
       g.setEdge(e.from, e.to, e);

@@ -73,8 +73,11 @@
                 background: transparent;
               }
               &.group {
-                border: 40px double #607d8b;
+                border: 10px double #607d8b;
                 background: transparent;
+                &.iteration {
+                  border: 0;
+                }
               }
               &.query-minimap-node.time-critical {
                 border: #607d8b 10px solid;

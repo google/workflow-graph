@@ -27,6 +27,7 @@ import {initTestBed} from '../test_resources/test_utils';
 
 import {Minimap, MinimapModule} from './minimap';
 import {graph} from './test_resources/fake_data';
+import {graph as graph_expanded} from './test_resources/fake_data_expanded_groups';
 
 const MINIMAP_WIDTH = 150;
 const TEST_WIN_WIDTH = 1513;
@@ -74,6 +75,13 @@ describe('Minimap', () => {
   describe('Component rendering', () => {
     it('Renders correctly (screenshot)', async () => {
       await screenShot.expectMatch(`renders_correctly`, 'minimap');
+    });
+    it('Expanded groups and iterations (screenshot)', async () => {
+      fixture.componentInstance.graph = graph_expanded;
+      fixture.componentInstance.graphWidth = 2750.5;
+      fixture.componentInstance.graphHeight = 2301.5;
+      fixture.detectChanges();
+      await screenShot.expectMatch(`expanded_groups`, 'minimap');
     });
   });
 

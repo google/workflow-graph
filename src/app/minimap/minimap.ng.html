@@ -11,48 +11,7 @@
     <section style.transform="scale({{ scale }})" class="dag-preview">
       <!-- This element will scale smaller than the parent container when zoom is above 1 -->
       <section style.transform="scale({{ contentScale }})" class="dag">
-        <ng-container *ngFor="let node of nodes; trackBy: nodeOrGroupTrack">
-          <ng-container *ngIf="!hasCustomMinimapNodeTemplateForNode(node)">
-            <article
-              [ngClass]="[
-                'node',
-                node.type,
-                classNameState(node),
-                convertStateToRuntime(node.state).toLowerCase()
-              ]"
-              [class.selected-node] = "selectedNode?.node == node"
-              [style.transform]="node.cssTransform"
-              [style.width.px]="node.width"
-              [style.height.px]="node.height"
-            ></article>
-          </ng-container>
-          <ng-container *ngIf="hasCustomMinimapNodeTemplateForNode(node)">
-            <ng-container *ngTemplateOutlet="getCustomMinimapNodeTemplateForNode(node); context: {
-              node
-            }"></ng-container>
-            <ng-container *ngIf="!getCustomMinimapNodeTemplateForNode(node)">
-              <div class="custom-node-error" role="alert" tabindex="0">
-                <span>
-                  Could not find the
-                  <code>minimapTemplateRef = node['minimapTemplateRef']</code>
-                  for node <code>{{node.id}}</code>.
-                </span>
-              </div>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-        <article
-          *ngFor="let group of groups; trackBy: nodeOrGroupTrack"
-          [ngClass]="[
-            'node',
-            getNodeType(group),
-            classNameState(group),
-            convertStateToRuntime(group.state).toLowerCase()
-          ]"
-          [style.transform]="group.cssTransform"
-          [style.width.px]="group.width"
-          [style.height.px]="group.height"
-        ></article>
+        <ng-container *ngTemplateOutlet="renderElements; context: {$implicit: {nodes, groups}}" />
       </section>
     </section>
     <!-- Empty Click handler is needed on this element to support role="button" -->
@@ -79,3 +38,58 @@
     </div>
   </div>
 </div>
+
+<ng-template #renderElements let-context>
+  @for (node of context.nodes; track node.id)
+  {
+    @if (hasCustomMinimapNodeTemplateForNode(node)) {
+      <ng-container *ngTemplateOutlet="getCustomMinimapNodeTemplateForNode(node); context: {
+        node
+      }"></ng-container>
+      @if (!getCustomMinimapNodeTemplateForNode(node)) {
+        <div class="custom-node-error" role="alert" tabindex="0">
+          <span>
+            Could not find the
+            <code>minimapTemplateRef = node['minimapTemplateRef']</code>
+            for node <code>{{node.id}}</code>.
+          </span>
+        </div>
+      }
+    }
+    @else {
+      <article
+        [ngClass]="[
+          'node',
+          node.type,
+          classNameState(node),
+          convertStateToRuntime(node.state).toLowerCase()
+        ]"
+        [class.selected-node] = "selectedNode?.node == node"
+        [style.transform]="node.cssTransform"
+        [style.width.px]="node.width"
+        [style.height.px]="node.height"
+      ></article>
+      }
+  }
+  @for (group of context.groups; track group.id)
+  {
+    <article
+      [ngClass]="[
+        'node',
+        getNodeType(group),
+        classNameState(group),
+        convertStateToRuntime(group.state).toLowerCase()
+      ]"
+      [class.iteration]="context.treatAsLoop"
+      [style.transform]="group.cssTransform"
+      [style.width.px]="group.width"
+      [style.height.px]="group.height"
+    >
+      @if ((group.expanded || (context.treatAsLoop && group.id === context.selectedLoopId))) {
+        <ng-container
+          *ngTemplateOutlet="renderElements; context: {$implicit: group}"
+        />
+      }
+    </article>
+  }
+</ng-template>

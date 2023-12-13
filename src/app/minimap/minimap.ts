@@ -116,10 +116,6 @@ export class Minimap implements OnChanges {
     return node instanceof DagNode ? node.type : 'group';
   }
 
-  nodeOrGroupTrack(index: number, n: DagNode|DagGroup) {
-    return n.id;
-  }
-
   getCustomMinimapNodeTemplateForNode(node: DagNode): TemplateRef<any>|null {
     if (node instanceof CustomNode) {
       const templateRefName = node.minimapTemplateRef;

@@ -1,6 +1,6 @@
 <mat-select
   [aria-label]="getA11yLabelFor('button')"
-  [value]="softIteration"
+  [value]="iteration"
   (selectionChange)="updateValue($event)"
   [tabIndex]="unTabbable ? -1 : 0"
   (click)="$event.stopPropagation()"
@@ -10,7 +10,7 @@
   <mat-select-trigger>
     <span class="focus-animator"></span>
     <div class="content-wrap">
-      <ng-container *ngIf="!!softIteration">
+      <ng-container *ngIf="!!iteration">
         <div *ngIf="getStateIcon(selectedIteration!) as icon" class="icon-wrap">
           <workflow-graph-icon
             [title]="'State: ' + selectedIteration?.state?.toLowerCase()"
@@ -24,7 +24,7 @@
           {{ selectedIteration?.getNodeDisplayName() }}
         </div>
       </ng-container>
-      <span *ngIf="!softIteration" class="empty-state"> Please select an iteration </span>
+      <span *ngIf="!iteration" class="empty-state"> Please select an iteration </span>
     </div>
   </mat-select-trigger>
   <ai-dag-iteration-selector-filter (onSearch)="filterIterations($event)" />

@@ -173,7 +173,7 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
         this.iterMap[this.iteration] || this.badIters[0] || this.goodIters[0];
     if (this.selectedIteration === newIter) return;
     this.selectedIteration = newIter;
-    this.softIteration = this.selectedIteration?.id ?? '';
+    this.iteration = this.selectedIteration?.id ?? '';
     this.onIterSelect.emit(this.selectedIteration);
   }
 

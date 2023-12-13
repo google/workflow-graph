@@ -101,6 +101,11 @@ describe('Directed Acyclic Graph Raw', () => {
          const animatedEdges = await harness.getEdges('.animated.running');
          expect(animatedEdges.length).toBe(0);
        }));
+
+    it('Expanding group sets expanded attribute', fakeAsync(async () => {
+         await harness.clickExpandToggle(0);
+         expect(fixture.componentInstance.dagRaw.groups[1].expanded).toBe(true);
+       }));
   });
 
   describe('Internals', () => {

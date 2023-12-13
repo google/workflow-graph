@@ -266,6 +266,7 @@ export class DagGroup implements
   cssTransform = '';
   width = 0;
   height = 0;
+  expanded = false;
 
   constructor(
       id: string, nodes: DagNode[] = [], edges: DagEdge[] = [],
