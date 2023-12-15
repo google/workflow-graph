@@ -84,3 +84,15 @@
   <ng-content select="ai-dag-sidebar" [class.panning]="graphPanning"></ng-content>
 </aside>
 </div>
+<div
+  class="loading-screen"
+  [class.loading]="loading || (!rootDagInitialized && showLoadingUntilGraphRendered)"
+  [attr.aria-hidden]="!(loading || (!rootDagInitialized && showLoadingUntilGraphRendered))"
+  >
+  <mat-spinner
+    [diameter]="30"
+    color="primary"
+    aria-label="Loading graph"
+    i18n-aria-label="Label on progress spinner when the graph is loading"
+  />
+</div>

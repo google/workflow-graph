@@ -20,6 +20,8 @@ import {Component, Input, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
+import {ScreenshotTest} from '../screenshot_test';
+
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
 import {DagNode as Node, GraphSpec, NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
@@ -31,11 +33,14 @@ const FAKE_DATA: GraphSpec =
     Node.createFromSkeleton(fakeGraph.skeleton, fakeGraph.state);
 
 describe('Directed Acyclic Graph Renderer', () => {
+  let screenShot: ScreenshotTest;
   beforeEach(waitForAsync(async () => {
     await initTestBed({
       declarations: [TestComponent],
       imports: [DirectedAcyclicGraphModule],
     });
+    screenShot = new ScreenshotTest(module.id);
+
   }));
 
   describe('UI', () => {
@@ -96,6 +101,19 @@ describe('Directed Acyclic Graph Renderer', () => {
          flush();
        }));
   });
+
+  describe('when loading', () => {
+    let fixture: ComponentFixture<TestComponent>;
+    beforeEach(() => {
+      fixture = TestBed.createComponent(TestComponent);
+      fixture.componentRef.setInput('loading', true);
+      fixture.detectChanges();
+    });
+
+    it('renders correctly', async () => {
+      await screenShot.expectMatch(`graph_loading`);
+    })
+  })
 });
 
 @Component({
@@ -105,7 +123,9 @@ describe('Directed Acyclic Graph Renderer', () => {
           [nodes]="graph.nodes"
           [edges]="graph.edges"
           [groups]="graph.groups"
-          [followNode]="followNode">
+          [followNode]="followNode"
+          [loading]="loading"
+      >
       </ai-dag-renderer>
     </div>`,
   styles: [`
@@ -118,4 +138,5 @@ class TestComponent {
   @ViewChild('dagRender', {static: false}) dagRender!: DirectedAcyclicGraph;
   graph: GraphSpec = FAKE_DATA;
   @Input() followNode: NodeRef|null = null;
+  @Input() loading = false;
 }

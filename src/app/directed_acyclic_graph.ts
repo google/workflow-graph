@@ -19,6 +19,7 @@
 import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -164,6 +165,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   @Input() minimapPosition: MinimapPosition = 'top';
 
   @Input() loading = false;
+  @Input() showLoadingUntilGraphRendered = false;
 
   /**
    * This property allows the DAG to treat `graphSpec` reassignments as an edit
@@ -889,6 +891,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
     DagRawModule,
     DragDropModule,
     ResizeMonitorModule,
+    MatProgressSpinnerModule,
     MinimapModule,
   ],
   declarations: [

@@ -75,3 +75,16 @@
   bottom: 0;
   pointer-events: none;
 }
+
+.loading-screen {
+  @include fullbleed;
+  &:not(.loading) {
+    opacity: 0;
+    pointer-events: none;
+  }
+  background: #f6f7f7;
+  transition: opacity $graph-change-speed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
