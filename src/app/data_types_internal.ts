@@ -438,6 +438,10 @@ export interface FeatureToggleOptions {
    * Activate A11y keyboard shortcut functionalities
    */
   enableShortcuts: boolean;
+  /**
+   * When true, scrolls to center a node when it is focused.
+   */
+  enableCenterCameraOnFocus: boolean;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -456,6 +460,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   debugPanningLayer: false,
   fullscreenToggle: false,
   enableShortcuts: false,
+  enableCenterCameraOnFocus: true,
 };
 
 /**
