@@ -1,8 +1,8 @@
 <aside
   class="empty-space-alloc"
   aria-hidden="true"
-  [style.width.px]="graphWidth * zoom"
-  [style.height.px]="graphHeight * zoom"
+  [style.width.px]="graphWidth * (stateService.zoom | async)!"
+  [style.height.px]="graphHeight * (stateService.zoom | async)!"
 ></aside>
 <figure
   #dagWrapper
@@ -35,8 +35,8 @@
     aria-hidden="true"
     cdkDrag
     [cdkDragFreeDragPosition]="graphResetPan"
-    [style.width.px]="lastResizeEv.width || graphWidth * zoom"
-    [style.height.px]="lastResizeEv.height || graphHeight * zoom"
+    [style.width.px]="lastResizeEv.width || graphWidth * (stateService.zoom | async)!"
+    [style.height.px]="lastResizeEv.height || graphHeight * (stateService.zoom | async)!"
     (cdkDragMoved)="graphPan('move', $event)"
     (cdkDragStarted)="graphPan('start', $event)"
     (cdkDragEnded)="graphPan('end', $event)"
@@ -45,7 +45,7 @@
     <ai-dag-raw
       #rootDag
       class="root-dag"
-      style.transform="translate({{ graphX }}px, {{ graphY }}px) scale({{ zoom }}) "
+      style.transform="translate({{ graphX }}px, {{ graphY }}px) scale({{ (stateService.zoom | async)! }}) "
       [noEmptySpaceAlloc]="true"
       [class.panning]="graphPanning"
       [sizeConfig]="sizeConfig"
@@ -77,7 +77,6 @@
     [sizeConfig]="sizeConfig"
     [graphWidth]="graphWidth"
     [graphHeight]="graphHeight"
-    [zoom]="zoom"
     [winWidth]="lastResizeEv.width"
     [winHeight]="lastResizeEv.height"
     [x]="graphX"
