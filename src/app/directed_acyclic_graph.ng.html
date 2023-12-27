@@ -6,11 +6,19 @@
 ></aside>
 <figure
   #dagWrapper
+  zoomingLayer
+  [features]="features"
+  [zoomStepConfig]="zoomStepConfig"
+  [lastResizeEv]="lastResizeEv"
+  [graphX]="graphX"
+  [graphY]="graphY"
+  (windowPan)="windowPan($event)"
+  (freeWindowPan)="freeWindowPan($event)"
+  (handleResizeSync)="handleResizeSync($event)"
   monitorResize
-  class="dag-wrapper"
-  (wheel)="scrollZoom($event)"
-  (scroll)="(dagWrapper.scrollLeft || dagWrapper.scrollTop) && dagWrapper.scrollTo(0, 0)"
   (resize)="handleResizeWithEvent($event)"
+  (scroll)="(dagWrapper.scrollLeft || dagWrapper.scrollTop) && dagWrapper.scrollTo(0, 0)"
+  class="dag-wrapper"
 >
   <svg class="background-grid" aria-hidden="true">
     <defs>
@@ -32,8 +40,6 @@
     (cdkDragMoved)="graphPan('move', $event)"
     (cdkDragStarted)="graphPan('start', $event)"
     (cdkDragEnded)="graphPan('end', $event)"
-    (mousedown)="middleClickResetZoom($event)"
-    (dblclick)="resetZoom($event)"
   ></aside>
   <aside>
     <ai-dag-raw

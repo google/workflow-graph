@@ -38,7 +38,6 @@ import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
       [nodes]="graphSpec.nodes"
       [(expanded)]="expandedMode"
       [(enableMinimap)]="enableMinimap"
-      [(zoom)]="zoom"
       [features]="features"
       *ngIf="enableToolbar"
     >

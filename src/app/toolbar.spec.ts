@@ -100,12 +100,10 @@ describe('DagToolbar', () => {
     });
 
     it('Zoom Value shows correctly and broadcasts changes', async () => {
-      spyOn(toolbar.zoomChange, 'emit');
-
       const zoomIn = await toolbarHarness.getZoomInButton();
       const zoomOut = await toolbarHarness.getZoomOutButton();
       let zoomText = await toolbarHarness.getZoomText();
-      expect(toolbar.zoom).toBe(1);
+      expect(stateService.zoom.value).toBe(1);
       expect(zoomText.trim()).toBe('100%');
       await zoomOut.click();
 
@@ -116,7 +114,6 @@ describe('DagToolbar', () => {
       zoomText = await toolbarHarness.getZoomText();
       expect(zoomText.trim()).toBe('100%');
       expect(Math.round(toolbar.zoom) * 100).toBe(100);
-      expect(toolbar.zoomChange.emit).toHaveBeenCalled();
     });
 
     it('Expand Artifacts toggle disabled when no artifacts are present',
@@ -143,10 +140,10 @@ describe('DagToolbar', () => {
     });
 
     it('Zoom reset button calls State Service EventEmitter', async () => {
-      spyOn(stateService.zoomReset, 'emit');
+      spyOn(stateService.zoomReset, 'next');
       const button = await toolbarHarness.getZoomResetButton();
       await button.click();
-      expect(stateService.zoomReset.emit).toHaveBeenCalled();
+      expect(stateService.zoomReset.next).toHaveBeenCalled();
     });
   });
 });
@@ -156,7 +153,6 @@ describe('DagToolbar', () => {
     <div class="container">
       <ai-dag-toolbar #dagToolbar
         [nodes]="nodes" [expanded]="true"
-        [zoom]="1"
         [rightAlignedCustomToolbarToggleTemplates]="rightAlignedTemplates"
         [features]="features"
       ></ai-dag-toolbar>

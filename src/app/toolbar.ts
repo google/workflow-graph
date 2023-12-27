@@ -142,6 +142,11 @@ export class DagToolbar {
   @Input() expanded = false;
   @Output() expandedChange = new EventEmitter();
 
+  /**
+   * @deprecated zoom and zoomChange properties are not used anymore and will be
+   * removed from toolbar. zoom level can be still passed for ai-dag-renderer to
+   * control zoom externally
+   */
   @Input() zoom = 1;
   @Output() zoomChange = new EventEmitter();
 
@@ -219,7 +224,7 @@ export class DagToolbar {
       private readonly cdr: ChangeDetectorRef,
       private readonly dialog: MatDialog,
       private readonly shortcutService: ShortcutService,
-      private readonly stateService: DagStateService,
+      readonly stateService: DagStateService,
       @Optional() private readonly dagLogger?: DagLogger,
   ) {
     this.calculateStepMetrics = debounce(this.calculateStepMetrics, 50, this);
@@ -280,18 +285,26 @@ export class DagToolbar {
     this.detectChanges();
   }
 
+  private clampAndZoom(val: number) {
+    const {max, min} = this.zoomStepConfig;
+    const newZoom = clampVal(val, min, max);
+    if (this.stateService.zoom.value != newZoom) {
+      const direction = newZoom > this.stateService.zoom.value ? 'in' : 'out';
+      this.dagLogger?.logZoom(direction, 'toolbar');
+      this.stateService.zoom.next(val);
+    }
+  }
+
   zoomIn() {
-    this.zoomVal += this.zoomStepConfig.step;
-    this.dagLogger?.logZoom('in', 'toolbar');
+    this.clampAndZoom(this.stateService.zoom.value + this.zoomStepConfig.step);
   }
 
   zoomOut() {
-    this.zoomVal -= this.zoomStepConfig.step;
-    this.dagLogger?.logZoom('out', 'toolbar');
+    this.clampAndZoom(this.stateService.zoom.value - this.zoomStepConfig.step);
   }
 
   zoomReset() {
-    this.stateService.zoomReset.emit();
+    this.stateService.zoomReset.next();
     this.dagLogger?.logZoom('reset', 'toolbar');
   }
 
@@ -319,18 +332,6 @@ export class DagToolbar {
     });
   }
 
-  set zoomVal(val: number) {
-    const {max, min} = this.zoomStepConfig;
-    val = this.clampVal(val, min, max);
-    if (this.zoom === val) return;
-    this.zoom = val;
-    this.zoomChange.emit(val);
-  }
-  get zoomVal() {
-    return this.zoom;
-  }
-
-  clampVal = clampVal;
   fetchIcon = (icon: IconConfig, key: keyof IconConfig) => fetchIcon(icon, key);
 
   round = Math.round;
