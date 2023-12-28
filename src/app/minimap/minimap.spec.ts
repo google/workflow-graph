@@ -20,7 +20,6 @@ import {Component, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {ScreenshotTest} from '../../screenshot_test';
-import {STATE_SERVICE_PROVIDER} from '../dag-state.service.provider';
 import {MinimapPosition} from '../data_types_internal';
 import {GraphSpec} from '../node_spec';
 import {MinimapHarness} from '../test_resources/minimap_harness';
@@ -44,7 +43,6 @@ describe('Minimap', () => {
     await initTestBed({
       declarations: [TestComponent],
       imports: [MinimapModule],
-      providers: [STATE_SERVICE_PROVIDER],
     });
     screenShot = new ScreenshotTest(module.id);
   }));
@@ -110,16 +108,19 @@ describe('Minimap', () => {
 
   describe('Viewbox dimensions', () => {
     it('Zoom is above 1', async () => {
-      const zoom = 1.5;
-      minimapRenderer.stateService.zoom.next(zoom);
+      fixture.componentInstance.zoom = 1.5;
       const viewBox = await harness.getViewbox();
       const dimensions = await viewBox.getDimensions();
 
-      expect(dimensions.width).toBeCloseTo(TEST_WIN_WIDTH * scale / zoom, 1);
-      expect(dimensions.height).toBeCloseTo(TEST_WIN_HEIGHT * scale / zoom, 1);
+      expect(dimensions.width)
+          .toBeCloseTo(
+              TEST_WIN_WIDTH * scale / fixture.componentInstance.zoom, 1);
+      expect(dimensions.height)
+          .toBeCloseTo(
+              TEST_WIN_HEIGHT * scale / fixture.componentInstance.zoom, 1);
     });
     it('Zoom is below 1', async () => {
-      minimapRenderer.stateService.zoom.next(0.7);
+      fixture.componentInstance.zoom = 0.7;
       const viewBox = await harness.getViewbox();
       const dimensions = await viewBox.getDimensions();
 
@@ -130,17 +131,17 @@ describe('Minimap', () => {
 
   describe('Content scale', () => {
     it('Zoom is above 1', async () => {
-      minimapRenderer.stateService.zoom.next(1.5);
+      fixture.componentInstance.zoom = 1.5;
       const contentElement = await harness.getContentElement();
       const style = await contentElement.getAttribute('style');
       expect(style).toContain('transform: scale(1)');
     });
     it('Zoom is below 1', async () => {
-      const zoom = 0.7;
-      minimapRenderer.stateService.zoom.next(zoom);
+      fixture.componentInstance.zoom = 0.7;
       const contentElement = await harness.getContentElement();
       const style = await contentElement.getAttribute('style');
-      expect(style).toContain(`transform: scale(${zoom})`);
+      expect(style).toContain(
+          `transform: scale(${fixture.componentInstance.zoom})`);
     });
   });
 
@@ -154,7 +155,7 @@ describe('Minimap', () => {
       it('Zoom is above 1', async () => {
         fixture.componentInstance.x = -700;
         fixture.componentInstance.y = -300;
-        minimapRenderer.stateService.zoom.next(1.5);
+        fixture.componentInstance.zoom = 1.5;
         const viewBox = await harness.getViewbox();
         const style = await viewBox.getAttribute('style');
         expect(style).toContain('transform: translate3d(33px, 14px, 0px)');
@@ -162,7 +163,7 @@ describe('Minimap', () => {
       it('Zoom is below 1', async () => {
         fixture.componentInstance.x = -700;
         fixture.componentInstance.y = -300;
-        minimapRenderer.stateService.zoom.next(0.7);
+        fixture.componentInstance.zoom = 0.7;
         const viewBox = await harness.getViewbox();
         const style = await viewBox.getAttribute('style');
         expect(style).toContain(`transform: translate3d(49px, 21px, 0px)`);
@@ -204,7 +205,7 @@ describe('Minimap', () => {
       });
       describe('Outside viewbox', () => {
         it('Zoom is above 1', async () => {
-          minimapRenderer.stateService.zoom.next(1.5);
+          fixture.componentInstance.zoom = 1.5;
           spyOn(minimapRenderer.windowPan, 'emit');
           const minimap = await harness.getMinimap();
           await minimap.dispatchEvent('click', {
@@ -217,7 +218,7 @@ describe('Minimap', () => {
           });
         });
         it('Zoom is below 1', async () => {
-          minimapRenderer.stateService.zoom.next(0.7);
+          fixture.componentInstance.zoom = 0.7;
           spyOn(minimapRenderer.windowPan, 'emit');
           const minimap = await harness.getMinimap();
           await minimap.dispatchEvent('click', {
@@ -246,6 +247,7 @@ describe('Minimap', () => {
           [groups]="graph.groups"
           [nodes]="graph.nodes"
           [position]="position"
+          [zoom]="zoom"
           [x]="x"
           [y]="y"
         />
@@ -264,6 +266,7 @@ class TestComponent {
   graphWidth!: number;
   graphHeight!: number;
   position?: MinimapPosition;
+  zoom = 1;
   x = 0;
   y = 0;
 }

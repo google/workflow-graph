@@ -17,11 +17,8 @@
 
 import {CdkDragMove, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {Component, ElementRef, EventEmitter, Input, NgModule, OnChanges, OnInit, Output, TemplateRef, ViewChild} from '@angular/core';
-import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
+import {Component, ElementRef, EventEmitter, Input, NgModule, OnChanges, Output, TemplateRef, ViewChild} from '@angular/core';
 
-import {DagStateService} from '../dag-state.service';
 import {convertStateToRuntime, defaultFeatures, MinimapPosition, SVG_ELEMENT_SIZE} from '../data_types_internal';
 import {CustomNode, DagGroup, DagNode, Point, SelectedNode} from '../node_spec';
 
@@ -39,7 +36,7 @@ import {CustomNode, DagGroup, DagNode, Point, SelectedNode} from '../node_spec';
     '[attr.minimap-position]': 'position',
   },
 })
-export class Minimap implements OnChanges, OnInit {
+export class Minimap implements OnChanges {
   // Minimap properties
   isDragging = false;
   scale = 1;
@@ -65,6 +62,7 @@ export class Minimap implements OnChanges, OnInit {
   @Input() selectedNode: SelectedNode|null = null;
   @Input() graphWidth = 0;
   @Input() graphHeight = 0;
+  @Input() zoom = 1;
   @Input() x = 0;
   @Input() y = 0;
 
@@ -72,23 +70,15 @@ export class Minimap implements OnChanges, OnInit {
 
   @ViewChild('viewbox') private readonly viewbox!: ElementRef;
 
-  destroy = new Subject<void>();
-
-  constructor(
-      readonly stateService: DagStateService,
-  ) {}
-
   /**
-   * The properties (like graph view position, graph and screen sizes) are
-   * passed to minimap either as property inputs or stateService observables.
-   * When they change, we need to recalculate the values below.
+   * All the properties (like graph view position, graph and screen sizes are
+   * passed to minimap as property inputs). When they change, we need to
+   * recalculate the values below.
    */
-  private recalculate() {
+  ngOnChanges() {
     // If minimap viewbox is currently dragged, we don't need to update the
     // properties
     if (this.isDragging) return;
-
-    const zoom = this.stateService.zoom.value;
 
     // Calculating the minimap area scale and size from a given width
     this.width = this.sizeConfig.dims.minimapWidth;
@@ -99,12 +89,12 @@ export class Minimap implements OnChanges, OnInit {
     // dimensions to the minimap's scale and reducing it further with the zoom.
     // If the zoom is below 1, we don't need to enlarge the view area: that will
     // be indicated by reducing the content (see next section)
-    this.viewboxWidth = this.scale * this.winWidth / Math.max(zoom, 1);
-    this.viewboxHeight = this.scale * this.winHeight / Math.max(zoom, 1);
+    this.viewboxWidth = this.scale * this.winWidth / Math.max(this.zoom, 1);
+    this.viewboxHeight = this.scale * this.winHeight / Math.max(this.zoom, 1);
 
     // If the zoom is below one, we indicate that by reducing the size of the
     // graph image.
-    this.contentScale = Math.min(zoom, 1);
+    this.contentScale = Math.min(this.zoom, 1);
     this.contentWidth = this.width * this.contentScale;
     this.contentHeight = this.height * this.contentScale;
 
@@ -112,18 +102,8 @@ export class Minimap implements OnChanges, OnInit {
     // zoom is above 1, the minimap (and the viewbox's position) is not scaled
     // anymore in parallel with the graph, so we have to decrease the x,y
     // coordinates (by dividing with the zoom) to get the right positions.
-    this.viewboxX = this.scale * -this.x / Math.max(zoom, 1);
-    this.viewboxY = this.scale * -this.y / Math.max(zoom, 1);
-  }
-
-
-  ngOnChanges() {
-    this.recalculate();
-  }
-
-  ngOnInit() {
-    this.stateService.zoom.pipe(takeUntil(this.destroy))
-        .subscribe(() => this.recalculate());
+    this.viewboxX = this.scale * -this.x / Math.max(this.zoom, 1);
+    this.viewboxY = this.scale * -this.y / Math.max(this.zoom, 1);
   }
 
   convertStateToRuntime = convertStateToRuntime;
@@ -153,10 +133,9 @@ export class Minimap implements OnChanges, OnInit {
   }
 
   private panByMinimapPos(position: Point) {
-    const zoom = this.stateService.zoom.value;
     this.windowPan.emit({
-      x: Math.round(position.x / this.scale * Math.max(zoom, 1)),
-      y: Math.round(position.y / this.scale * Math.max(zoom, 1)),
+      x: Math.round(position.x / this.scale * Math.max(this.zoom, 1)),
+      y: Math.round(position.y / this.scale * Math.max(this.zoom, 1)),
     });
   }
 
