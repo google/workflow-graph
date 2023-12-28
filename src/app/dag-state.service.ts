@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import {Injectable, OnDestroy, TemplateRef} from '@angular/core';
+import {EventEmitter, Injectable, OnDestroy, TemplateRef} from '@angular/core';
 import * as _ from 'lodash';
-import {BehaviorSubject, Observable, Subject, Subscription} from 'rxjs';
+import {Observable, Subject, Subscription} from 'rxjs';
 import {distinctUntilChanged} from 'rxjs/operators';
 
 import {DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures} from './data_types_internal';
@@ -54,8 +54,7 @@ export class DagStateService implements OnDestroy {
   private expandPath: string[] = [];
   private iterationChange!: GroupIterationRecord;
 
-  readonly zoomReset = new Subject<void>();
-  readonly zoom = new BehaviorSubject(1);
+  readonly zoomReset = new EventEmitter();
 
   private readonly collapsedChange$ =
       new Subject<DagStateService['collapsed']>();

@@ -53,7 +53,7 @@
       *ngIf="!features.disableZoomPercentageLabel"
       class="value"
     >
-      {{ round((stateService.zoom | async)! * 100) + "%" }}
+      {{ round(zoomVal * 100) + "%" }}
     </span>
     <button
       mat-icon-button
