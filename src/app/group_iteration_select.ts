@@ -129,6 +129,7 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   }
   @Input('iteration')
   set iteration(id: string) {
+    if (!id) return;
     const oldIter = this.$iteration;
     this.$iteration = id;
     this.calculateIteration();

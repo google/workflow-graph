@@ -347,6 +347,10 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
       },
       selectedNode: v => {
         this.$selectedNode = v;
+        if (v) {
+          this.expandUntil(v.path);
+          this.detectChanges();
+        }
         // Emit is here so it's a one time fire rather than twice
         this.selectedNodeChange.emit(v);
       },
@@ -482,16 +486,43 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   expandUntil(path: string[]): number {
     let dagEl = this.rootDag;
     let expansions = 0;
+    let pathDepth = 0;
     path = [...path];
     while (path.length) {
       const segment = path.shift()!;
       const parent = dagEl;
-      dagEl = dagEl?.subDags?.find(sub => sub.dagPath.slice(-1)[0] === segment);
+      dagEl = dagEl?.subDags?.find(sub => {
+        // Groups and nodes match exactly with the path
+        if (sub.dagPath.slice(-1)[0] === segment) return true;
+
+        /*
+         * Loops match the first segment and have a path depth that increases
+         * with 2.
+         */
+        if ((sub.dagPath.length - pathDepth) > 1 &&
+            sub.dagPath.slice(-2).includes(segment)) {
+          // The exact iteration from the path
+          // Find the group associated with the iteration
+          const loopGroup = parent?.$groups?.find(g => g.id === segment);
+          if (loopGroup) {
+            const selectedLoop = path.shift()!;
+            loopGroup.selectedLoopId = selectedLoop;
+            // Increase pathDepth as we've consumed 2 path segments
+            pathDepth++;
+            return true;
+          }
+        }
+
+        return false;
+      });
       if (!dagEl) break;
       if (parent?.toggleExpand(segment, true)) {
         // this will be true when expansion succeeded (not when it was a no-op)
         expansions++;
+        // Detect changes so groups can expand properly
+        this.detectChanges();
       }
+      pathDepth++;
     }
     return expansions;
   }

@@ -374,6 +374,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       selectedNode: v => {
         // When coming from the service don't run validation on it
         this.$selectedNode = v;
+        this.detectChanges();
       },
       theme: v => {
         this.theme = v;
