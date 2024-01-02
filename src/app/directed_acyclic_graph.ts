@@ -642,7 +642,10 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
     }
     offset.x *= this.zoom;
     offset.y *= this.zoom;
-    this.centerCameraOn(offset);
+
+    if (this.features.enableCenterCameraOnFocus) {
+      this.centerCameraOn(offset);
+    }
   }
 
   resizeGraph(dims: GraphDims) {
