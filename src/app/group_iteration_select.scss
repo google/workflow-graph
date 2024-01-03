@@ -111,6 +111,7 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
 ::ng-deep div.ai-dag-iteration-select-panel.mat-mdc-select-panel {
   min-width: 300px;
   padding: 0;
+  background: white;
 
   .ai-dag-iteration-select-filter {
     z-index: 1;
