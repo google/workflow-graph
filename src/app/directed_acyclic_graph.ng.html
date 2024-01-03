@@ -42,7 +42,7 @@
     (cdkDragStarted)="graphPan('start', $event)"
     (cdkDragEnded)="graphPan('end', $event)"
   ></aside>
-  <aside>
+  <section>
     <ai-dag-raw
       #rootDag
       class="root-dag"
@@ -62,7 +62,7 @@
       [class.animate-movement]="animateMove && !graphPanning"
       [resolveReference]="resolveReference"
     />
-  </aside>
+  </section>
 </figure>
 <div class="side-flex">
   <minimap
