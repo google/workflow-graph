@@ -206,6 +206,24 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(renderer.toggleClass(true, 'a')).toBe('a');
          expect(renderer.toggleClass(false, 'a')).toBe('');
        }));
+
+    it('`updateGraphLayoutSync` updates a11ySortedNodes for empty DAG',
+       fakeAsync(async () => {
+         const lastNode = new DagNode('a', 'execution', 'CANCELLED');
+         renderer.nodes = [lastNode];
+         renderer.edges = [];
+         renderer.groups = [];
+         renderer.updateGraphLayoutSync();
+         flush();
+
+         expect(renderer.a11ySortedNodes).toEqual([lastNode]);
+
+         renderer.nodes = [];
+         renderer.updateGraphLayoutSync();
+         flush();
+
+         expect(renderer.a11ySortedNodes).toEqual([]);
+       }));
   });
 });
 

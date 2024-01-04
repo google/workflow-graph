@@ -526,13 +526,17 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   updateGraphLayoutSync() {
-    if (!this.nodes.length && !this.groups.length) return;
+    if (!this.nodes.length && !this.groups.length) {
+      this.a11ySortedNodes = [];
+      this.cdr.detectChanges();
+      return;
+    }
+
     this.getNodesAndWatch();
     const g = new dagre.graphlib.Graph();
     this.dagreGraph = g;
 
     g.setGraph(this.convertToDagreOptions(this.layout));
-
 
     for (const node of Object.values(this.controlNodes)) {
       // We DO NOT want these in Dagre, but we do want width and height
