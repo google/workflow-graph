@@ -373,6 +373,10 @@
       z-index: 1;
     }
   }
+
+  &.dragging *{
+    transition-duration: 0ms !important;
+  }
 }
 
 * {
