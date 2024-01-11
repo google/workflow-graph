@@ -20,11 +20,10 @@ import {createCustomElement} from '@angular/elements';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import {AppComponent} from './app.component';
 import {WorkflowGraphWrapper, WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
