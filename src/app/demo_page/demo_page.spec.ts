@@ -21,8 +21,8 @@ import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/
 import {MatSelectHarness} from '@angular/material/select/testing';
 
 import {ScreenshotTest} from '../../screenshot_test';
-import {TEST_IMPORTS, TEST_PROVIDERS} from '../test_providers';
 import {DemoPageHarness} from '../test_resources/demo_page_harness';
+import {DagRawHarness} from '../test_resources/directed_acyclic_graph_raw_harness';
 import {initTestBed} from '../test_resources/test_utils';
 
 import {DagModePageModule} from './demo_page';
@@ -31,6 +31,7 @@ import {DagModePageModule} from './demo_page';
 describe('Demo Page', () => {
   let fixture: ComponentFixture<TestComponent>;
   let harness: DemoPageHarness;
+  let dagHarness: DagRawHarness;
   let datasetInput: MatSelectHarness;
   let screenShot: ScreenshotTest;
 
@@ -42,6 +43,7 @@ describe('Demo Page', () => {
     fixture = TestBed.createComponent(TestComponent);
     const loader = TestbedHarnessEnvironment.loader(fixture);
     harness = await loader.getHarness(DemoPageHarness);
+    dagHarness = await loader.getHarness(DagRawHarness);
     datasetInput = await harness.getDatasetInput();
     screenShot = new ScreenshotTest(module.id);
   }));
@@ -74,6 +76,14 @@ describe('Demo Page', () => {
     it('Renders correctly (screenshot)', async () => {
       await datasetInput.clickOptions({text: 'Artifact in nested loop'});
       await screenShot.expectMatch('artifact-in-nested-loop');
+    });
+  });
+
+  describe('Expanded group label positioning', () => {
+    it('Renders correctly (screenshot)', async () => {
+      await datasetInput.clickOptions({text: 'Expanded Group label'});
+      await dagHarness.clickExpandToggle(0);
+      await screenShot.expectMatch('group-label-positioning');
     });
   });
 });

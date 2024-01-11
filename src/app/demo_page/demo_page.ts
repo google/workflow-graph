@@ -38,6 +38,7 @@ import {DagTheme, DagToolbarModule} from '../toolbar';
 import {UserConfig} from '../user_config.service';
 
 import {fakeGraph as artifactInNestedLoopDemo} from './demo_datasets/artifact_in_nested_loop';
+import {fakeGraph as expandedGroupDemo} from './demo_datasets/expanded_group';
 import {fakeGraph as recursiveGraphDemo} from './demo_datasets/recursive_graph';
 import {DagDatasetSettings} from './demo_datasets/shared';
 import {fakeGraph as singleNodeDemo} from './demo_datasets/single_node';
@@ -55,6 +56,8 @@ const datasets: Options<GraphSpec> = {
       DagNode.createFromSkeleton(exampleDagDemo.skeleton, exampleDagDemo.state),
   'Single Node':
       DagNode.createFromSkeleton(singleNodeDemo.skeleton, singleNodeDemo.state),
+  'Expanded Group label':
+      DagNode.createFromSkeleton(expandedGroupDemo.skeleton as any),
   'Recursive Graph': DagNode.createFromSkeleton(
       recursiveGraphDemo.skeleton, recursiveGraphDemo.state),
   'Artifact in nested loop': DagNode.createFromSkeleton(

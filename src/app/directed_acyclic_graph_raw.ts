@@ -35,6 +35,37 @@ import {debounce} from './util_functions';
 
 // tslint:disable:no-dict-access-on-struct-type
 
+/**
+ * To better position edge labels, we need a higher resolution representation of
+ * edge points than what dagre returns. This function will calculate the points
+ * along the edge with a default resolution of 0.01, returning 100 points.
+ */
+function getPointsOnBezierCurveDeCasteljau(
+    points: Array<{x: number, y: number}>, resolution: number = 0.01) {
+  const n = points.length;
+  const pointsOnCurve = [];
+
+  for (let u = 0; u <= 1; u += resolution) {
+    // Create a copy of the control points for recursive subdivision
+    const tempPoints = [...points];
+
+    // Perform De Casteljau's algorithm
+    for (let i = 1; i < n; i++) {
+      for (let j = 0; j < n - i; j++) {
+        tempPoints[j] = {
+          x: (1 - u) * tempPoints[j].x + u * tempPoints[j + 1].x,
+          y: (1 - u) * tempPoints[j].y + u * tempPoints[j + 1].y,
+        };
+      }
+    }
+
+    // The final point in the subdivided array is the point on the curve
+    const p = tempPoints[0];
+    pointsOnCurve.push(p);
+  }
+
+  return pointsOnCurve;
+}
 
 /** Get the Euclidean Distance between 2 points */
 export function euclideanDistance(a: Point, b: Point) {
@@ -164,6 +195,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   controlNodes: Record<string, DagNode> = {};
   private objDiffers:
       {[s: string]: KeyValueDiffer<string, DagNode|DagGroup>} = {};
+  memoizedEdgeCurvePoints: {[key: string]: Array<{x: number, y: number}>} = {};
 
   isDragging = false;
 
@@ -1004,28 +1036,50 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
              }))
         .filter(({label, mid}) => label && mid);
   }
+
+  calculateBezierCurvePoints(points: Point[]): Point[] {
+    /* Generate points on the curve for more accurate label positions */
+    const curveKey = points.map(p => `[${p.x},${p.y}]`).join(',');
+    const cachedBezier = this.memoizedEdgeCurvePoints[curveKey];
+    const bezierPoints =
+        cachedBezier ? cachedBezier : getPointsOnBezierCurveDeCasteljau(points);
+    /**
+     * Save calculated curve points to avoid recalculation due to template
+     * function calls
+     */
+    if (!cachedBezier) {
+      this.memoizedEdgeCurvePoints[curveKey] = bezierPoints;
+    }
+
+    return bezierPoints;
+  }
+
   getMiddleEdgePoint(edge: DagEdge): PointWithTransform|undefined {
     const {points = []} = edge;
     if (points.length < 1) {
       return undefined;
     }
 
-    const distances = points
+    /* Generate points on the curve for more accurate label positions */
+    const bezierPoints = this.calculateBezierCurvePoints(points);
+
+    const distances = bezierPoints
                           .map((p, i) => {
                             if (!i) return 0;
-                            const dist = euclideanDistance(p, points[i - 1]);
+                            const dist =
+                                euclideanDistance(p, bezierPoints[i - 1]);
                             return dist;
                           })
                           .slice(1);
     let remainingDistance = distances.reduce((p, c) => p + c, 0) / 2;
-    for (let i = 0; i < points.length; i++) {
+    for (let i = 0; i < bezierPoints.length; i++) {
       const thisDistance = distances[i];
       if (thisDistance < remainingDistance) {
         remainingDistance -= thisDistance;
         continue;
       }
       // We can get the midpoint within the current line segment
-      const [ptA, ptB] = points.slice(i, i + 2);
+      const [ptA, ptB] = bezierPoints.slice(i, i + 2);
       const ratio = remainingDistance / thisDistance;
       const midPoint = {
         x: ptA.x + (ptB.x - ptA.x) * ratio,
