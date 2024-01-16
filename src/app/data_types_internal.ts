@@ -442,6 +442,20 @@ export interface FeatureToggleOptions {
    * When true, scrolls to center a node when it is focused.
    */
   enableCenterCameraOnFocus: boolean;
+
+  /**
+   * This option enables "natural scroll" behavior. This amounts to the
+   * following:
+   *   - wheel events pan the canvas as they would a scrollable element
+   *   - wheel events w/ ctrl key zoom the canvas
+   *     - works with pinch and zoom as well
+   *     - works with both ctrl and cmd on Mac
+   *   - Dragging pans the canvas
+   * Defaults to `false`.
+   *
+   * Incompatible with `scrollToZoom: true`.
+   */
+  naturalScrolling?: boolean;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -461,13 +475,14 @@ export const defaultFeatures: FeatureToggleOptions = {
   fullscreenToggle: false,
   enableShortcuts: false,
   enableCenterCameraOnFocus: true,
+  naturalScrolling: false,
 };
 
 /**
  * Allows you to construct a full DAG Feature toggle set from partial entries
  * which override the defaults
  */
-export function createDAGFeatures(f: Partial<FeatureToggleOptions>):
+export function createDAGFeatures(f: Partial<FeatureToggleOptions> = {}):
     FeatureToggleOptions {
   return Object.assign({}, defaultFeatures, f);
 }

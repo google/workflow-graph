@@ -237,6 +237,12 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
 
   @Input('features')
   set features(f: FeatureToggleOptions) {
+    const {scrollToZoom, naturalScrolling} = f;
+    if (scrollToZoom && naturalScrolling) {
+      throw new Error(
+          'At most one of `scrollToZoom` and `naturalScrolling` can be set');
+    }
+
     this.$features = f;
     this.propagateFeatures();
     this.stateService.setFeatures(f);

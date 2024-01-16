@@ -19,6 +19,7 @@ import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
 
+import {createDAGFeatures} from './data_types_internal';
 import {DagRaw, DagRawModule} from './directed_acyclic_graph_raw';
 import {DagEdge, DagNode as Node, DagNode, GraphSpec} from './node_spec';
 import {DagRawHarness} from './test_resources/directed_acyclic_graph_raw_harness';
@@ -106,6 +107,152 @@ describe('Directed Acyclic Graph Raw', () => {
          await harness.clickExpandToggle(0);
          expect(fixture.componentInstance.dagRaw.groups[1].expanded).toBe(true);
        }));
+
+    describe('natural scrolling', () => {
+      beforeEach(() => {
+        fixture.componentInstance.features.scrollToZoom = false;
+        fixture.componentInstance.features.naturalScrolling = true;
+      });
+
+      function fakeWheelEvent({deltaX = 0, deltaY = 0} = {}) {
+        const event = new WheelEvent('wheel', {deltaX, deltaY});
+        spyOn(event, 'stopPropagation').and.callThrough();
+        return event;
+      }
+
+      function simulateDispatch(el: Element, event: WheelEvent) {
+        // Couldn't get wheel events to propagate, so instead rely on
+        // dispatchEvent to set event.target, and then directly pass it to
+        // onNodeWheel.
+        el.dispatchEvent(event);
+        fixture.componentInstance.dagRaw.onNodeWheel(event);
+      }
+
+      describe('scrollable nodes', () => {
+        function setup(selector: string) {
+          const els = Array.from(fixture.nativeElement.querySelectorAll(
+                          `${selector} *`)) as HTMLElement[];
+          const el = els.find((e) => {
+            // Try to force the element to be effectively scrollable
+            e.style.overflow = 'scroll';
+            e.style.minHeight = '0px';
+            e.style.height = `${e.scrollHeight / 2}px`;
+            e.style.minWidth = '0px';
+            e.style.width = `${e.scrollWidth / 2}px`;
+            return e.scrollHeight > e.clientHeight && e.clientHeight > 0 &&
+                e.scrollWidth > e.clientWidth && e.clientWidth > 0;
+          });
+          if (!el) {
+            throw new Error('Could not find an effectively scrollable element');
+          }
+          const deltaX = fakeWheelEvent({deltaX: 1});
+          const deltaY = fakeWheelEvent({deltaY: 1});
+
+          expect(el.clientHeight).toBeGreaterThan(1);
+          expect(el.clientWidth).toBeGreaterThan(1);
+          expect(el.scrollHeight).toBeGreaterThan(el.clientHeight);
+          expect(el.scrollWidth).toBeGreaterThan(el.clientWidth);
+
+          return {el, deltaX, deltaY};
+        }
+
+        it('captures events on scrollable dag nodes', () => {
+          const {el, deltaX, deltaY} = setup('ai-dag-node');
+
+          simulateDispatch(el, deltaX);
+          expect(deltaX.stopPropagation).toHaveBeenCalled();
+
+          simulateDispatch(el, deltaY);
+          expect(deltaY.stopPropagation).toHaveBeenCalled();
+        });
+
+        it('captures events on scrollable custom nodes', () => {
+          const {el, deltaX, deltaY} = setup('.custom-node');
+
+          simulateDispatch(el, deltaX);
+          expect(deltaX.stopPropagation).toHaveBeenCalled();
+
+          simulateDispatch(el, deltaY);
+          expect(deltaY.stopPropagation).toHaveBeenCalled();
+        });
+
+        it('captures events on scrollable groups', () => {
+          const {el, deltaX, deltaY} = setup('.group');
+
+          simulateDispatch(el, deltaX);
+          expect(deltaX.stopPropagation).toHaveBeenCalled();
+
+          simulateDispatch(el, deltaY);
+          expect(deltaY.stopPropagation).toHaveBeenCalled();
+        });
+
+        it('captures events with negative deltas', () => {
+          const {el} = setup('.group');
+
+          el.scrollLeft = el.clientWidth;
+          el.scrollTop = el.clientHeight;
+          const delta = fakeWheelEvent({deltaX: -1, deltaY: -1});
+          simulateDispatch(el, delta);
+          expect(delta.stopPropagation).toHaveBeenCalled();
+        });
+
+        it('does not capture an event that wouldn\'t srcroll', () => {
+          const {el} = setup('ai-dag-node');
+
+          const deltaP = fakeWheelEvent({deltaX: 1, deltaY: 1});
+          el.scrollLeft = el.scrollWidth;
+          el.scrollTop = el.scrollHeight;
+          simulateDispatch(el, deltaP);
+          expect(deltaP.stopPropagation).not.toHaveBeenCalled();
+
+          const deltaM = fakeWheelEvent({deltaX: -1, deltaY: -1});
+          el.scrollLeft = 0;
+          el.scrollTop = 0;
+          simulateDispatch(el, deltaM);
+          expect(deltaM.stopPropagation).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('non-scrollable nodes', () => {
+        function setup(selector: string) {
+          const el = fixture.nativeElement.querySelector(selector);
+          const deltaX = fakeWheelEvent({deltaX: 1});
+          const deltaY = fakeWheelEvent({deltaY: 1});
+
+          return {el, deltaX, deltaY};
+        }
+
+        it('does not capture events on non-scrollable dag nodes', () => {
+          const {el, deltaX, deltaY} = setup('ai-dag-node');
+
+          simulateDispatch(el, deltaX);
+          expect(deltaX.stopPropagation).not.toHaveBeenCalled();
+
+          simulateDispatch(el, deltaY);
+          expect(deltaY.stopPropagation).not.toHaveBeenCalled();
+        });
+
+        it('does not capture events on non-scrollable custom nodes', () => {
+          const {el, deltaX, deltaY} = setup('.custom-node');
+
+          simulateDispatch(el, deltaX);
+          expect(deltaX.stopPropagation).not.toHaveBeenCalled();
+
+          simulateDispatch(el, deltaY);
+          expect(deltaY.stopPropagation).not.toHaveBeenCalled();
+        });
+
+        it('does not capture events on non-scrollable groups', () => {
+          const {el, deltaX, deltaY} = setup('.group');
+
+          simulateDispatch(el, deltaX);
+          expect(deltaX.stopPropagation).not.toHaveBeenCalled();
+
+          simulateDispatch(el, deltaY);
+          expect(deltaY.stopPropagation).not.toHaveBeenCalled();
+        });
+      });
+    });
   });
 
   describe('Internals', () => {
@@ -234,6 +381,7 @@ describe('Directed Acyclic Graph Raw', () => {
           [nodes]="graph.nodes"
           [edges]="graph.edges"
           [groups]="graph.groups"
+          [features]="features"
       />
     </div>`,
   styles: [`
@@ -245,4 +393,5 @@ describe('Directed Acyclic Graph Raw', () => {
 class TestComponent {
   @ViewChild('dagRaw', {static: false}) dagRaw!: DagRaw;
   graph: GraphSpec = FAKE_DATA;
+  features = createDAGFeatures({scrollToZoom: false, naturalScrolling: false});
 }

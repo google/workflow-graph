@@ -18,6 +18,8 @@
 import {ElementRef, Injectable, OnDestroy} from '@angular/core';
 import {fromEvent as observableFromEvent, Subscription} from 'rxjs';
 
+import {detectOS} from '../util_functions';
+
 import {DEFAULT_SHORTCUTS, SavedShortcutConfig, ShortcutConfig, ShortcutList, ShortcutName} from './shortcuts';
 
 /**
@@ -31,7 +33,7 @@ export class ShortcutService implements OnDestroy {
 
   constructor() {
     Object.entries(DEFAULT_SHORTCUTS).forEach(([key, value]) => {
-      const os = this.detectOS();
+      const os = detectOS();
       const keys = new Map(Object.entries(value.keys));
       const shortcut = keys.get(os) || keys.get('master');
       const shortcutKey = key as ShortcutName;
@@ -76,19 +78,6 @@ export class ShortcutService implements OnDestroy {
       e.preventDefault();
       foundShortcut.action();
     }
-  }
-
-  private detectOS() {
-    if (navigator.userAgent.includes('Win')) {
-      return 'windows';
-    }
-    if (navigator.userAgent.includes('Mac')) {
-      return 'mac';
-    }
-    if (navigator.userAgent.includes('Linux')) {
-      return 'linux';
-    }
-    return 'master';
   }
 
   registerShortcutAction(name: keyof typeof ShortcutName, action: Function) {

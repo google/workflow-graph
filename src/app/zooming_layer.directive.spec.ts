@@ -21,7 +21,7 @@ import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/
 import {By} from '@angular/platform-browser';
 
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {createDefaultZoomConfig, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, ZoomConfig} from './data_types_internal';
+import {createDAGFeatures, createDefaultZoomConfig, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, ZoomConfig} from './data_types_internal';
 import {initTestBed} from './test_resources/test_utils';
 import {ZoomingLayer} from './zooming_layer.directive';
 
@@ -158,6 +158,74 @@ describe('ZoomingLayer', () => {
       expect(directive.stateService.zoom.value).toBe(1);
     });
   });
+
+  describe('Natural scrolling', () => {
+    beforeEach(() => {
+      fixture.componentInstance.features.scrollToZoom = false;
+      fixture.componentInstance.features.naturalScrolling = true;
+      spyOn(directive.windowPan, 'emit').and.callThrough();
+    });
+
+    describe('events w/ modifier', () => {
+      it('Nothing happens if disabled', async () => {
+        fixture.componentInstance.features.naturalScrolling = false;
+        element.dispatchEvent(new WheelEvent('wheel', {deltaY: -5}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        fixture.componentInstance.features.scrollToZoom = true;
+        expect(directive.windowPan.emit).not.toHaveBeenCalled();
+      });
+
+      it('Scrolls up', async () => {
+        element.dispatchEvent(new WheelEvent('wheel', {deltaY: -7}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 100, y: 43});
+      });
+
+      it('Scrolls down', async () => {
+        element.dispatchEvent(new WheelEvent('wheel', {deltaY: 5}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 100, y: 55});
+      });
+
+      it('Scrolls left', async () => {
+        element.dispatchEvent(new WheelEvent('wheel', {deltaX: -10}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 90, y: 50});
+      });
+
+      it('Scrolls right', async () => {
+        element.dispatchEvent(new WheelEvent('wheel', {deltaX: 11}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 111, y: 50});
+      });
+
+      it('Scrolls up and left', async () => {
+        element.dispatchEvent(
+            new WheelEvent('wheel', {deltaX: -11, deltaY: -7}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 89, y: 43});
+      });
+
+      it('Scrolls up and right', async () => {
+        element.dispatchEvent(new WheelEvent('wheel', {deltaX: 2, deltaY: -7}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 102, y: 43});
+      });
+
+      it('Scrolls down and right', async () => {
+        element.dispatchEvent(new WheelEvent('wheel', {deltaX: 2, deltaY: 17}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 102, y: 67});
+      });
+
+      it('Scrolls down and left', async () => {
+        element.dispatchEvent(
+            new WheelEvent('wheel', {deltaX: -3, deltaY: 17}));
+        expect(directive.stateService.zoom.value).toBe(1);
+        expect(directive.windowPan.emit).toHaveBeenCalledWith({x: 97, y: 67});
+      });
+    });
+  });
 });
 
 @Component({
@@ -180,6 +248,6 @@ describe('ZoomingLayer', () => {
 })
 class TestComponent {
   lastResizeEv = {width: 1000, height: 700};
-  features = defaultFeatures;
+  features = createDAGFeatures({});
   zoomStepConfig = createDefaultZoomConfig({});
 }

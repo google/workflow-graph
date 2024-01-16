@@ -30,3 +30,24 @@ export function debounce<T>(
     timeoutId = setTimeout(later, delayMilliseconds);
   };
 }
+
+export function isPinch(e: WheelEvent) {
+  if (detectOS() === 'mac') {
+    return e.metaKey || e.ctrlKey;
+  } else {
+    return e.ctrlKey;
+  }
+}
+
+export function detectOS() {
+  if (navigator.userAgent.includes('Win')) {
+    return 'windows';
+  }
+  if (navigator.userAgent.includes('Mac')) {
+    return 'mac';
+  }
+  if (navigator.userAgent.includes('Linux')) {
+    return 'linux';
+  }
+  return 'master';
+}
