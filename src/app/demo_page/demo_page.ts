@@ -39,6 +39,7 @@ import {UserConfig} from '../user_config.service';
 
 import {fakeGraph as artifactInNestedLoopDemo} from './demo_datasets/artifact_in_nested_loop';
 import {fakeGraph as expandedGroupDemo} from './demo_datasets/expanded_group';
+import {giganticDemo} from './demo_datasets/gigantic_graph';
 import {fakeGraph as recursiveGraphDemo} from './demo_datasets/recursive_graph';
 import {DagDatasetSettings} from './demo_datasets/shared';
 import {fakeGraph as singleNodeDemo} from './demo_datasets/single_node';
@@ -62,6 +63,7 @@ const datasets: Options<GraphSpec> = {
       recursiveGraphDemo.skeleton, recursiveGraphDemo.state),
   'Artifact in nested loop': DagNode.createFromSkeleton(
       artifactInNestedLoopDemo.skeleton, artifactInNestedLoopDemo.state),
+  'Gigantic': DagNode.createFromSkeleton(giganticDemo.skeleton),
 };
 
 const datasetOptions: Options<DagDatasetSettings> = {
