@@ -113,6 +113,7 @@
       [style.width.px]="node.width"
       [style.height.px]="node.height"
       [style.overflow]="'none'"
+      (wheel)="onNodeWheel($event)"
     >
       <ng-container *ngIf="getCustomNodeTemplateFor(node)">
         <ng-container
@@ -149,6 +150,7 @@
       (click)="toggleSelectedNode(node, $event)"
       (keydown.enter)="toggleSelectedNode(node, $event)"
       (hoveredChanged)="adjustNodeHover(node, $event, 'node')"
+      (wheel)="onNodeWheel($event)"
     >
     </ai-dag-node>
   </ng-container>
@@ -207,6 +209,7 @@
       [style.transform]="group.cssTransform"
       [style.width.px]="group.width!"
       [style.height.px]="(group.height! - group.padY!)"
+      (wheel)="onNodeWheel($event)"
     >
       <header
         *ngIf="group.hasControlNode && getControlNodeFor(group)"

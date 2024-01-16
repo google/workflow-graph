@@ -23,6 +23,7 @@ import {DagStateService} from './dag-state.service';
 import {clampVal, createDefaultZoomConfig, defaultFeatures, defaultZoomConfig, SCROLL_STEP_PER_DELTA, type ZoomConfig} from './data_types_internal';
 import {Point} from './node_spec';
 import {type ResizeEventData} from './resize_monitor_directive';
+import {isPinch} from './util_functions';
 
 /**
  * Directive to control zooming functionalities for the ai-dag-renderer
@@ -58,27 +59,13 @@ export class ZoomingLayer implements OnInit, OnDestroy {
   @HostListener('wheel', ['$event'])
   scrollZoom($e: WheelEvent) {
     $e.preventDefault();
-    if (!this.features.scrollToZoom) return;
 
-    const {min, max} = this.zoomStepConfig;
-    const invSign = $e.deltaY > 0 ? -1 : 1;
-    let newZoom = this.stateService.zoom.value +
-        invSign *
-            Math.min(
-                SCROLL_STEP_PER_DELTA * Math.abs($e.deltaY),
-                this.zoomStepConfig.step);
-    newZoom = clampVal(newZoom, min, max);
-
-    const container = this.dagWrapper.nativeElement.getBoundingClientRect();
-
-    // storing the pointer's position at the time of the event. This is then
-    // used in the panning position formula (panAfterZoom method)
-    this.cursorPosition = {
-      x: ($e.x - container.left) / this.lastResizeEv.width,
-      y: ($e.y - container.top) / this.lastResizeEv.height,
-    };
-    this.stateService.zoom.next(newZoom);
-    this.cursorPosition = undefined;
+    const {naturalScrolling, scrollToZoom} = this.features;
+    if (scrollToZoom || (naturalScrolling && isPinch($e))) {
+      this.zoomOnWheel($e);
+    } else if (naturalScrolling) {
+      this.panOnWheel($e);
+    }
   }
 
   @HostListener('click', ['$event'])
@@ -135,6 +122,35 @@ export class ZoomingLayer implements OnInit, OnDestroy {
     this.stateService.zoom.next(1);
     // Safe resetting the pan position
     this.windowPan.emit({x: -this.graphX, y: -this.graphY});
+  }
+
+  private panOnWheel($e: WheelEvent) {
+    this.windowPan.emit({
+      x: $e.deltaX - this.graphX,
+      y: $e.deltaY - this.graphY,
+    });
+  }
+
+  private zoomOnWheel($e: WheelEvent) {
+    const {min, max} = this.zoomStepConfig;
+    const invSign = $e.deltaY > 0 ? -1 : 1;
+    let newZoom = this.stateService.zoom.value +
+        invSign *
+            Math.min(
+                SCROLL_STEP_PER_DELTA * Math.abs($e.deltaY),
+                this.zoomStepConfig.step);
+    newZoom = clampVal(newZoom, min, max);
+
+    const container = this.dagWrapper.nativeElement.getBoundingClientRect();
+
+    // storing the pointer's position at the time of the event. This is then
+    // used in the panning position formula (panAfterZoom method)
+    this.cursorPosition = {
+      x: ($e.x - container.left) / this.lastResizeEv.width,
+      y: ($e.y - container.top) / this.lastResizeEv.height,
+    };
+    this.stateService.zoom.next(newZoom);
+    this.cursorPosition = undefined;
   }
 
   private panAfterZoom(prevZoom: number, newZoom: number) {

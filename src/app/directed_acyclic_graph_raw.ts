@@ -18,12 +18,12 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {CdkDrag, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
-import {convertStateToRuntime, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, type LayoutOptions, NodeIcon, type PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {convertStateToRuntime, createDAGFeatures, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, type LayoutOptions, NodeIcon, type PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -31,7 +31,7 @@ import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
 import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode} from './node_spec';
 import {UserConfigService} from './user_config.service';
-import {debounce} from './util_functions';
+import {debounce, isPinch} from './util_functions';
 
 // tslint:disable:no-dict-access-on-struct-type
 
@@ -349,7 +349,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
   @Output() selectedNodeChange = new EventEmitter<SelectedNode|null>();
 
-  @Input() features = defaultFeatures;
+  @Input() features = createDAGFeatures();
   @Input('collapsed')
   set collapsed(c: boolean) {
     this.$collapsed = c;
@@ -382,6 +382,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       private readonly cdr: ChangeDetectorRef,
       readonly userConfigService: UserConfigService,
       private readonly liveAnnouncer: LiveAnnouncer,
+      private readonly elementRef: ElementRef,
       @Optional() private readonly stateService?: DagStateService,
   ) {
     this.updateGraphLayout = debounce(this.updateGraphLayout, 50, this);
@@ -1245,6 +1246,50 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   getEdges(node: DagNode|DagGroup): DagEdge[] {
     return this.edges.filter(e => e.from === node.id);
   }
+
+  onNodeWheel(event: WheelEvent) {
+    if (this.features.naturalScrolling && !isPinch(event)) {
+      const end = this.elementRef.nativeElement;
+      let node = null;
+      for (node = event.target as Element; node && node !== end;
+           node = node.parentElement) {
+        // Avoid triggering canvas scroll when over scrolling DAG node content
+        // that will scroll.
+        if (willScroll(node, event)) {
+          event.stopPropagation();
+          return;
+        }
+      }
+    }
+  }
+}
+
+function willScroll(node: Element, event: WheelEvent) {
+  return willScrollX(node, event) || willScrollY(node, event);
+}
+
+function willScrollX(node: Element, event: WheelEvent) {
+  // As documented on MDN, scrollLeft stays within its prescribed bounds no
+  // matter what it is set to. So, if it can't be changed then the element
+  // won't scroll.
+  // http://go/mdn/API/Element/scrollLeft
+  const orig = node.scrollLeft;
+  node.scrollLeft += event.deltaX;
+  const updated = node.scrollLeft;
+  node.scrollLeft = orig;
+  return updated !== orig;
+}
+
+function willScrollY(node: Element, event: WheelEvent) {
+  // As documented on MDN, scrollTop stays within its prescribed bounds no
+  // matter what it is set to. So, if it can't be changed then the element
+  // won't scroll.
+  // http://go/mdn/API/Element/scrollTop
+  const orig = node.scrollTop;
+  node.scrollTop += event.deltaY;
+  const updated = node.scrollTop;
+  node.scrollTop = orig;
+  return updated !== orig;
 }
 
 @NgModule({
