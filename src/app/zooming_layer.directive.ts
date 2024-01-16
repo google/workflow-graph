@@ -20,9 +20,9 @@ import {Subject, Subscription} from 'rxjs';
 import {distinctUntilChanged, pairwise, takeUntil} from 'rxjs/operators';
 
 import {DagStateService} from './dag-state.service';
-import {clampVal, createDefaultZoomConfig, defaultFeatures, defaultZoomConfig, SCROLL_STEP_PER_DELTA, ZoomConfig} from './data_types_internal';
+import {clampVal, createDefaultZoomConfig, defaultFeatures, defaultZoomConfig, SCROLL_STEP_PER_DELTA, type ZoomConfig} from './data_types_internal';
 import {Point} from './node_spec';
-import {ResizeEventData} from './resize_monitor_directive';
+import {type ResizeEventData} from './resize_monitor_directive';
 
 /**
  * Directive to control zooming functionalities for the ai-dag-renderer

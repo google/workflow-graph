@@ -23,7 +23,7 @@ import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angul
 import {ScreenshotTest} from '../screenshot_test';
 
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
-import {DagNode as Node, GraphSpec, NodeRef} from './node_spec';
+import {DagNode as Node, GraphSpec, type NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {fakeGraph} from './test_resources/fake_data';

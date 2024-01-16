@@ -113,4 +113,4 @@ export class ShortcutService implements OnDestroy {
   }
 }
 
-export {SavedShortcutConfig, ShortcutConfig, ShortcutList, ShortcutName};
+export {type SavedShortcutConfig, type ShortcutConfig, type ShortcutList, ShortcutName};

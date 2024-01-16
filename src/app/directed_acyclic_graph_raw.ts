@@ -23,13 +23,13 @@ import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
-import {convertStateToRuntime, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, LayoutOptions, NodeIcon, PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {convertStateToRuntime, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, type LayoutOptions, NodeIcon, type PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
-import {CustomNode, DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, SelectedNode} from './node_spec';
+import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode} from './node_spec';
 import {UserConfigService} from './user_config.service';
 import {debounce} from './util_functions';
 

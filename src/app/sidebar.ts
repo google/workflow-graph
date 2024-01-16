@@ -22,7 +22,7 @@ import {MinimapPosition} from './data_types_internal';
 /**
  * Expose internal Shared Objects
  */
-export {MinimapPosition};
+export {type MinimapPosition};
 
 /**
  * Renders a container for content to float over the DAG.

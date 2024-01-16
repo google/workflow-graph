@@ -19,7 +19,7 @@ import {CommonModule} from '@angular/common';
 import {Component, Input, NgModule} from '@angular/core';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 
-import {DEFAULT_THEME, IconConfig, isNoState, NodeState} from './data_types_internal';
+import {DEFAULT_THEME, IconConfig, isNoState, type NodeState} from './data_types_internal';
 import {bgForState, fetchIcon, iconForState, labelForState} from './icon_util';
 
 /** Renders a badge with an icon and description of a node state. */
@@ -44,7 +44,7 @@ export class DagNodeStateBadge {
   isNoState = isNoState;
 }
 
-export {NodeState};
+export {type NodeState};
 
 @NgModule({
   imports: [

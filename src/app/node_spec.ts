@@ -23,16 +23,16 @@ import {assert, baseColors, convertStateToRuntime, Dimension, EdgeStyle, IconCon
 export {
   baseColors,
   convertStateToRuntime,
-  EdgeStyle,
-  IconConfig,
+  type EdgeStyle,
+  type IconConfig,
   isNoState,
   isTextIcon,
-  MarkerStyle,
-  NodeIcon,
-  NodeState,
-  Point,
-  RuntimeState,
-  TextIconConfig,
+  type MarkerStyle,
+  type NodeIcon,
+  type NodeState,
+  type Point,
+  type RuntimeState,
+  type TextIconConfig,
 };
 
 /**

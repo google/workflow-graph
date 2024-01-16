@@ -26,11 +26,11 @@ import {Subscription} from 'rxjs';
 import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, getMargin, isPoint, LayoutOptions, Logger, MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, ZoomConfig} from './data_types_internal';
+import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, type FeatureToggleOptions, generateTheme, getMargin, isPoint, type LayoutOptions, type Logger, type MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, type ZoomConfig} from './data_types_internal';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
 import {DagLogger} from './logger/dag_logger';
 import {Minimap, MinimapModule} from './minimap/minimap';
-import {DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, NodeRef, Point, SelectedNode} from './node_spec';
+import {type DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, type NodeRef, Point, type SelectedNode} from './node_spec';
 import {ResizeEventData, ResizeMonitorModule} from './resize_monitor_directive';
 import {DagSidebar} from './sidebar';
 import {debounce} from './util_functions';
@@ -51,22 +51,22 @@ export {
   DEFAULT_THEME,
   defaultFeatures,
   defaultZoomConfig,
-  FeatureToggleOptions,
+  type FeatureToggleOptions,
   generateTheme,
   getMargin,
-  GroupIterationRecord,
-  LayoutOptions as DagreOptions,
-  MinimapPosition,
+  type GroupIterationRecord,
+  type LayoutOptions as DagreOptions,
+  type MinimapPosition,
   NODE_HEIGHT,
   NODE_WIDTH,
-  NodeState,
-  OrientationMarginConfig,
+  type NodeState,
+  type OrientationMarginConfig,
   RankAlignment as DagreRankAlignment,
   RankDirection as DagreRankDirection,
   RankerAlgorithim as DagreRankerAlgorithm,
-  SizeConfig,
+  type SizeConfig,
   SVG_ELEMENT_SIZE,
-  ZoomConfig
+  type ZoomConfig
 };
 
 type DagFieldType = DagNode|DagGroup|DagEdge;

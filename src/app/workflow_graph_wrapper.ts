@@ -19,13 +19,13 @@ import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
 
-import {defaultFeatures, Logger} from './data_types_internal';
-import {DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
-import {DagEdge, DagNode, GraphSpec, NodeRef, SelectedNode} from './node_spec';
+import {defaultFeatures, type Logger} from './data_types_internal';
+import {type DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
+import {type DagEdge, DagNode, GraphSpec, type NodeRef, SelectedNode} from './node_spec';
 import {DagScaffoldModule} from './scaffold';
 import {DagToolbarModule} from './toolbar';
-import {UserConfig} from './user_config.service';
-import {DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
+import {type UserConfig} from './user_config.service';
+import {type DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
 
 /**
  * Wrapper for DirectedAcyclicGraph.

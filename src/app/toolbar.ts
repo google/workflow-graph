@@ -23,7 +23,7 @@ import {AccessibilityHelpCenter} from './a11y/a11y_help_center';
 import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, FeatureToggleOptions, generateTheme, isNoState, RuntimeState, ZoomConfig} from './data_types_internal';
+import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, type DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, type FeatureToggleOptions, generateTheme, isNoState, RuntimeState, type ZoomConfig} from './data_types_internal';
 import {fetchIcon, iconForState} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagLogger} from './logger/dag_logger';
@@ -39,14 +39,14 @@ export {
   baseColors,
   BLUE_THEME,
   createDAGFeatures,
-  DagTheme,
+  type DagTheme,
   DEFAULT_THEME,
   defaultFeatures,
   defaultZoomConfig,
-  FeatureToggleOptions,
+  type FeatureToggleOptions,
   generateTheme,
-  RuntimeState,
-  ZoomConfig,
+  type RuntimeState,
+  type ZoomConfig,
 };
 
 /**

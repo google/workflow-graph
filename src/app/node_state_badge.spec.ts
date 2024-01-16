@@ -21,7 +21,7 @@ import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/
 
 import {ScreenshotTest} from '../screenshot_test';
 
-import {NodeState} from './data_types_internal';
+import {type NodeState} from './data_types_internal';
 import {DagNodeStateBadgeModule} from './node_state_badge';
 import {DagNodeStateBadgeHarness} from './test_resources/node_state_badge_harness';
 import {initTestBed} from './test_resources/test_utils';

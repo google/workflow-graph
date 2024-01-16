@@ -21,7 +21,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inp
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
-import {convertStateToRuntime, DEFAULT_THEME, FeatureToggleOptions, isNoState, isTextIcon, NODE_HEIGHT, NODE_WIDTH, NodeIcon, NodeState, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {convertStateToRuntime, DEFAULT_THEME, type FeatureToggleOptions, isNoState, isTextIcon, NODE_HEIGHT, NODE_WIDTH, NodeIcon, NodeState, SVG_ELEMENT_SIZE} from './data_types_internal';
 import {GroupIterationSelector} from './group_iteration_select';
 import {bgForState, fetchIcon, iconForState, iconRescale} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';

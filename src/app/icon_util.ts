@@ -58,7 +58,7 @@ export function generateFullIconFor(
  */
 export type FullIconConfig = ReturnType<typeof generateFullIconFor>;
 
-export {NodeIcon, IconConfig} from './data_types_internal';
+export {type NodeIcon, type IconConfig} from './data_types_internal';
 
 /** Returns an IconConfig key for resolved an icon config. */
 export function fetchIcon(icon: NodeIcon, key: keyof NodeIcon|'bg'): string {

@@ -21,11 +21,11 @@ import {takeUntil} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {baseColors, BLUE_THEME, createDAGFeatures, DagTheme, DEFAULT_THEME, defaultFeatures, FeatureToggleOptions, generateTheme} from './data_types_internal';
+import {baseColors, BLUE_THEME, createDAGFeatures, type DagTheme, DEFAULT_THEME, defaultFeatures, type FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
 import {DagLogger, DagLoggerModule} from './logger/dag_logger';
 import {DagToolbar} from './toolbar';
-import {UserConfig, UserConfigService} from './user_config.service';
+import {type UserConfig, UserConfigService} from './user_config.service';
 
 /**
  * Expose internal Shared Objects
@@ -34,10 +34,10 @@ export {
   baseColors,
   BLUE_THEME,
   createDAGFeatures,
-  DagTheme,
+  type DagTheme,
   DEFAULT_THEME,
   defaultFeatures,
-  FeatureToggleOptions,
+  type FeatureToggleOptions,
   generateTheme,
 };
 

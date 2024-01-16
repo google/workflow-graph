@@ -22,8 +22,8 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {DagStateService} from '../dag-state.service';
-import {convertStateToRuntime, defaultFeatures, MinimapPosition, SVG_ELEMENT_SIZE} from '../data_types_internal';
-import {CustomNode, DagGroup, DagNode, Point, SelectedNode} from '../node_spec';
+import {convertStateToRuntime, defaultFeatures, type MinimapPosition, SVG_ELEMENT_SIZE} from '../data_types_internal';
+import {CustomNode, DagGroup, DagNode, Point, type SelectedNode} from '../node_spec';
 
 /** Minimap component for Workflow Graph. */
 @Component({
