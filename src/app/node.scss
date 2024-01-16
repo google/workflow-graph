@@ -61,7 +61,7 @@
   }
 
   &[type='execution'][runtime='static'] .node-main {
-    background: #f7f7f7;
+    background: red !important;
   }
 
   &[type='artifact'][runtime='static'] .node-main {
