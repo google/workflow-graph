@@ -230,7 +230,8 @@ export class DagDemoPage {
   maxZooms = maxZooms;
   zoomSteps = zoomSteps;
   userConfig =
-      JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}') as UserConfig;
+      JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY) || '{}') as
+      UserConfig;
   userConfigChange = new Subject<UserConfig>();
   destroy = new Subject<void>();
 
@@ -248,7 +249,7 @@ export class DagDemoPage {
 
     this.userConfigChange.pipe(takeUntil(this.destroy))
         .subscribe((v: UserConfig) => {
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(v));
+          window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(v));
         });
   }
 
