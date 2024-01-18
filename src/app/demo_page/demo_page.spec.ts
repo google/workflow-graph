@@ -18,7 +18,7 @@
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
-import {MatSelectHarness} from '@angular/material/select/testing';
+import {MatNativeSelectHarness} from '@angular/material/input/testing';
 
 import {ScreenshotTest} from '../../screenshot_test';
 import {DemoPageHarness} from '../test_resources/demo_page_harness';
@@ -32,7 +32,7 @@ describe('Demo Page', () => {
   let fixture: ComponentFixture<TestComponent>;
   let harness: DemoPageHarness;
   let dagHarness: DagRawHarness;
-  let datasetInput: MatSelectHarness;
+  let datasetInput: MatNativeSelectHarness;
   let screenShot: ScreenshotTest;
 
   beforeEach(waitForAsync(async () => {
@@ -60,28 +60,28 @@ describe('Demo Page', () => {
 
   describe('Single Node', () => {
     it('Renders correctly (screenshot)', async () => {
-      await datasetInput.clickOptions({text: 'Single Node'});
+      await datasetInput.selectOptions({text: 'Single Node'});
       await screenShot.expectMatch('single-node');
     });
   });
 
   describe('Recursive Graph', () => {
     it('Renders correctly (screenshot)', async () => {
-      await datasetInput.clickOptions({text: 'Recursive Graph'});
+      await datasetInput.selectOptions({text: 'Recursive Graph'});
       await screenShot.expectMatch('recursive-graph');
     });
   });
 
   describe('Artifact in nested loop', () => {
     it('Renders correctly (screenshot)', async () => {
-      await datasetInput.clickOptions({text: 'Artifact in nested loop'});
+      await datasetInput.selectOptions({text: 'Artifact in nested loop'});
       await screenShot.expectMatch('artifact-in-nested-loop');
     });
   });
 
   describe('Expanded group label positioning', () => {
     it('Renders correctly (screenshot)', async () => {
-      await datasetInput.clickOptions({text: 'Expanded Group label'});
+      await datasetInput.selectOptions({text: 'Expanded Group label'});
       await dagHarness.clickExpandToggle(0);
       await screenShot.expectMatch('group-label-positioning');
     });

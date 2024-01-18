@@ -22,9 +22,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
@@ -338,8 +339,8 @@ export class DagDemoPage {
     this.currDataset = newGraph;
   }
 
-  onDatasetChanged(event: MatSelectChange) {
-    this.setCurrDataset(event.value);
+  onDatasetChanged(event: Event) {
+    this.setCurrDataset((event.target as HTMLSelectElement).value);
   }
 
   setCurrTheme(forceClone = false) {
@@ -385,15 +386,17 @@ export class DagDemoPage {
     });
   }
 
-  setZoomOption(f: keyof ZoomConfig, val: number) {
+  setZoomOption(f: keyof ZoomConfig, event: Event) {
+    const val = +(event.target as HTMLSelectElement).value;
     this.zoomConfig = {
       ...this.zoomConfig,
       [f]: val,
     };
   }
 
-  setMinimapPosition(position: string) {
-    this.minimapPosition = position as MinimapPosition;
+  setMinimapPosition(event: Event) {
+    this.minimapPosition =
+        (event.target as HTMLSelectElement).value as MinimapPosition;
   }
 
   setDagFeature(f: keyof FeatureToggleOptions, val: boolean) {
@@ -427,9 +430,11 @@ export class DagDemoPage {
         throw new Error(`unexpected value ${f}!`);
     }
   }
-  setDagreOption(f: keyof DagreOptions, val: DagreOptions[typeof f]) {
+  setDagreOption(f: keyof DagreOptions, event: Event) {
     // This form of rudimentary checking is required due to property renaming
     // being turned on in the UI
+    const val =
+        (event.target as HTMLSelectElement).value as DagreOptions[typeof f];
     const feat = this.dagreOptions = {...this.dagreOptions};
     switch (f) {
       case 'rankDirection':
@@ -538,8 +543,9 @@ export class DagDemoPage {
     MatButtonModule,
     DagSidebarModule,
     MatDividerModule,
+    MatInputModule,
+    MatFormFieldModule,
     DirectedAcyclicGraphModule,
-    NoopAnimationsModule,
   ],
 })
 export class DagModePageModule {

@@ -214,14 +214,17 @@
         Select Dataset
       </p>
       <mat-form-field>
-        <mat-select
+        <mat-label>Dataset</mat-label>
+        <select
           id="dataset-select"
           [value]="datasetName"
-          (selectionChange)="onDatasetChanged($event)"
+          (change)="onDatasetChanged($event)"
+          matNativeControl
         >
-          <mat-option *ngFor="let name of datasetNames" [value]="name">{{name}}</mat-option>
-        </mat-select>
+          <option *ngFor="let name of datasetNames" [value]="name">{{name}}</option>
+        </select> 
       </mat-form-field>
+      
     </div>
     <mat-divider />
     <div class="demo-control-group">
@@ -233,47 +236,49 @@
         class="demo-select"
       >
         <mat-label>Status Icons</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="statusIcons"
           (selectionChange)="setCurrDataset()"
+          matNativeControl
         >
-          <mat-option
+          <option
             [value]="'Show'"
           >
             Show
-          </mat-option>
-          <mat-option
+          </option>
+          <option
             [value]="'Hide'"
           >
             Hide
-          </mat-option>
-          <mat-option
+          </option>
+          <option
             [value]="'No Runtime'"
           >
             No Runtime
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         appearance="fill"
         class="demo-select"
       >
         <mat-label>Minimap Position</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="minimapPosition"
-          (selectionChange)="setMinimapPosition($event.value)"
+          (change)="setMinimapPosition($event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             [value]="'top'"
           >
             Top (default)
-          </mat-option>
-          <mat-option
+          </option>
+          <option
             [value]="'bottom'"
           >
             Bottom
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-slide-toggle
         class="demo-button"
@@ -314,34 +319,36 @@
         class="demo-select"
       >
         <mat-label>Select an option</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="selectedThemeName"
-          (selectionChange)="setCurrTheme()"
+          (change)="setCurrTheme()"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let theme of themeNames"
             [value]="theme"
           >
             {{theme}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         appearance="fill"
         class="demo-select"
       >
         <mat-label>Select an option</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="selectedEdgeStyle"
-          (selectionChange)="setCurrTheme(true)"
+          (change)="setCurrTheme(true)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let edgeStyle of edgeStyles"
             [value]="edgeStyle"
           >
             {{edgeStyle}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-slide-toggle
         [checked]="customArtifactColors"
@@ -361,102 +368,108 @@
         class="demo-select"
       >
         <mat-label>Rank Direction</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="dagreOptions.rankDirection"
-          (selectionChange)="setDagreOption('rankDirection', $event.value)"
+          (change)="setDagreOption('rankDirection', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let rankDirection of rankDirections"
             [value]="rankDirection[1]"
           >
             {{rankDirection[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         appearance="fill"
         class="demo-select"
       >
         <mat-label>Rank Alignment</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="dagreOptions.rankAlignment"
-          (selectionChange)="setDagreOption('rankAlignment', $event.value)"
+          (change)="setDagreOption('rankAlignment', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let rankAlignment of rankAlignments"
             [value]="rankAlignment[1]"
           >
             {{rankAlignment[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         appearance="fill"
         class="demo-select"
       >
         <mat-label>Ranker</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="dagreOptions.ranker"
-          (selectionChange)="setDagreOption('ranker', $event.value)"
+          (change)="setDagreOption('ranker', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let ranker of rankers"
             [value]="ranker[1]"
           >
             {{ranker[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         appearance="fill"
         class="demo-select"
       >
         <mat-label>Rank Separation</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="dagreOptions.rankSeparation"
-          (selectionChange)="setDagreOption('rankSeparation', $event.value)"
+          (change)="setDagreOption('rankSeparation', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let rankSeparation of separations"
             [value]="rankSeparation[1]"
           >
             {{rankSeparation[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         appearance="fill"
         class="demo-select"
       >
         <mat-label>Edge Separation</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="dagreOptions.edgeSeparation"
-          (selectionChange)="setDagreOption('edgeSeparation', $event.value)"
+          (change)="setDagreOption('edgeSeparation', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let edgeSeparation of separations"
             [value]="edgeSeparation[1]"
           >
             {{edgeSeparation[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         appearance="fill"
         class="demo-select"
       >
         <mat-label>Node Separation</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="dagreOptions.nodeSeparation"
-          (selectionChange)="setDagreOption('nodeSeparation', $event.value)"
+          (change)="setDagreOption('nodeSeparation', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let nodeSeparation of separations"
             [value]="nodeSeparation[1]"
           >
             {{nodeSeparation[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
     </div>
     <mat-divider />
@@ -469,34 +482,35 @@
         class="demo-select"
       >
         <mat-label>Min Zoom</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="zoomConfig.min"
-          (selectionChange)="setZoomOption('min', $event.value)"
+          (change)="setZoomOption('min', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let minZoom of minZooms"
             [value]="minZoom[1]"
           >
             {{minZoom[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
-        appearance="fill"
         class="demo-select"
       >
         <mat-label>Max Zoom</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="zoomConfig.max"
-          (selectionChange)="setZoomOption('max', $event.value.value)"
+          (change)="setZoomOption('max', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let maxZoom of maxZooms"
             [value]="maxZoom[1]"
           >
             {{maxZoom[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
       <mat-form-field
         *ngIf="dagFeatures.zoomControls || dagFeatures.scrollToZoom"
@@ -504,17 +518,18 @@
         class="demo-select"
       >
         <mat-label>Zoom Steps</mat-label>
-        <mat-select
+        <select
           [(ngModel)]="zoomConfig.step"
-          (selectionChange)="setZoomOption('step', $event.value)"
+          (change)="setZoomOption('step', $event)"
+          matNativeControl
         >
-          <mat-option
+          <option
             *ngFor="let zoomStep of zoomSteps"
             [value]="zoomStep[1]"
           >
             {{zoomStep[0]}}
-          </mat-option>
-        </mat-select>
+          </option>
+        </select>
       </mat-form-field>
     </div>
   </div>
