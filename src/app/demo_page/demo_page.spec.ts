@@ -88,6 +88,11 @@ describe('Demo Page', () => {
   });
 });
 
-@Component({template: '<dag-demo-page />'})
+@Component({
+  template:
+      `<div style="height: 1200px;">
+        <dag-demo-page />
+      </div>`
+})
 class TestComponent {
 }

@@ -289,6 +289,13 @@
       </mat-slide-toggle>
       <mat-slide-toggle
         class="demo-button"
+        [checked]="dagFeatures.naturalScrolling"
+        (change)="setDagFeature('naturalScrolling', $event.checked)"
+      >
+        Natural scrolling
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        class="demo-button"
         [checked]="dagLoading"
         (change)="dagLoading = $event.checked"
       >

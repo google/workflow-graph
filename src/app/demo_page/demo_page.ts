@@ -405,7 +405,11 @@ export class DagDemoPage {
     const feat = this.dagFeatures = {...this.dagFeatures};
     switch (f) {
       case 'scrollToZoom':
+        feat.naturalScrolling = false;
         return feat.scrollToZoom = val;
+      case 'naturalScrolling':
+        feat.scrollToZoom = false;
+        return feat.naturalScrolling = val;
       case 'zoomControls':
         return feat.zoomControls = val;
       case 'disableZoomPercentageLabel':
