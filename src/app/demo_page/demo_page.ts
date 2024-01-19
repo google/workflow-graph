@@ -49,8 +49,6 @@ interface Options<T> {
   [name: string]: T;
 }
 
-const LOCAL_STORAGE_KEY = 'workflow_graph_user_config';
-
 const DEFAULT_DATASET = 'Default Dataset';
 
 const datasets: Options<GraphSpec> = {
@@ -230,9 +228,7 @@ export class DagDemoPage {
   minZooms = minZooms;
   maxZooms = maxZooms;
   zoomSteps = zoomSteps;
-  userConfig =
-      JSON.parse(window.localStorage.getItem(LOCAL_STORAGE_KEY) || '{}') as
-      UserConfig;
+  userConfig = JSON.parse('{}') as UserConfig;
   userConfigChange = new Subject<UserConfig>();
   destroy = new Subject<void>();
 
@@ -249,9 +245,10 @@ export class DagDemoPage {
     (window as unknown as CustomWindowProps).dagRef = this.dagRef!;
 
     this.userConfigChange.pipe(takeUntil(this.destroy))
-        .subscribe((v: UserConfig) => {
-          window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(v));
-        });
+        .subscribe(
+            (v: UserConfig) => {
+                // This would save to storage
+            });
   }
 
   openModal(templateRef: TemplateRef<{}>) {
