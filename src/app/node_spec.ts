@@ -538,12 +538,8 @@ export function cloneGraph(g: GraphSpec): GraphSpec {
  */
 export function assertCompleteDereference(
     // tslint:disable-next-line:no-any This is a generic test for all object types and as such requires an any here, unknown won't work
-    obj: Record<string, any>, errorMessage: string,
-    keysToIgnore: string[] = []) {
+    obj: Record<string, any>, errorMessage: string) {
   const clone = {...obj};
-  for (const key of keysToIgnore) {
-    delete clone[key];
-  }
   const objKeys = Object.keys(clone);
   const addendumError = `. Unexpected Keys: ${objKeys.join(', ')}`;
   assert(objKeys.length === 0, errorMessage + addendumError);
@@ -675,10 +671,23 @@ export class DagNode implements
   static bootstrapSkeletonNode(node: DagNodeSkeleton, nodeMeta: DagGroupMeta):
       DagGroup;
   static bootstrapSkeletonNode(node: DagNodeSkeleton, nodeMeta: DagMeta) {
-    const {id, type, ...parentRemains} = node;
-    assertCompleteDereference(
-        parentRemains, `Unexpected keys found in DagNodeSkeleton`,
-        ['next', 'edgeLabel', 'definition', 'edgeOpts']);
+    const {id, type, next, edgeLabel, edgeOpts, ...parentRemains} = node;
+    if (node.type === 'group') {
+      const {
+        id,
+        type,
+        next,
+        edgeLabel,
+        edgeOpts,
+        definition,
+        ...groupParentRemains
+      } = node;
+      assertCompleteDereference(
+          groupParentRemains, `Unexpected keys found in DagNodeSkeleton`);
+    } else {
+      assertCompleteDereference(
+          parentRemains, `Unexpected keys found in DagNodeSkeleton`);
+    }
     if (type !== 'group') {
       const {
         displayName,
@@ -750,11 +759,11 @@ export class DagNode implements
       artifactRefs,
       treatAsLoop,
       selectedLoopId,
+      groupMeta,
       ...remains
     } = nodeMeta as DagGroupMeta;
     assertCompleteDereference(
-        remains, 'Not all fields of DagGroup were assigned via Skeleton',
-        ['groupMeta']);
+        remains, 'Not all fields of DagGroup were assigned via Skeleton');
     return new DagGroup(id, undefined, undefined, undefined, state, {
       description,
       descriptionTooltip,
