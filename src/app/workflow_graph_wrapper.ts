@@ -20,7 +20,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
 
 import {defaultFeatures, type Logger} from './data_types_internal';
-import {type DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
+import {type DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule, MinimapPosition} from './directed_acyclic_graph';
 import {type DagEdge, DagNode, GraphSpec, type NodeRef, SelectedNode} from './node_spec';
 import {DagScaffoldModule} from './scaffold';
 import {DagToolbarModule} from './toolbar';
@@ -44,6 +44,7 @@ import {type DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
     </ai-dag-toolbar>
     <ai-dag-renderer
       [enableMinimap]="enableMinimap"
+      [minimapPosition]="minimapPosition"
       [loading]="loading"
       [nodes]="graphSpec.nodes"
       [groups]="graphSpec.groups"
@@ -94,6 +95,7 @@ export class WorkflowGraphWrapper implements WorkflowGraphProps {
   @Input() hoveredEdge?: DagEdge;
   @Input() layout?: DagreOptions;
   @Input() logger?: Logger;
+  @Input() minimapPosition: MinimapPosition = 'top';
   @Input() zoom: number = 1;
   @Input() userConfig?: UserConfig;
   @Output() readonly userConfigChange = new EventEmitter<UserConfig>();

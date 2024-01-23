@@ -21,6 +21,7 @@ import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/
 
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {fakeGraph} from './test_resources/fake_data';
+import {MinimapHarness} from './test_resources/minimap_harness';
 import {initTestBed, keyWithCtrlOrCommand} from './test_resources/test_utils';
 import {WorkflowGraphWrapperModule} from './workflow_graph_wrapper';
 
@@ -62,6 +63,33 @@ describe('Workflow graph wrapper', () => {
       expect(style).toBe('transform: translate(-100px, -100px) scale(1);');
     });
   });
+
+  describe('Minimap position', () => {
+    let fixture: ComponentFixture<TestComponent>;
+    let minimap: MinimapHarness;
+
+    beforeEach(waitForAsync(async () => {
+      fixture = TestBed.createComponent(TestComponent);
+      fixture.detectChanges();
+
+      const loader = TestbedHarnessEnvironment.loader(fixture);
+      minimap = await loader.getHarness(MinimapHarness);
+    }));
+
+    it('Bottom', async () => {
+      fixture.componentInstance.minimapPosition = 'bottom';
+
+      const minimapHost = await minimap.host();
+      expect(await minimapHost.getCssValue('order')).toBe('1');
+    });
+
+    it('Top', async () => {
+      fixture.componentInstance.minimapPosition = 'top';
+
+      const minimapHost = await minimap.host();
+      expect(await minimapHost.getCssValue('order')).toBe('0');
+    });
+  });
 });
 
 @Component({
@@ -69,6 +97,7 @@ describe('Workflow graph wrapper', () => {
       <workflow-graph
         [dagSpec]="dagSpec"
         [features]="features"
+        [minimapPosition]="minimapPosition"
       />`,
   styles: [`
     workflow-graph {
@@ -80,4 +109,5 @@ describe('Workflow graph wrapper', () => {
 class TestComponent {
   dagSpec = {skeleton: fakeGraph.skeleton, meta: fakeGraph.state};
   features = {enableShortcuts: true};
+  minimapPosition = 'top';
 }
