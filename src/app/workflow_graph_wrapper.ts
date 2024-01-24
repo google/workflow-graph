@@ -20,7 +20,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {Component, EventEmitter, Input, NgModule, Output, ViewChild} from '@angular/core';
 
 import {defaultFeatures, type Logger} from './data_types_internal';
-import {type DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule, MinimapPosition} from './directed_acyclic_graph';
+import {type DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule, type MinimapPosition} from './directed_acyclic_graph';
 import {type DagEdge, DagNode, GraphSpec, type NodeRef, SelectedNode} from './node_spec';
 import {DagScaffoldModule} from './scaffold';
 import {DagToolbarModule} from './toolbar';
