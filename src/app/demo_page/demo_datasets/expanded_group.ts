@@ -19,36 +19,36 @@ import {GraphSkeleton} from './shared';
 
 export const fakeGraph: GraphSkeleton = {
   'skeleton': [{
-    'id': 'node1',
-    'type': 'execution',
-    'next': [
+    id: 'node1',
+    type: 'execution',
+    next: [
       {
-        'id': 'node2',
-        'type': 'execution',
-        'edgeLabel': 'the label',
+        id: 'node2',
+        type: 'execution',
+        edgeLabel: 'the label',
       },
       {
-        'id': 'node3',
-        'type': 'group',
-        'definition': [{
-          'id': 'child1',
-          'type': 'execution',
-          'next': [{
-            'id': 'child2',
-            'type': 'execution',
-            'next': [{
-              'id': 'child3',
-              'type': 'execution',
-              'next': [{
-                'id': 'child4',
-                'type': 'execution',
-                'next': [{'id': 'child5', 'type': 'execution'}]
+        id: 'node3',
+        type: 'group',
+        definition: [{
+          id: 'child1',
+          type: 'execution',
+          next: [{
+            id: 'child2',
+            type: 'execution',
+            next: [{
+              id: 'child3',
+              type: 'execution',
+              next: [{
+                id: 'child4',
+                type: 'execution',
+                next: [{id: 'child5', type: 'execution'}]
               }]
             }]
           }]
         }]
       },
-      {'id': 'node4', 'type': 'execution'}
+      {id: 'node4', type: 'execution'}
     ]
   }]
 };
