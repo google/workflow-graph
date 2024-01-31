@@ -152,6 +152,8 @@ export class DagToolbar {
 
   @Input() rightAlignMainControls = false;
 
+  @Input() rightAlignMainControls = false;
+
   @Input('features')
   set features(f: FeatureToggleOptions) {
     this.$features = f;
