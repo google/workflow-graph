@@ -266,7 +266,7 @@
             [sourceGroup]="group.getNodeDisplayName()"
             [iterations]="getIterationsFor(group)"
             [(iteration)]="group.selectedLoopId"
-            (onIterSelect)="broadcastIterChange(group, (group._cachedSelection = $event)!)"
+            (onIterSelect)="broadcastIterChange(group, $event!)"
           />
       </header>
       <footer class="sub-dag">

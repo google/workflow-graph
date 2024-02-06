@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
+import {HarnessLoader} from '@angular/cdk/testing';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
+import {MatSelectHarness} from '@angular/material/select/testing';
 
 import {createDAGFeatures} from './data_types_internal';
 import {DagRaw, DagRawModule} from './directed_acyclic_graph_raw';
-import {DagEdge, DagNode as Node, DagNode, GraphSpec} from './node_spec';
+import {DagEdge, DagGroup, DagNode as Node, DagNode, GraphSpec} from './node_spec';
 import {DagRawHarness} from './test_resources/directed_acyclic_graph_raw_harness';
 import {fakeGraph} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
@@ -40,6 +42,7 @@ describe('Directed Acyclic Graph Raw', () => {
   describe('UI', () => {
     let fixture: ComponentFixture<TestComponent>;
     let harness: DagRawHarness;
+    let loader: HarnessLoader;
 
     beforeEach(waitForAsync(async () => {
       fixture = TestBed.createComponent(TestComponent);
@@ -48,7 +51,7 @@ describe('Directed Acyclic Graph Raw', () => {
       fixture.componentInstance.dagRaw.updateGraphLayout();
       fixture.componentInstance.dagRaw.detectChanges();
 
-      const loader = TestbedHarnessEnvironment.loader(fixture);
+      loader = TestbedHarnessEnvironment.loader(fixture);
       harness = await loader.getHarness(DagRawHarness);
     }));
 
@@ -69,6 +72,24 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(fixture.componentInstance.dagRaw.selectedNode?.node
                     .getNodeDisplayName())
              .toBe('TransformedTable');
+       }));
+
+    it('Sets "selectedLoopId" when iteration is changed',
+       waitForAsync(async () => {
+         await harness.clickExecutionNode('TensorFlow Training');
+         expect(
+             (fixture.componentInstance.dagRaw.selectedNode?.node as DagGroup)
+                 .selectedLoopId)
+             .toBe('it-5');
+
+         const select = await loader.getHarness(MatSelectHarness);
+         await select.open();
+         await select.clickOptions({text: 'Iteration 2'});
+
+         expect(
+             (fixture.componentInstance.dagRaw.selectedNode?.node as DagGroup)
+                 .selectedLoopId)
+             .toBe('it-2');
        }));
 
     it('Preserves selection data on reassignment', waitForAsync(async () => {

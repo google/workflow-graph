@@ -455,6 +455,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   broadcastIterChange(
       group: DagGroup, iterationNode: GroupIterationRecord['iterationNode']) {
+    (group as any)._cachedSelection = iterationNode;
+    group.selectedLoopId = iterationNode.id;
     const iter = {path: this.dagPath, group, iterationNode};
     this.groupIterationChanged.emit(iter);
     this.stateService?.setIterationChange(iter);
