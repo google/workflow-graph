@@ -22,61 +22,99 @@ import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/
 import {ScreenshotTest} from '../screenshot_test';
 
 import {type NodeState} from './data_types_internal';
+import {NODE_STATE_TRANSLATIONS, NodeStateTranslations, WORKFLOW_GRAPH_TRANSLATIONS} from './i18n';
 import {DagNodeStateBadgeModule} from './node_state_badge';
 import {DagNodeStateBadgeHarness} from './test_resources/node_state_badge_harness';
 import {initTestBed} from './test_resources/test_utils';
+
+async function setup(params: {translations?: Partial<NodeStateTranslations>}) {
+  await initTestBed({
+    declarations: [TestComponent],
+    imports: [DagNodeStateBadgeModule],
+    providers: [{
+      provide: WORKFLOW_GRAPH_TRANSLATIONS,
+      useValue: params.translations || {}
+    }],
+  });
+  const fixture = TestBed.createComponent(TestComponent);
+  fixture.componentInstance.nodeState = 'PENDING';
+  fixture.detectChanges();
+  const loader = TestbedHarnessEnvironment.loader(fixture);
+  const harness = await loader.getHarness(DagNodeStateBadgeHarness);
+
+  const screenShot = new ScreenshotTest(module.id);
+
+  return {fixture, harness, screenShot};
+}
 
 describe('Node State Badge', () => {
   let fixture: ComponentFixture<TestComponent>;
   let harness: DagNodeStateBadgeHarness;
   let screenShot: ScreenshotTest;
 
-  beforeEach(waitForAsync(async () => {
-    await initTestBed({
-      declarations: [TestComponent],
-      imports: [DagNodeStateBadgeModule],
+  describe('without custom translations', () => {
+    beforeEach(waitForAsync(async () => {
+      const components = await setup({});
+      fixture = components.fixture;
+      harness = components.harness;
+      screenShot = components.screenShot;
+    }));
+
+    afterEach(fakeAsync(() => {
+      fixture.destroy();
+    }));
+
+    describe('PENDING', () => {
+      it('Renders an icon and the given label text', fakeAsync(async () => {
+           fixture.componentInstance.nodeState = 'PENDING';
+           fixture.detectChanges();
+           expect(await harness.getIcon()).toBeDefined();
+           expect(await harness.getText()).toEqual('Pending');
+         }));
+
+      it('Renders correctly (screenshot)', async () => {
+        await screenShot.expectMatch('pending');
+      });
     });
-    fixture = TestBed.createComponent(TestComponent);
-    fixture.componentInstance.nodeState = 'PENDING';
-    fixture.detectChanges();
-    const loader = TestbedHarnessEnvironment.loader(fixture);
-    harness = await loader.getHarness(DagNodeStateBadgeHarness);
 
-    screenShot = new ScreenshotTest(module.id);
-  }));
-
-  afterEach(fakeAsync(() => {
-    fixture.destroy();
-  }));
-
-  describe('PENDING', () => {
-    it('Renders an icon and the given label text', fakeAsync(async () => {
-         fixture.componentInstance.nodeState = 'PENDING';
+    it('NO_STATE_STATIC - Renders an icon and the given label text',
+       fakeAsync(async () => {
+         fixture.componentInstance.nodeState = 'NO_STATE_STATIC';
          fixture.detectChanges();
-         expect(await harness.getIcon()).toBeDefined();
-         expect(await harness.getText()).toEqual('Pending');
+         expect(await harness.hasIcon()).toBeFalse();
+         expect(await harness.getText()).toEqual('');
        }));
 
-    it('Renders correctly (screenshot)', async () => {
-      await screenShot.expectMatch('pending');
-    });
+    it('NO_STATE_RUNTIME - Renders nothing for NO_STATE_RUNTIME',
+       fakeAsync(async () => {
+         fixture.componentInstance.nodeState = 'NO_STATE_RUNTIME';
+         fixture.detectChanges();
+         expect(await harness.hasIcon()).toBeFalse();
+         expect(await harness.getText()).toEqual('');
+       }));
+  })
+
+  describe('with custom translations', () => {
+    beforeEach(waitForAsync(async () => {
+      const components = await setup({
+        translations:
+            {...NODE_STATE_TRANSLATIONS, 'nodeStatePending': 'Custom pending'}
+      });
+      fixture = components.fixture;
+      harness = components.harness;
+      screenShot = components.screenShot;
+    }));
+
+    afterEach(fakeAsync(() => {
+      fixture.destroy();
+    }));
+
+    it('Uses the provided translation messages', fakeAsync(async () => {
+         fixture.componentInstance.nodeState = 'PENDING';
+         fixture.detectChanges();
+         expect(await harness.getText()).toEqual('Custom pending');
+       }));
   });
-
-  it('NO_STATE_STATIC - Renders an icon and the given label text',
-     fakeAsync(async () => {
-       fixture.componentInstance.nodeState = 'NO_STATE_STATIC';
-       fixture.detectChanges();
-       expect(await harness.hasIcon()).toBeFalse();
-       expect(await harness.getText()).toEqual('');
-     }));
-
-  it('NO_STATE_RUNTIME - Renders nothing for NO_STATE_RUNTIME',
-     fakeAsync(async () => {
-       fixture.componentInstance.nodeState = 'NO_STATE_RUNTIME';
-       fixture.detectChanges();
-       expect(await harness.hasIcon()).toBeFalse();
-       expect(await harness.getText()).toEqual('');
-     }));
 });
 
 @Component({

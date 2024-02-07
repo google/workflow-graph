@@ -17,10 +17,11 @@
 
 import {CommonModule} from '@angular/common';
 import {Component, Input, NgModule} from '@angular/core';
-import {WorkflowGraphIconModule} from './icon_wrapper';
 
 import {DEFAULT_THEME, IconConfig, isNoState, type NodeState} from './data_types_internal';
+import {TranslationsService} from './i18n';
 import {bgForState, fetchIcon, iconForState, labelForState} from './icon_util';
+import {WorkflowGraphIconModule} from './icon_wrapper';
 
 /** Renders a badge with an icon and description of a node state. */
 @Component({
@@ -39,9 +40,11 @@ export class DagNodeStateBadge {
 
   iconForState = iconForState;
 
-  labelForState = labelForState;
+  labelForState = labelForState(this.translationsService);
 
   isNoState = isNoState;
+
+  constructor(private readonly translationsService: TranslationsService) {}
 }
 
 export {type NodeState};

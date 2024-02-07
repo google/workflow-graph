@@ -16,7 +16,7 @@
  */
 
 import {DagTheme, IconConfig, isTextIcon, NodeIcon, NodeState} from './data_types_internal';
-import {translateMessage} from './i18n';
+import {TranslationsService} from './i18n';
 import {sizeMap} from './icons_service';
 import {NodeType} from './node_spec';
 
@@ -191,106 +191,45 @@ export function bgForState(state: NodeState, theme: DagTheme): string {
   return theme.statusBg[state] || fallback;
 }
 
-/**
- * @desc Label for an running execution that is preparing to change
- * state due to user intervention.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_WORKING =
-    translateMessage('Working');
-
-/**
- * @desc Label for an execution that has not started.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_PENDING =
-    translateMessage('Pending');
-
-/**
- * @desc Label for an execution that was stopped by the user.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CANCELLED =
-    translateMessage('Cancelled');
-
-/**
- * @desc Label for an execution that failed to complete.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_FAILED = translateMessage('Failed');
-
-/**
- * @desc Label for an execution that is currently in progress.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING =
-    translateMessage('Running');
-
-/**
- * @desc Label for an execution that was skipped due to the step being
- * cached.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CACHED = translateMessage('Cached');
-
-/**
- * @desc Label for an execution that did not complete due to a timeout.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT =
-    translateMessage('Timeout');
-
-/**
- * @desc Label for an execution that did not run because its trigger
- * policy didn't match.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_NOT_TRIGGERED =
-    translateMessage('Not Triggered');
-
-/**
- * @desc Label for an execution that completed successfully.
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_COMPLETED =
-    translateMessage('Completed');
-
 /** Returns a display name for a NodeState. */
-export function labelForState(state: NodeState): string {
-  switch (state) {
-    case 'CANCEL_PENDING':
-    case 'CANCELLING':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_WORKING;
+export function labelForState(translationsService: TranslationsService):
+    (state: NodeState) => string {
+  return (state: NodeState) => {
+    switch (state) {
+      case 'CANCEL_PENDING':
+      case 'CANCELLING':
+        return translationsService.translateMessage('nodeStateWorking');
 
-    case 'CANCELLED':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CANCELLED;
+      case 'CANCELLED':
+        return translationsService.translateMessage('nodeStateCancelled');
 
-    case 'FAILED':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_FAILED;
+      case 'FAILED':
+        return translationsService.translateMessage('nodeStateFailed');
 
-    case 'PENDING':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_PENDING;
+      case 'PENDING':
+        return translationsService.translateMessage('nodeStatePending');
 
-    case 'RUNNING':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_RUNNING;
+      case 'RUNNING':
+        return translationsService.translateMessage('nodeStateRunning');
 
-    case 'SKIPPED':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_CACHED;
+      case 'SKIPPED':
+        return translationsService.translateMessage('nodeStateCached');
 
-    case 'SUCCEEDED':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_COMPLETED;
+      case 'SUCCEEDED':
+        return translationsService.translateMessage('nodeStateCompleted');
 
-    case 'TIMEOUT':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_TIMEOUT;
+      case 'TIMEOUT':
+        return translationsService.translateMessage('nodeStateTimeout');
 
-    case 'NOT_TRIGGERED':
-      return AI_DIRECTED_ACYCLIC_GRAPH_NODE_STATE_NOT_TRIGGERED;
+      case 'NOT_TRIGGERED':
+        return translationsService.translateMessage('nodeStateNotTriggered');
 
-    case 'NO_STATE_RUNTIME':
-    case 'NO_STATE_STATIC':
-      return '';
+      case 'NO_STATE_RUNTIME':
+      case 'NO_STATE_STATIC':
+        return '';
 
-    default:
-      throw new Error(`Dag state config is not exhaustive, state: ${state}`);
+      default:
+        throw new Error(`Dag state config is not exhaustive, state: ${state}`);
+    }
   }
 }

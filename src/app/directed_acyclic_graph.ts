@@ -28,6 +28,7 @@ import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, type FeatureToggleOptions, generateTheme, getMargin, isPoint, type LayoutOptions, type Logger, type MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, type ZoomConfig} from './data_types_internal';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
+import {Translations, TranslationsService} from './i18n';
 import {DagLogger} from './logger/dag_logger';
 import {Minimap, MinimapModule} from './minimap/minimap';
 import {type DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, type NodeRef, Point, type SelectedNode} from './node_spec';
@@ -296,6 +297,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
       @Optional() private readonly dagLogger: DagLogger|null,
       private readonly shortcutService: ShortcutService,
       readonly stateService: DagStateService,
+      private readonly translationsService: TranslationsService,
   ) {
     this.focusElement = debounce(this.focusElement, 50, this);
     this.onVisualUpdate = debounce(this.onVisualUpdate, 50, this);

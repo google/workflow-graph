@@ -19,8 +19,57 @@
  * @fileoverview Simple i18n module that fetches translations for a given
  * string.
  */
+import {Inject, Injectable, InjectionToken, Optional} from '@angular/core';
 
-export function translateMessage(message: string): string {
-  // TODO figure out what to do with translations
-  return message;
+
+/** The default translations in English */
+export const NODE_STATE_TRANSLATIONS = {
+  'nodeStateWorking': 'Working',
+  'nodeStatePending': 'Pending',
+  'nodeStateCancelled': 'Cancelled',
+  'nodeStateRunning': 'Running',
+  'nodeStateTimeout': 'Timeout',
+  'nodeStateCached': 'Cached',
+  'nodeStateNotTriggered': 'Not Triggered',
+  'nodeStateCompleted': 'Completed',
+  'nodeStateFailed': 'Failed',
+};
+
+export const DEFAULT_TRANSLATIONS = {
+  ...NODE_STATE_TRANSLATIONS,
+};
+
+
+/**
+ * A subset of translations individually exported so it can be set separately
+ */
+export type NodeStateTranslations = typeof NODE_STATE_TRANSLATIONS;
+
+/** The type of translations that should be provided */
+export type Translations = typeof DEFAULT_TRANSLATIONS;
+
+/** An injection token for the translations of the workflow_graph */
+export const WORKFLOW_GRAPH_TRANSLATIONS =
+    new InjectionToken<Partial<Translations>>('WorkflowGraphTranslations');
+
+
+@Injectable({providedIn: 'root'})
+export class TranslationsService {
+  private translations = DEFAULT_TRANSLATIONS;
+
+  constructor(@Optional() @Inject(WORKFLOW_GRAPH_TRANSLATIONS) translations:
+                  Partial<Translations>) {
+    if (translations) {
+      this.setTranslations(translations)
+    }
+  }
+
+  setTranslations(translations: Partial<Translations>) {
+    if (!translations) return;
+    this.translations = {...this.translations, ...translations};
+  }
+
+  translateMessage(key: keyof Translations) {
+    return this.translations[key];
+  }
 }

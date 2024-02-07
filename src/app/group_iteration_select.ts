@@ -23,7 +23,6 @@ import {Subscription} from 'rxjs';
 import {DagStateService} from './dag-state.service';
 import {DEFAULT_THEME, STATE_PRIORITY} from './data_types_internal';
 import {GroupIterationSelectorFilter} from './group_iteration_select_filter';
-import {translateMessage} from './i18n';
 import {fetchIcon, iconForState, iconRescale, iconSizeToPx} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {MaterialSharedModule, MatSelectChange} from './material_shared_module';
@@ -33,22 +32,6 @@ const cssVars = {
   padding: 9,
   border: 3,
 };
-
-/**
- * @desc Label for groups that are important for the user to see (Failures,
- * Warnings, etc)
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS =
-    translateMessage('Failed iterations');
-
-/**
- * @desc Label for groups that ran as expected and are less important for the
- * user to see (Successes, Running, Pending, Not deployed yet, etc)
- * @suppress { messageConventions }
- */
-const AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS =
-    translateMessage('Other iterations');
 
 type IterationSelectOption = (DagNode|DagGroup)&{hidden?: boolean};
 
@@ -73,11 +56,6 @@ type IterationSelectOption = (DagNode|DagGroup)&{hidden?: boolean};
 export class GroupIterationSelector implements OnInit, OnDestroy {
   readonly trueWidth =
       iconSizeToPx('large') + cssVars.padding * 2 + cssVars.border * 2;
-
-  readonly labels = {
-    failedIters: AI_DIRECTED_ACYCLIC_GRAPH_FAILED_ITERS,
-    otherIters: AI_DIRECTED_ACYCLIC_GRAPH_OTHER_ITERS,
-  };
 
   private observers: Subscription[] = [];
   private iterMap: Record<string, DagNode|DagGroup> = {};
