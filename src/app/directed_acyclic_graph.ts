@@ -26,7 +26,7 @@ import {Subscription} from 'rxjs';
 import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, type FeatureToggleOptions, generateTheme, getMargin, isPoint, type LayoutOptions, type Logger, type MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, type ZoomConfig} from './data_types_internal';
+import {baseColors, BLUE_THEME, canvasTheme, clampVal, CLASSIC_THEME, createDAGFeatures, createDefaultZoomConfig, createNewSizeConfig, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, type FeatureToggleOptions, generateTheme, getMargin, isPoint, type LayoutOptions, type Logger, type MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, type ZoomConfig} from './data_types_internal';
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
 import {Translations, TranslationsService} from './i18n';
 import {DagLogger} from './logger/dag_logger';
@@ -44,6 +44,7 @@ import {ZoomingLayer} from './zooming_layer.directive';
  */
 export {
   baseColors,
+  canvasTheme,
   BLUE_THEME,
   CLASSIC_THEME,
   createDAGFeatures,

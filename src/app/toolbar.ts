@@ -291,7 +291,7 @@ export class DagToolbar {
     if (this.stateService.zoom.value != newZoom) {
       const direction = newZoom > this.stateService.zoom.value ? 'in' : 'out';
       this.dagLogger?.logZoom(direction, 'toolbar');
-      this.stateService.zoom.next(val);
+      this.stateService.zoom.next(newZoom);
     }
   }
 

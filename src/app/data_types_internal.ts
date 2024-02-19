@@ -551,6 +551,21 @@ export interface DagTheme {
   edgeStyle: EdgeStyle;
   edgeToMarkerStyle: MarkerStyle;
   edgeWidth: number;
+  background?: {
+    color?: string;
+    dots?: {
+      cx?: number;
+      cy?: number;
+      width?: number;
+      height?: number;
+      radius?: number;
+      fill?: string;
+    }
+  };
+  minimap?: {
+    outlineColor?: string;
+    boxShadow?: string;
+  };
 }
 
 /**
@@ -596,6 +611,21 @@ export const baseColors = {
     'none': 'transparent',
   },
 };
+
+export const canvasTheme = {
+  'dots': {
+    'cx': 50,
+    'cy': 50,
+    'width': 100,
+    'height': 100,
+    'radius': 1.75,
+    'fill': '#CCC',
+  },
+  'minimap': {
+    'outlineColor': '#DFDFDF',
+    'boxShadow': '0 1px 2px 0 rgba(0,0,0,.3),0 1px 3px 1px rgba(0,0,0,.15)',
+  },
+}
 
 
 /** Icon config used for a non-icon Artifact */

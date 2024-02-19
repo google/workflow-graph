@@ -67,6 +67,8 @@ export class Minimap implements OnChanges, OnInit {
   @Input() graphHeight = 0;
   @Input() x = 0;
   @Input() y = 0;
+  @Input() outlineColor?: string;
+  @Input() boxShadow?: string;
 
   @Output() readonly windowPan = new EventEmitter<Point>();
 
