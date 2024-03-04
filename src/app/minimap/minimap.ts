@@ -72,6 +72,9 @@ export class Minimap implements OnChanges, OnInit {
 
   @ViewChild('viewbox') private readonly viewbox!: ElementRef;
 
+  protected outlineColor?: string;
+  protected boxShadow?: string;
+
   destroy = new Subject<void>();
 
   constructor(
@@ -124,6 +127,12 @@ export class Minimap implements OnChanges, OnInit {
   ngOnInit() {
     this.stateService.zoom.pipe(takeUntil(this.destroy))
         .subscribe(() => this.recalculate());
+    this.stateService.listenAll({
+      theme: v => {
+        this.outlineColor = v.minimap.outlineColor;
+        this.boxShadow = v.minimap.boxShadow;
+      },
+    });
   }
 
   convertStateToRuntime = convertStateToRuntime;

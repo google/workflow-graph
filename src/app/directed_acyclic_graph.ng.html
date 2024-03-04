@@ -24,8 +24,16 @@
   <svg class="background-grid" aria-hidden="true">
     <defs>
       <!-- Grid definition -->
-      <pattern [id]="getGridPatternUniqueId()" width="8" height="8" patternUnits="userSpaceOnUse">
-        <circle cx="1" cy="1" r="1" class="grid-dots" />
+      <pattern [id]="getGridPatternUniqueId()"
+        [attr.width]="themeConfig.background.dots.width"
+        [attr.height]="themeConfig.background.dots.height"
+        patternUnits="userSpaceOnUse">
+        <circle
+          [attr.cx]="themeConfig.background.dots.cx"
+          [attr.cy]="themeConfig.background.dots.cy"
+          [attr.r]="themeConfig.background.dots.radius"
+          [attr.fill]="themeConfig.background.dots.fill"
+        />
       </pattern>
     </defs>
     <rect width="100%" height="100%" [attr.fill]="getGridPatternUrl()" />

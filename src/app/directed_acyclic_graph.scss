@@ -43,10 +43,6 @@
   margin: 0;
   .background-grid {
     @include fullbleed;
-
-    .grid-dots {
-      fill: #e0e0e0;
-    }
   }
   ai-dag-raw {
     transition: transform 0.08s;

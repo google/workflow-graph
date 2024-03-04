@@ -551,6 +551,13 @@ export interface DagTheme {
   edgeStyle: EdgeStyle;
   edgeToMarkerStyle: MarkerStyle;
   edgeWidth: number;
+  background: {
+    dots: {
+      cx: number; cy: number; width: number; height: number; radius: number;
+      fill: string;
+    }
+  };
+  minimap: {outlineColor: string; boxShadow: string;};
 }
 
 /**
@@ -593,8 +600,17 @@ export const baseColors = {
     'red': '#FCE8E6',
     'yellow': '#FEF7E0',
     'gray': '#f0f0f0',
+    'white': '#FFFFFF',
     'none': 'transparent',
+    'dots': {
+      'gray': '#e0e0e0',
+      'darkGray': '#cccccc',
+    }
   },
+  'minimap': {
+    'gray': '#DFDFDF',
+    'blue': '#4285F4',
+  }
 };
 
 
@@ -655,6 +671,17 @@ export const DEFAULT_THEME: DagTheme = {
   edgeStyle: 'dagre',
   edgeToMarkerStyle: 'circle',
   edgeWidth: 1,
+  background: {
+    dots: {
+      cx: 1,
+      cy: 1,
+      width: 8,
+      height: 8,
+      radius: 1,
+      fill: baseColors['bg']['dots']['gray'],
+    }
+  },
+  minimap: {outlineColor: baseColors['minimap']['blue'], boxShadow: 'none'},
 };
 
 /**
