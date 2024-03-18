@@ -1,6 +1,6 @@
 <ng-container *ngIf="node">
-  <header class="node-main node-cell-content" [style.height.px]="hoverDims(node, 'height')">
-    <header
+  <div class="node-main node-cell-content" [style.height.px]="hoverDims(node, 'height')">
+    <div
       class="icon-space node-type"
       [class.inverted]="node.icon?.iconColors === 'inverted'"
       [style.minWidth.px]="hoverDims(node, 'leftIcon')"
@@ -23,7 +23,7 @@
       <span *ngIf="isTextIcon(node.icon)" class="icon text left">{{
         fetchIcon(node.icon, "text")
       }}</span>
-    </header>
+    </div>
     <article class="text-area" [style.width.px]="hoverDims(node, 'text')">
       <section class="inner">
         <header class="node-title" [title]="node.getNodeDisplayName()">
@@ -47,7 +47,7 @@
         {{ getCallout(node, "text") }}
       </span>
     </article>
-    <footer
+    <div
       *ngIf="!isNoState(node.state) || !!node.conditionalQuery"
       class="icon-space state"
       [ngClass]="[classNameState()]"
@@ -78,15 +78,15 @@
           [size]="fetchIcon(iconForState(node.state), 'size')"
         ></workflow-graph-icon>
       </span>
-    </footer>
-  </header>
-  <footer
+    </div>
+  </div>
+  <div
     class="node-ref-area"
     [style.left.px]="hoverDims(node, 'leftIcon')"
     [style.width.px]="hoverDims(node, 'text')"
   >
-    <footer class="node-ref">
+    <div class="node-ref">
       <ng-content select="ai-dag-node-ref-badge"></ng-content>
-    </footer>
-  </footer>
+    </div>
+  </div>
 </ng-container>
