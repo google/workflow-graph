@@ -37,6 +37,7 @@ export class ZoomingLayer implements OnInit, OnDestroy {
   destroy = new Subject<void>();
   cursorPosition?: Point;
   zoomStepConfig = createDefaultZoomConfig({step: defaultZoomConfig.step / 2});
+  private isZoomingInternal = false;
 
   @Input() features = defaultFeatures;
 
@@ -55,6 +56,7 @@ export class ZoomingLayer implements OnInit, OnDestroy {
   @Output() windowPan = new EventEmitter<Point>();
   @Output() handleResizeSync = new EventEmitter();
   @Output() zoomChange = new EventEmitter();
+  @Output() isZooming = new EventEmitter<boolean>();
 
   @HostListener('wheel', ['$event'])
   scrollZoom($e: WheelEvent) {
@@ -62,6 +64,16 @@ export class ZoomingLayer implements OnInit, OnDestroy {
 
     const {naturalScrolling, scrollToZoom} = this.features;
     if (scrollToZoom || (naturalScrolling && isPinch($e))) {
+      if (!this.isZoomingInternal) {
+        this.isZoomingInternal = true;
+        this.isZooming.emit(true);
+
+        setTimeout(() => {
+          if (this.isZooming) this.isZoomingInternal = false;
+          this.isZooming.emit(false);
+        }, 200);
+      }
+
       this.zoomOnWheel($e);
     } else if (naturalScrolling) {
       this.panOnWheel($e);

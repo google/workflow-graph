@@ -17,6 +17,7 @@
   (handleResizeSync)="handleResizeSync($event)"
   monitorResize
   (resize)="handleResizeWithEvent($event)"
+  (isZooming)="handleIsZooming($event)"
   (zoomChange)="zoomChange.next($event)"
   (scroll)="(dagWrapper.scrollLeft || dagWrapper.scrollTop) && dagWrapper.scrollTo(0, 0)"
   class="dag-wrapper"
@@ -46,7 +47,7 @@
     [cdkDragFreeDragPosition]="graphResetPan"
     [style.width.px]="lastResizeEv.width || graphWidth * (stateService.zoom | async)!"
     [style.height.px]="lastResizeEv.height || graphHeight * (stateService.zoom | async)!"
-    (cdkDragMoved)="graphPan('move', $event)"
+    (cdkDragMoved)="graphPanThrottled('move', $event)"
     (cdkDragStarted)="graphPan('start', $event)"
     (cdkDragEnded)="graphPan('end', $event)"
   ></aside>
