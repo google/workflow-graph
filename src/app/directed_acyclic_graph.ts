@@ -21,7 +21,8 @@ import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
+import {takeUntil, throttleTime} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
 import {DagStateService} from './dag-state.service';
@@ -128,6 +129,8 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   mousedown = false;
   private $customNodeTemplates: Record<string, TemplateRef<any>> = {};
   private $features = defaultFeatures;
+  private graphPanMove$ = new Subject<CdkDragMove>();
+  destroy$ = new Subject<void>();
 
   private readonly uniqueId: string;
 
@@ -142,6 +145,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   set graphPanning(panning: boolean) {
     this.$graphPanning = panning;
     if (this.sidebarRef) this.sidebarRef.disableMouseInteractions = panning;
+    this.isPanning.emit(panning);
   }
   get graphPanning() {
     return this.$graphPanning;
@@ -229,6 +233,8 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   get selectedNode() {
     return this.$selectedNode;
   }
+  @Output() isPanning = new EventEmitter<boolean>();
+  @Output() isZooming = new EventEmitter<boolean>();
   @Output() selectedNodeChange = new EventEmitter<SelectedNode|null>();
   @Output() groupIterationChanged = new EventEmitter<GroupIterationRecord>();
 
@@ -305,6 +311,15 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
     this.resetAnimationMode = debounce(this.resetAnimationMode, 1200, this);
     this.resolveReference = this.resolveReference.bind(this);
     this.uniqueId = `${Date.now()}`;
+
+    this.graphPanMove$.pipe(throttleTime(25), takeUntil(this.destroy$))
+        .subscribe((event: CdkDragMove) => {
+          this.graphPan('move', event);
+        });
+  }
+
+  handleIsZooming(isZooming: boolean) {
+    this.isZooming.emit(isZooming);
   }
 
   /** Provides unique id attribute to grid background pattern declaration. */
@@ -319,6 +334,10 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
 
   detectChanges() {
     this.cdr.detectChanges();
+  }
+
+  markForCheck() {
+    this.cdr.markForCheck();
   }
 
   private stepCanvasOffset(direction: 'up'|'right'|'down'|'left') {
@@ -377,6 +396,8 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.stateService.destroyAll(this.observers);
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -712,7 +733,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   freeWindowPan(newPosition: Point) {
     this.graphX = -newPosition.x;
     this.graphY = -newPosition.y;
-    this.detectChanges();
+    this.markForCheck();
   }
 
   /**
@@ -735,7 +756,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
         this.graphHeight * Math.max(this.zoom, 1) - this.lastResizeEv.height -
             offsets.y);
 
-    this.detectChanges();
+    this.markForCheck();
   }
 
   /**
@@ -774,6 +795,11 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   resetAnimationMode() {
     this.animateMove = false;
     this.detectChanges();
+  }
+
+  /** ThrottledGraph Panning handler */
+  graphPanThrottled(stage: 'move', ev: CdkDragMove): void {
+    this.graphPanMove$.next(ev);
   }
 
 

@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
+import {CdkDragMove} from '@angular/cdk/drag-drop';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
@@ -45,6 +46,7 @@ describe('Directed Acyclic Graph Renderer', () => {
 
   describe('UI', () => {
     let fixture: ComponentFixture<TestComponent>;
+    let dragElement: HTMLElement;
     let harness: DirectedAcyclicGraphHarness;
 
     beforeEach(waitForAsync(async () => {
@@ -53,6 +55,7 @@ describe('Directed Acyclic Graph Renderer', () => {
 
       const loader = TestbedHarnessEnvironment.loader(fixture);
       harness = await loader.getHarness(DirectedAcyclicGraphHarness);
+      dragElement = fixture.nativeElement.querySelector('.cdk-drag');
     }));
 
     afterEach(fakeAsync(() => {
@@ -100,20 +103,47 @@ describe('Directed Acyclic Graph Renderer', () => {
          fixture.destroy();
          flush();
        }));
-  });
 
-  describe('when loading', () => {
-    let fixture: ComponentFixture<TestComponent>;
-    beforeEach(() => {
-      fixture = TestBed.createComponent(TestComponent);
-      fixture.componentRef.setInput('loading', true);
-      fixture.detectChanges();
+    it('throttles CdkDragMove events', fakeAsync(() => {
+         spyOn(fixture.componentInstance.dagRender, 'graphPan');
+         // Simulating drag events is super complex and outside the scope of
+         // this test, so we just call the event handler methods directly.
+         fixture.componentInstance.dagRender.graphPanThrottled(
+             'move', {} as CdkDragMove);
+         fixture.componentInstance.dagRender.graphPanThrottled(
+             'move', {} as CdkDragMove);
+         fixture.componentInstance.dagRender.graphPanThrottled(
+             'move', {} as CdkDragMove);
+         tick(25);
+         fixture.detectChanges();
+         expect(fixture.componentInstance.dagRender.graphPan)
+             .toHaveBeenCalledTimes(1);
+
+         fixture.componentInstance.dagRender.graphPanThrottled(
+             'move', {} as CdkDragMove);
+         fixture.componentInstance.dagRender.graphPanThrottled(
+             'move', {} as CdkDragMove);
+         fixture.componentInstance.dagRender.graphPanThrottled(
+             'move', {} as CdkDragMove);
+         tick(25);
+         fixture.detectChanges();
+         expect(fixture.componentInstance.dagRender.graphPan)
+             .toHaveBeenCalledTimes(2);
+       }));
+
+    describe('when loading', () => {
+      let fixture: ComponentFixture<TestComponent>;
+      beforeEach(() => {
+        fixture = TestBed.createComponent(TestComponent);
+        fixture.componentRef.setInput('loading', true);
+        fixture.detectChanges();
+      });
+
+      it('renders correctly', async () => {
+        await screenShot.expectMatch(`graph_loading`);
+      });
     });
-
-    it('renders correctly', async () => {
-      await screenShot.expectMatch(`graph_loading`);
-    })
-  })
+  });
 });
 
 @Component({
