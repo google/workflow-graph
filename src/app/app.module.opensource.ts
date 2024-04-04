@@ -23,7 +23,6 @@ import {AppComponent} from './app.component';
 import {DagModePageModule} from './demo_page/demo_page';
 
 @NgModule({
-  declarations: [AppComponent],
   bootstrap: [AppComponent],
   imports: [
     BrowserModule,
