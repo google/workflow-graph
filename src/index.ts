@@ -16,7 +16,12 @@
  */
 
 export {AppModule} from './app/app.module.opensource';
-export {DagTheme, FeatureToggleOptions, IconConfig, LayoutOptions, Logger, NodeState, RankAlignment, RankDirection, RankerAlgorithim, RuntimeState, ZoomConfig} from './app/data_types_internal';
-export {WorkflowGraphProps} from './app/workflow_graph_wrapper_types';
+export {type DagTheme, type FeatureToggleOptions, type IconConfig, type LayoutOptions, type Logger, type NodeState, RankAlignment, RankDirection, RankerAlgorithim, type RuntimeState, type ZoomConfig} from './app/data_types_internal';
+export {DirectedAcyclicGraphModule} from './app/directed_acyclic_graph';
+export {DagScaffoldModule} from './app/scaffold'
+export {DagToolbarHarness} from './app/test_resources//toolbar_harness'
+export {DirectedAcyclicGraphHarness} from './app/test_resources/directed_acyclic_graph_harness'
+export {DagToolbarModule} from './app/toolbar'
+export {type WorkflowGraphProps} from './app/workflow_graph_wrapper_types';
 
 export * from './app/node_spec';
