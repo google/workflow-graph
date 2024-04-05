@@ -32,7 +32,7 @@
               "outputHashing": "none",
               "fileReplacements": [
                 {
-                  "replace": "src/app/app.module.opensource.ts",
+                  "replace": "src/app/app.module.ts",
                   "with": "src/app/webcomponent.module.opensource.ts"
                 }
               ]

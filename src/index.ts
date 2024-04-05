@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export {AppModule} from './app/app.module.opensource';
+export {AppModule} from './app/app.module';
 export {type DagTheme, type FeatureToggleOptions, type IconConfig, type LayoutOptions, type Logger, type NodeState, RankAlignment, RankDirection, RankerAlgorithim, type RuntimeState, type ZoomConfig} from './app/data_types_internal';
 export {DirectedAcyclicGraphModule} from './app/directed_acyclic_graph';
 export {DagScaffoldModule} from './app/scaffold'

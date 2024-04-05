@@ -19,6 +19,6 @@ import '@angular/localize/init';
 
 import {platformBrowser} from '@angular/platform-browser';
 
-import {AppModule} from './app/app.module.opensource';
+import {AppModule} from './app/app.module';
 
 platformBrowser().bootstrapModule(AppModule).catch(err => console.error(err));

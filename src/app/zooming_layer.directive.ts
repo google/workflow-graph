@@ -37,7 +37,7 @@ export class ZoomingLayer implements OnInit, OnDestroy {
   destroy = new Subject<void>();
   cursorPosition?: Point;
   zoomStepConfig = createDefaultZoomConfig({step: defaultZoomConfig.step / 2});
-  private zoomTimer?: number;
+  private zoomTimer?: ReturnType<typeof setTimeout>;
 
   @Input() features = defaultFeatures;
 

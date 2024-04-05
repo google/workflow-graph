@@ -17,20 +17,18 @@
 
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {provideAnimations} from '@angular/platform-browser/animations';
 
 import {AppComponent} from './app.component';
 import {DagModePageModule} from './demo_page/demo_page';
 
 @NgModule({
   declarations: [AppComponent],
-  bootstrap: [AppComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    DagModePageModule,
+  imports: [BrowserModule, DagModePageModule],
+  providers: [
+    provideAnimations(),
   ],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor() {}
 }
