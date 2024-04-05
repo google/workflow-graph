@@ -86,6 +86,13 @@ interface CameraMoveOpts {
   align?: 'center'|'top-left';
 }
 
+interface ElementOffset {
+  transformX: number;
+  transformY: number;
+  offsetWidth: number;
+  offsetHeight: number;
+}
+
 /**
  * Renders the workflow DAG.
  */
@@ -133,6 +140,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   destroy$ = new Subject<void>();
 
   private readonly uniqueId: string;
+  protected readonly rootDagClass = 'root-dag';
 
   @Input()
   set zoom(zoom: number) {
@@ -652,29 +660,51 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   /**
    * Handles any internal focus events that fire when this event occurs
    *
+   * If enableCenterCameraOnFocus is true, centers the camera on the nearest
+   * ancestor custom-node or dag-node in the component tree.
+   *
+   * Offsets are computed by getting the CSS transform from the CSS object model
+   * (which gives position of the top-left corner of the node) and then
+   * adjusting width/height and scaling.
+   *
    * _**Note:** this method is debounced by 50ms_
    */
   focusElement(e: FocusEvent) {
+    if (!this.features.enableCenterCameraOnFocus || !e.target) {
+      return;
+    }
+
     let el = e.target as HTMLElement;
-    const offset: Point = {
-      x: el.offsetLeft,
-      y: el.offsetTop,
-    };
-    el = el.offsetParent as HTMLElement;
-    while (el && !el.classList.contains('root-dag')) {
-      const {offsetLeft, offsetTop, offsetWidth, offsetHeight} = el;
-
-      offset.x += offsetLeft - (offsetLeft ? offsetWidth / 2 : 0);
-      offset.y += offsetTop - (offsetTop ? offsetHeight / 2 : 0);
-
+    const pathElements: HTMLElement[] = [];
+    // collect path to root dag
+    while (el && !el.classList.contains(this.rootDagClass)) {
+      pathElements.push(el);
       el = el.offsetParent! as HTMLElement;
     }
-    offset.x *= this.zoom;
-    offset.y *= this.zoom;
 
-    if (this.features.enableCenterCameraOnFocus) {
-      this.centerCameraOn(offset);
-    }
+
+    const transformX = pathElements.map(el => this.getOffset(el).transformX)
+                           .reduce((a, b) => a + b, 0);
+    const transformY = pathElements.map(el => this.getOffset(el).transformY)
+                           .reduce((a, b) => a + b, 0);
+
+    const {offsetWidth, offsetHeight} = this.getOffset(e.target as HTMLElement);
+    const offsetX = (transformX + Math.floor(offsetWidth / 2)) * this.zoom;
+    const offsetY = (transformY + Math.floor(offsetHeight / 2)) * this.zoom;
+
+    this.centerCameraOn({x: offsetX, y: offsetY});
+  }
+
+  private getOffset(element: HTMLElement): ElementOffset {
+    const computedTransformStyle =
+        window.getComputedStyle(element).getPropertyValue('transform');
+
+    const transformMatrix = new DOMMatrixReadOnly(computedTransformStyle);
+
+    const {m41: transformX, m42: transformY} = transformMatrix;
+    const {offsetWidth, offsetHeight} = element;
+
+    return {transformX, transformY, offsetWidth, offsetHeight};
   }
 
   resizeGraph(dims: GraphDims) {

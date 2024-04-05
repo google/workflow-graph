@@ -56,6 +56,19 @@ describe('Demo Page', () => {
     it('Renders correctly (screenshot)', async () => {
       await screenShot.expectMatch('default-dataset');
     });
+    it('Centers correctly on focus of a node (screenshot)', async () => {
+      const nodes = await dagHarness.getNodes();
+      await nodes[13].focus();
+
+      await screenShot.expectMatch('default-dataset-node-focus');
+    });
+    it('Centers correctly on focus of a nested node (screenshot)', async () => {
+      await dagHarness.clickExpandToggle(0);
+      const nodes = await dagHarness.getNodes();
+      await nodes[8].focus();
+
+      await screenShot.expectMatch('default-dataset-nested-node-focus');
+    });
   });
 
   describe('Single Node', () => {

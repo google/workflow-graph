@@ -54,7 +54,7 @@
   <section>
     <ai-dag-raw
       #rootDag
-      class="root-dag"
+      [class]="rootDagClass"
       style.transform="translate({{ graphX }}px, {{ graphY }}px) scale({{ (stateService.zoom | async)! }}) "
       [noEmptySpaceAlloc]="true"
       [class.panning]="graphPanning"
