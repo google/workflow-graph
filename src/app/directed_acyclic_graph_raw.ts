@@ -279,12 +279,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   @Input('nodes')
   set nodes(nodes: DagNode[]) {
-    const reselectIfNeeded = this.getSafeRerenderHooks();
     // Avoid pointer/reference stability, so that angular will pick up the
     // change, in case someone modifies the list directly
     this.$nodes = this.makeSafeNodes(nodes.slice(0));
-    this.updateGraphLayout();
-    reselectIfNeeded();
+    this.updateGraphLayoutAndReselect();
   }
   get nodes() {
     return this.$nodes;
@@ -292,12 +290,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   @Input('edges')
   set edges(edges: DagEdge[]) {
-    const reselectIfNeeded = this.getSafeRerenderHooks();
     // Avoid pointer/reference stability, so that angular will pick up the
     // change, in case someone modifies the list directly
     this.$edges = edges.slice(0);
-    this.updateGraphLayout();
-    reselectIfNeeded();
+    this.updateGraphLayoutAndReselect();
   }
   get edges() {
     return this.$edges;
@@ -305,32 +301,17 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   @Input('groups')
   set groups(groups: DagGroup[]) {
-    const reselectIfNeeded = this.getSafeRerenderHooks();
     // Avoid pointer/reference stability, so that angular will pick up the
     // change, in case someone modifies the list directly
     this.$groups = this.makeSafeNodes(groups.slice(0));
     this.sanitizeExpandedGroups();
-    this.updateGraphLayout();
-    reselectIfNeeded();
+    this.updateGraphLayoutAndReselect();
   }
   get groups(): EnhancedDagGroup[] {
     return this.$groups as EnhancedDagGroup[];
   }
 
   @ViewChildren('subDag') subDags?: QueryList<DagRaw>;
-
-  /**
-   * Provides a safe node selection handler when either of `nodes`,`groups`, or
-   * `edges` is reassigned
-   */
-  getSafeRerenderHooks() {
-    const selectedId = this.selectedNode?.node?.id;
-    const selectedPath = this.selectedNode?.path;
-    if (selectedPath && isSamePath(selectedPath, this.dagPath)) {
-      return () => this.selectNodeById(selectedId);
-    }
-    return () => {};
-  }
 
   @Input() hoveredEdge?: DagEdge;
 
@@ -386,6 +367,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       @Optional() private readonly stateService?: DagStateService,
   ) {
     this.updateGraphLayout = debounce(this.updateGraphLayout, 50, this);
+    this.updateGraphLayoutAndReselect =
+        debounce(this.updateGraphLayoutAndReselect, 50, this);
     this.updateDAG = this.updateDAG.bind(this);
     this.updateGraphLayoutFromNodesChange =
         this.updateGraphLayoutFromNodesChange.bind(this);
@@ -558,6 +541,18 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   // This method is debounced in the constructor by 50ms
   updateGraphLayout() {
     this.updateGraphLayoutSync();
+  }
+
+  // This method is debounced in the constructor by 50ms
+  updateGraphLayoutAndReselect() {
+    const selectedPath = this.selectedNode?.path;
+    const selectedId = selectedPath && isSamePath(selectedPath, this.dagPath) ?
+        this.selectedNode?.node?.id :
+        null;
+    this.updateGraphLayoutSync();
+    if (selectedId) {
+      this.selectNodeById(selectedId);
+    }
   }
 
   updateGraphLayoutSync() {
