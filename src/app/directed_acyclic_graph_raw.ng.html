@@ -70,7 +70,9 @@
   <svg class="marker canvas" aria-hidden="true">
     <ng-container *ngFor="let e of edges; trackBy: edgeTrack">
       <g *ngIf="isDagreInit(e)" class="marker-group fade-in">
-        <g [ngClass]="edgeMarkerClassesFor(e, 'from')">
+        <g
+          *ngIf="(e.fromMarkerStyle || theme.edgeFromMarkerStyle) !== 'hidden'"
+          [ngClass]="edgeMarkerClassesFor(e, 'from')">
           <circle
             r="4"
             class="outer-circle"
@@ -81,7 +83,8 @@
           <circle r="3" class="inner-circle" [attr.cx]="e.points?.[0]?.x" [attr.cy]="e.points?.[0]?.y" />
         </g>
         <g
-          *ngIf="(e.toMarkerStyle || theme.edgeToMarkerStyle) === 'circle'"
+          *ngIf="(e.toMarkerStyle || theme.edgeToMarkerStyle) === 'circle' &&
+            (e.toMarkerStyle || theme.edgeToMarkerStyle) !== 'hidden'"
           [ngClass]="edgeMarkerClassesFor(e, 'to')"
         >
           <circle

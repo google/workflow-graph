@@ -395,6 +395,7 @@ export interface DagEdge {
   points?: Point[];
   color?: string;
   toMarkerStyle?: MarkerStyle;  // circle by default.
+  fromMarkerStyle?: MarkerStyle;  // circle by default.
   /**
    * Multiplier for how thick an edge should be relative to the base thickness.
    * The base value this is multiplied to is stored in Theme.edgeWidth = 1

@@ -531,7 +531,7 @@ export type StatusPalette = {
 };
 
 /** Marker style to use at the ends of edges in the DAG, `circle` by default */
-export type MarkerStyle = 'circle'|'arrow';
+export type MarkerStyle = 'circle'|'arrow'|'hidden';
 
 /** The layout of Edge drawn on the DAG, this is `dagre` by default */
 export type EdgeStyle = 'dagre'|'snapped';  // dagre by default.
@@ -550,6 +550,7 @@ export interface DagTheme {
   edgeColor: string;
   edgeStyle: EdgeStyle;
   edgeToMarkerStyle: MarkerStyle;
+  edgeFromMarkerStyle: MarkerStyle;
   edgeWidth: number;
   background: {
     dots: {
@@ -670,6 +671,7 @@ export const DEFAULT_THEME: DagTheme = {
   edgeColor: baseColors['blue'],
   edgeStyle: 'dagre',
   edgeToMarkerStyle: 'circle',
+  edgeFromMarkerStyle: 'circle',
   edgeWidth: 1,
   background: {
     dots: {
