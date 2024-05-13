@@ -244,6 +244,7 @@ export class DagToolbar {
 
   // This method is debounced by 50ms
   calculateStepMetrics() {
+    debugger;
     let graphState: RuntimeState = 'Static';
     let completed = 0;
     let total = 0;
