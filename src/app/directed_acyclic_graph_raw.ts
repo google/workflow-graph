@@ -909,7 +909,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   getEdgeMarkerEndId(edge: DagEdge|undefined): string|undefined {
     const markerStyle = edge?.toMarkerStyle || this.theme.edgeToMarkerStyle;
-    if (!edge || !edge.points || markerStyle === 'circle') {
+    if (!edge || !edge.points || markerStyle === 'circle' ||
+        markerStyle === 'hidden') {
       return undefined;
     }
     return `url(#${this.getArrowMarkerId(edge)})`;

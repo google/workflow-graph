@@ -99,7 +99,16 @@ describe('Demo Page', () => {
       await screenShot.expectMatch('group-label-positioning');
     });
   });
+
+  describe('Edge marker styles', () => {
+    it('Renders correctly (screenshot)', async () => {
+      await datasetInput.selectOptions({text: 'Edge Marker Styles'});
+      await screenShot.expectMatch('edge-marker-styles');
+    });
+  });
 });
+
+
 
 @Component({
   template:

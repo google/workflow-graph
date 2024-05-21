@@ -39,6 +39,7 @@ import {DagTheme, DagToolbarModule} from '../toolbar';
 import {UserConfig} from '../user_config.service';
 
 import {fakeGraph as artifactInNestedLoopDemo} from './demo_datasets/artifact_in_nested_loop';
+import {fakeGraph as edgeMarkerStylesDemo} from './demo_datasets/edge_marker_styles';
 import {fakeGraph as expandedGroupDemo} from './demo_datasets/expanded_group';
 import {giganticDemo} from './demo_datasets/gigantic_graph';
 import {fakeGraph as recursiveGraphDemo} from './demo_datasets/recursive_graph';
@@ -63,6 +64,8 @@ const datasets: Options<GraphSpec> = {
   'Artifact in nested loop': DagNode.createFromSkeleton(
       artifactInNestedLoopDemo.skeleton, artifactInNestedLoopDemo.state),
   'Gigantic': DagNode.createFromSkeleton(giganticDemo.skeleton),
+  'Edge Marker Styles':
+      DagNode.createFromSkeleton(edgeMarkerStylesDemo.skeleton),
 };
 
 const datasetOptions: Options<DagDatasetSettings> = {
