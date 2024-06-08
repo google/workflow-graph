@@ -18,7 +18,7 @@
   monitorResize
   (resize)="handleResizeWithEvent($event)"
   (isZooming)="handleIsZooming($event)"
-  (zoomChange)="zoomChange.next($event)"
+  (zoomChange)="onZoomChanged($event)"
   (scroll)="(dagWrapper.scrollLeft || dagWrapper.scrollTop) && dagWrapper.scrollTo(0, 0)"
   class="dag-wrapper"
 >
@@ -47,7 +47,7 @@
     [cdkDragFreeDragPosition]="graphResetPan"
     [style.width.px]="lastResizeEv.width || graphWidth * (stateService.zoom | async)!"
     [style.height.px]="lastResizeEv.height || graphHeight * (stateService.zoom | async)!"
-    (cdkDragMoved)="graphPanThrottled('move', $event)"
+    (cdkDragMoved)="smoothInteractions ? graphPan('move', $event) : graphPanThrottled('move', $event)"
     (cdkDragStarted)="graphPan('start', $event)"
     (cdkDragEnded)="graphPan('end', $event)"
   ></aside>
@@ -55,8 +55,8 @@
     <ai-dag-raw
       #rootDag
       [class]="rootDagClass"
-      style.transform="translate({{ graphX }}px, {{ graphY }}px) scale({{ (stateService.zoom | async)! }}) "
       [noEmptySpaceAlloc]="true"
+      [isPanning]="graphPanning"
       [class.panning]="graphPanning"
       [sizeConfig]="sizeConfig"
       [nodes]="nodes"

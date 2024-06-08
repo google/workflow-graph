@@ -358,6 +358,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return this.$customNodeTemplates;
   }
 
+  @Input() isPanning: boolean = false;
+
   constructor(
       private readonly differs: KeyValueDiffers,
       private readonly cdr: ChangeDetectorRef,
@@ -840,7 +842,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return !!node;
   }
 
-  refBadgeClick(refNode: DagNode|DagGroup, ref: NodeRef, $event?: MouseEvent|Event) {
+  refBadgeClick(
+      refNode: DagNode|DagGroup, ref: NodeRef, $event?: MouseEvent|Event) {
     $event?.preventDefault();
     $event?.stopPropagation();
     const value = this.selectedNode?.node === refNode ? null : {
