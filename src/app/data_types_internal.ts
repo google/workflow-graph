@@ -456,6 +456,12 @@ export interface FeatureToggleOptions {
    * Incompatible with `scrollToZoom: true`.
    */
   naturalScrolling?: boolean;
+
+  /**
+   * This option enables the calculation of node visibility based on the
+   * camera position.
+   */
+  calculateVisibility?: boolean;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -476,6 +482,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   enableShortcuts: false,
   enableCenterCameraOnFocus: true,
   naturalScrolling: false,
+  calculateVisibility: false,
 };
 
 /**

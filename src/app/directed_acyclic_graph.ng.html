@@ -54,6 +54,7 @@
   <section>
     <ai-dag-raw
       #rootDag
+      *ngIf="lastResizeEv.width"
       [class]="rootDagClass"
       [noEmptySpaceAlloc]="true"
       [isPanning]="graphPanning"
@@ -70,6 +71,12 @@
       (mouseleave)="mousedown = false"
       [class.animate-movement]="animateMove && !graphPanning"
       [resolveReference]="resolveReference"
+      [winWidth]="lastResizeEv.width"
+      [winHeight]="lastResizeEv.height"
+      [shiftX]="graphX"
+      [shiftY]="graphY"
+      [zoom]="this.zoom"
+      [calculateVisibility]="features.calculateVisibility"
     />
   </section>
 </figure>

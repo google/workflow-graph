@@ -394,7 +394,7 @@ export interface DagEdge {
   label?: string;
   points?: Point[];
   color?: string;
-  toMarkerStyle?: MarkerStyle;  // circle by default.
+  toMarkerStyle?: MarkerStyle;    // circle by default.
   fromMarkerStyle?: MarkerStyle;  // circle by default.
   /**
    * Multiplier for how thick an edge should be relative to the base thickness.
@@ -576,6 +576,12 @@ export class DagNode implements
   width = 0;
   height = 0;
   cssTransform = '';
+
+  /**
+   * Indicates node is visible in camera viewport (with additional paddings if
+   * needed).
+   */
+  visible = true;
 
   constructor(
       id: string, type: NodeType, state: NodeState = 'NO_STATE_STATIC', {

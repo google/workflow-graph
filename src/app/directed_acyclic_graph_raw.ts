@@ -16,20 +16,21 @@
  */
 
 import {LiveAnnouncer} from '@angular/cdk/a11y';
-import {CdkDrag, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
+import {CdkDrag, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnChanges, OnDestroy, OnInit, Optional, Output, QueryList, SimpleChanges, TemplateRef, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
-import {Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
+import {debounceTime, takeUntil, throttleTime} from 'rxjs/operators';
 
 import {DagStateService} from './dag-state.service';
-import {convertStateToRuntime, createDAGFeatures, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, type LayoutOptions, NodeIcon, type PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {convertStateToRuntime, createDAGFeatures, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, Dimension, Direction, getMargin, isNoState, type LayoutOptions, NodeIcon, type PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
-import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode} from './node_spec';
+import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, Point, type SelectedNode} from './node_spec';
 import {UserConfigService} from './user_config.service';
 import {debounce, isPinch} from './util_functions';
 
@@ -161,7 +162,7 @@ type Orientation = 'center'|'right'|'left';
   templateUrl: 'directed_acyclic_graph_raw.ng.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DagRaw implements DoCheck, OnInit, OnDestroy {
+export class DagRaw implements DoCheck, OnChanges, OnInit, OnDestroy {
   readonly nodePad = 10;
   @ViewChildren(CdkDrag) draggableComponents?: QueryList<CdkDrag>;
 
@@ -360,6 +361,21 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   @Input() isPanning: boolean = false;
 
+  @Input() winWidth: number = 0;
+
+  @Input() winHeight: number = 0;
+
+  @Input() shiftX: number = 0;
+
+  @Input() shiftY: number = 0;
+
+  @Input() zoom: number = 0;
+
+  @Input() calculateVisibility?: boolean = false;
+
+  private cameraChanged$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
+
   constructor(
       private readonly differs: KeyValueDiffers,
       private readonly cdr: ChangeDetectorRef,
@@ -374,6 +390,15 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.updateDAG = this.updateDAG.bind(this);
     this.updateGraphLayoutFromNodesChange =
         this.updateGraphLayoutFromNodesChange.bind(this);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (this.calculateVisibility &&
+            (changes['shiftX'] && !changes['shiftX'].firstChange) ||
+        (changes['shiftY'] && !changes['shiftY'].firstChange) ||
+        (changes['isPanning'] && !changes['isPanning'].firstChange)) {
+      if (!this.isPanning) this.cameraChanged$.next();
+    }
   }
 
   ngOnInit() {
@@ -402,10 +427,19 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       }
     }) ||
         [];
+
+    if (this.calculateVisibility) {
+      this.cameraChanged$.pipe(debounceTime(25), takeUntil(this.destroy$))
+          .subscribe(() => {
+            this.calculateNodesVisibility();
+          });
+    }
   }
 
   ngOnDestroy() {
     this.stateService?.destroyAll(this.observers);
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngDoCheck() {
@@ -631,6 +665,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       node.y += this.nodePad + margin['top'];
       node.cssTransform = getTransformTranslateString(node.x, node.y);
     }
+    if (this.calculateVisibility) this.calculateNodesVisibility();
     for (const group of this.groups) {
       group.x += -xOffset + this.nodePad + margin['left'];
       group.y += this.nodePad + margin['top'];
@@ -648,6 +683,20 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       }
       this.resnapPointsForGroups(edge);
     }
+  }
+
+  isNodeVisible(node: DagNode|DagGroup, padding: number = 0) {
+    const xOffset = Math.min(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('x', 'left'));
+    const nodeX = node.x - node.width / 2;
+    const nodeY = node.y - node.height / 2;
+    const winX = xOffset - padding - this.shiftX;
+    const winY = -padding - this.shiftY;
+    const winWidth = (this.winWidth + padding * 2) / this.zoom;
+    const winHeight = (this.winHeight + padding * 2) / this.zoom;
+
+    return (nodeX <= winX + winWidth) && (nodeX + node.width >= winX) &&
+        (nodeY <= winY + winHeight) && (nodeY + node.height >= winY);
   }
 
   getAllGraphItemsCoordinateForAxisAndOrientation(
@@ -1262,6 +1311,11 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  private calculateNodesVisibility() {
+    for (const node of this.nodes) node.visible = this.isNodeVisible(node, 300);
+    this.cdr.markForCheck();
   }
 }
 
