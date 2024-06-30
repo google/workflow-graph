@@ -129,6 +129,16 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(fixture.componentInstance.dagRaw.groups[1].expanded).toBe(true);
        }));
 
+    it('Groups with expanded attribute are expanded on load',
+       fakeAsync(async () => {
+         fixture.componentInstance.dagRaw.groups[1].expanded = true;
+         fixture.detectChanges();
+         expect(fixture.componentInstance.dagRaw.expandedGroups.has(
+                    fixture.componentInstance.dagRaw.groups[1].id))
+             .toBe(true);
+         expect(fixture.componentInstance.dagRaw.groups[1].expanded).toBe(true);
+       }));
+
     describe('natural scrolling', () => {
       beforeEach(() => {
         fixture.componentInstance.features.scrollToZoom = false;

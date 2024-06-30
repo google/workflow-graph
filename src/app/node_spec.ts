@@ -231,6 +231,14 @@ export interface GroupIterationRecord {
 }
 
 /**
+ * The emitter payload for when a group is expanded or collapsed
+ */
+export interface GroupToggleEvent {
+  groupId: string;
+  isExpanded: boolean;
+}
+
+/**
  * Sub DAG Group config for Nested DAGs
  *
  * `id` is the unique identifier that is used across nodes / groups to identify
@@ -250,6 +258,7 @@ export class DagGroup implements
   description = '';
   descriptionTooltip = '';
   hasControlNode = false;
+  hideControlNodeOnExpand = false;
   treatAsLoop = false;
   conditionalQuery = '';
   callout: NodeCallout = '';
@@ -278,6 +287,8 @@ export class DagGroup implements
         callout = '',
         modifiers = new Set<NodeModifier>(),
         hasControlNode = false,
+        hideControlNodeOnExpand = false,
+        expanded = false,
         stateTooltip = '',
         iconTooltip = '',
         treatAsLoop = false,
@@ -300,6 +311,8 @@ export class DagGroup implements
       callout,
       modifiers,
       hasControlNode,
+      hideControlNodeOnExpand,
+      expanded,
       stateTooltip,
       iconTooltip,
       subType,
@@ -511,6 +524,10 @@ export interface DagGroupMeta extends DagNodeMeta {
    * by id
    */
   selectedLoopId?: string;
+  /** If the group is expanded */
+  expanded?: boolean;
+  /** If the control node should be hidden when the group is expanded */
+  hideControlNodeOnExpand?: boolean;
 }
 
 /**
@@ -662,6 +679,9 @@ export class DagNode implements
         nodeMap.groups[from].edges.push(e);
       }
     }
+    for (const group of groups) {
+      nodeMap.groups[group.id].edges = group.edges;
+    }
     return nodeMap;
   }
 
@@ -751,6 +771,8 @@ export class DagNode implements
       modifiers,
       callout,
       hasControlNode,
+      hideControlNodeOnExpand,
+      expanded,
       displayName,
       stateTooltip,
       iconTooltip,
@@ -770,6 +792,8 @@ export class DagNode implements
       descriptionTooltip,
       conditionalQuery,
       hasControlNode,
+      hideControlNodeOnExpand,
+      expanded,
       modifiers,
       callout,
       displayName,

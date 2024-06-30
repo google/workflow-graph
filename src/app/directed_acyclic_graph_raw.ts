@@ -29,7 +29,7 @@ import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
-import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode} from './node_spec';
+import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, GroupToggleEvent, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode} from './node_spec';
 import {UserConfigService} from './user_config.service';
 import {debounce, isPinch} from './util_functions';
 
@@ -107,6 +107,7 @@ function setGroupSizeProps(
     dims: SizeConfig['dims'],
     nodePad: number,
     expandedGroups: Set<string>,
+    showControlNode: boolean,
 ) {
   const {getNodeWidth, height: nodeHeight} = dims;
   const expandedGroup = group as EnhancedDagGroup;
@@ -116,7 +117,7 @@ function setGroupSizeProps(
   let padY = 0;
   const {expandedDims} = expandedGroup;
   if (expandedGroups.has(group.id)) {
-    padY = group.hasControlNode ? nodeHeight / 2 : 0;
+    padY = showControlNode ? nodeHeight / 2 : 0;
     [width, height] = [
       Math.max(width, expandedDims?.width || 0),
       Math.max(height + padY, (expandedDims?.height || 0) + padY),
@@ -230,6 +231,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   @Input() noEmptySpaceAlloc = false;
   @Output() groupIterationChanged = new EventEmitter<GroupIterationRecord>();
+  @Output() onGroupExpandToggled = new EventEmitter<GroupToggleEvent>();
 
   @Input() resolveReference?: (ref: NodeRef) => DagNode | DagGroup | undefined;
 
@@ -304,6 +306,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     // Avoid pointer/reference stability, so that angular will pick up the
     // change, in case someone modifies the list directly
     this.$groups = this.makeSafeNodes(groups.slice(0));
+    this.nodeMap = DagNode.createNodeMap(this.nodes, this.edges, this.groups);
     this.sanitizeExpandedGroups();
     this.updateGraphLayoutAndReselect();
   }
@@ -436,6 +439,11 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   /** Fetch cached DagNode for Group */
   getControlNodeFor(group: DagGroup) {
     return this.controlNodes[group.id];
+  }
+
+  showControlNode(group: DagGroup) {
+    return group.hasControlNode &&
+        !(group.hideControlNodeOnExpand && this.isGroupExpanded(group));
   }
 
   broadcastIterChange(
@@ -579,10 +587,14 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       g.setNode(node.id, setNodeSizeProps(node, this.dims, this.collapsed));
     }
     for (const group of this.groups) {
+      if (group.expanded && !this.expandedGroups.has(group.id)) {
+        this.expandedGroups.add(group.id);
+      }
       g.setNode(
           group.id,
           setGroupSizeProps(
-              group, this.dims, this.nodePad, this.expandedGroups));
+              group, this.dims, this.nodePad, this.expandedGroups,
+              this.showControlNode(group)));
       Object.assign(group, {expanded: this.expandedGroups.has(group.id)});
     }
     for (const e of this.edges) {
@@ -750,7 +762,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     const target = this.ensureTargetEntity(edge.to);
     const anchorPt = edge.points!.slice(-1)[0];
     if (target instanceof DagNode || !this.isGroupExpanded(target) ||
-        !target.hasControlNode) {
+        !this.showControlNode(target)) {
       return;
     }
     const groupF = target as EnhancedDagGroup;
@@ -888,11 +900,19 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
     // TODO: A11y announcements translation b/300590261
     if (this.isGroupExpanded(group) && value !== true) {
+      const groupToCollapse =
+          group instanceof DagGroup ? group : this.nodeMap.groups[id]?.group;
+      if (groupToCollapse) groupToCollapse.expanded = false;
       this.expandedGroups.delete(id);
       this.liveAnnouncer?.announce('Collapsed');
+      this.onGroupExpandToggled.emit({groupId: id, isExpanded: false});
+      this.stateService?.setGroupExpandToggled(
+          {groupId: id, isExpanded: false});
     } else if (value !== false) {
       this.expandedGroups.add(id);
       this.liveAnnouncer?.announce('Expanded');
+      this.onGroupExpandToggled.emit({groupId: id, isExpanded: true});
+      this.stateService?.setGroupExpandToggled({groupId: id, isExpanded: true});
     }
     this.updateGraphLayout();
     return beforeCt !== this.expandedGroups.size;
@@ -1210,7 +1230,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     const oldControlNodes = this.controlNodes;
 
     for (const group of groups) {
-      if (!group.hasControlNode) continue;
+      if (!this.showControlNode(group)) continue;
       const {width, height} = oldControlNodes[group.id] || {};
       const newNode = group.generateControlNode()!;
       this.makeSafeNode(newNode, true);

@@ -216,7 +216,7 @@
       (wheel)="onNodeWheel($event)"
     >
       <header
-        *ngIf="group.hasControlNode && getControlNodeFor(group)"
+        *ngIf="showControlNode(group) && getControlNodeFor(group)"
         class="control-node-scaffold fade-in"
         [style.width.px]="getControlNodeFor(group).width"
         [style.height.px]="getControlNodeFor(group).height"
@@ -289,7 +289,7 @@
           #subDag
           *ngIf="!group.treatAsLoop"
           [dagPath]="makePathTo(group.id)"
-          [extraPadding]="group.hasControlNode ? 'control-node' : 'none'"
+          [extraPadding]="showControlNode(group) ? 'control-node' : 'none'"
           [sizeConfig]="sizeConfig"
           [nodes]="group.nodes"
           [edges]="group.edges"

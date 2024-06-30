@@ -31,7 +31,7 @@ import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, createDAGFeatures, crea
 import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
 import {DagLogger} from './logger/dag_logger';
 import {Minimap, MinimapModule} from './minimap/minimap';
-import {type DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, isDagreInit, NodeMap, type NodeRef, Point, type SelectedNode} from './node_spec';
+import {type DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, GroupToggleEvent, isDagreInit, NodeMap, type NodeRef, Point, type SelectedNode} from './node_spec';
 import {ResizeEventData, ResizeMonitorModule} from './resize_monitor_directive';
 import {DagSidebar} from './sidebar';
 import {debounce} from './util_functions';
@@ -57,6 +57,7 @@ export {
   generateTheme,
   getMargin,
   type GroupIterationRecord,
+  type GroupToggleEvent,
   type LayoutOptions as DagreOptions,
   type MarkerStyle,
   type MinimapPosition,
@@ -248,6 +249,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   @Output() isZooming = new EventEmitter<boolean>();
   @Output() selectedNodeChange = new EventEmitter<SelectedNode|null>();
   @Output() groupIterationChanged = new EventEmitter<GroupIterationRecord>();
+  @Output() onGroupExpandToggled = new EventEmitter<GroupToggleEvent>();
 
   @Input() hoveredEdge?: DagEdge;
 
@@ -402,6 +404,9 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
       },
       iterationChange: iter => {
         iter && this.groupIterationChanged.emit(iter);
+      },
+      groupExpandToggled: (v: GroupToggleEvent) => {
+        v && this.onGroupExpandToggled.emit(v);
       },
     });
   }

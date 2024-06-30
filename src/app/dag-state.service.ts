@@ -53,6 +53,7 @@ export class DagStateService implements OnDestroy {
   private customNodeTemplates: Record<string, TemplateRef<any>> = {};
   private expandPath: string[] = [];
   private iterationChange!: GroupIterationRecord;
+  private groupExpandToggled!: {groupId: string; isExpanded: boolean};
 
   readonly zoomReset = new Subject<void>();
   readonly zoom = new BehaviorSubject(1);
@@ -70,6 +71,8 @@ export class DagStateService implements OnDestroy {
       new Subject<DagStateService['expandPath']>();
   private readonly iterationChangeChange$ =
       new Subject<DagStateService['iterationChange']>();
+  private readonly groupExpandToggledChange$ =
+      new Subject<DagStateService['groupExpandToggled']>();
 
   collapsed$: Observable<DagStateService['collapsed']> = this.collapsedChange$;
   selectedNode$: Observable<DagStateService['selectedNode']> =
@@ -83,6 +86,8 @@ export class DagStateService implements OnDestroy {
       this.expandPathChange$;
   iterationChange$: Observable<DagStateService['iterationChange']> =
       this.iterationChangeChange$;
+  groupExpandToggled$: Observable<DagStateService['groupExpandToggled']> =
+      this.groupExpandToggledChange$;
 
   /**
    * Listen to all the various properties inside the DAG Shared state
@@ -101,6 +106,8 @@ export class DagStateService implements OnDestroy {
     expandPath = passThru as Parameters<DagStateService['listenExpandPath']>[0],
     iterationChange = passThru as
         Parameters<DagStateService['listenIterationChange']>[0],
+    groupExpandToggled = passThru as
+        Parameters<DagStateService['listenGroupExpandToggled']>[0],
     customNodeTemplates = passThru as
         Parameters<DagStateService['listenCustomNodeTemplates']>[0],
   }) {
@@ -114,6 +121,8 @@ export class DagStateService implements OnDestroy {
     isNoop(expandPath) || observers.push(this.listenExpandPath(expandPath));
     isNoop(iterationChange) ||
         observers.push(this.listenIterationChange(iterationChange));
+    isNoop(groupExpandToggled) ||
+        observers.push(this.listenGroupExpandToggled(groupExpandToggled));
     isNoop(customNodeTemplates) ||
         observers.push(this.listenCustomNodeTemplates(customNodeTemplates));
     return observers;
@@ -224,5 +233,15 @@ export class DagStateService implements OnDestroy {
   setIterationChange(v: DagStateService['iterationChange']) {
     this.iterationChange = v;
     this.iterationChangeChange$.next(v);
+  }
+  private listenGroupExpandToggled(
+      fn: StateListener<DagStateService['groupExpandToggled']>) {
+    const obs = this.groupExpandToggled$.subscribe(v => void fn(v));
+    this.setGroupExpandToggled(this.groupExpandToggled);
+    return obs;
+  }
+  setGroupExpandToggled(v: DagStateService['groupExpandToggled']) {
+    this.groupExpandToggled = v;
+    this.groupExpandToggledChange$.next(v);
   }
 }
