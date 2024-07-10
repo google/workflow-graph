@@ -653,7 +653,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       if (this.theme.edgeStyle === 'snapped') {
         this.snapEdgeConnectionPoints(edge);
       } else {
-        for (const p of edge.points!) {
+        for (const p of edge.points || []) {
           p.x += -xOffset + this.nodePad + margin['left'];
           p.y += this.nodePad + margin['top'];
         }
@@ -681,7 +681,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return [
       this.nodes.map(n => n[dim] + nodeOff(n)),
       this.groups.map(g => g[dim] + nodeOff(g)),
-      this.edges.map(e => e.points!.map(p => p[dim])),
+      this.edges.map(e => (e.points || []).map(p => p[dim])),
     ].flat(3)
         .filter(i => !isNaN(i));
   }
@@ -760,7 +760,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   resnapPointsForGroups(edge: DagEdge) {
     // Point snapping to Expanded Groups with Control Nodes
     const target = this.ensureTargetEntity(edge.to);
-    const anchorPt = edge.points!.slice(-1)[0];
     if (target instanceof DagNode || !this.isGroupExpanded(target) ||
         !this.showControlNode(target)) {
       return;
@@ -771,7 +770,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
         groupF.y + groupF.padY! / 2 - groupF.expandedDims.height / 2;
     // Ignore if anchor point is below the top border of the group, coordinates
     // grow as they are lower!
-    if (anchorPt.y - topBorderY > 2) return;
+    const anchorPt = (edge.points || []).slice(-1)[0];
+    if (!anchorPt || anchorPt.y - topBorderY > 2) return;
     const nodeWidth =
         this.dims.getNodeWidth(target.state, target.conditionalQuery);
     const snapToBorder = Math.abs(anchorPt.x - groupF.x) > nodeWidth / 2;
