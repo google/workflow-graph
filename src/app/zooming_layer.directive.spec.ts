@@ -245,6 +245,9 @@ describe('ZoomingLayer', () => {
         height: 700px;
         box-sizing: border-box;
       }`],
+// TODO: Make this AOT compatible. See b/352713444
+jit: true,
+
 })
 class TestComponent {
   lastResizeEv = {width: 1000, height: 700};
