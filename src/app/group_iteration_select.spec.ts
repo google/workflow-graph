@@ -128,6 +128,9 @@ describe('Iteration Selector', () => {
       position: relative;
     }
   `],
+// TODO: Make this AOT compatible. See b/352713444
+jit: true,
+
 })
 class TestComponent {
   iterations: Array<(DagNode | DagGroup)> =

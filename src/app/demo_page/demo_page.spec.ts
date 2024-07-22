@@ -114,7 +114,10 @@ describe('Demo Page', () => {
   template:
       `<div style="height: 1200px;">
         <dag-demo-page />
-      </div>`
+      </div>`,
+// TODO: Make this AOT compatible. See b/352713444
+jit: true,
+
 })
 class TestComponent {
 }
