@@ -420,6 +420,9 @@ describe('Directed Acyclic Graph Raw', () => {
       height: 400px;
       width: 400px;
     }`],
+// TODO: Make this AOT compatible. See b/352713444
+jit: true,
+
 })
 class TestComponent {
   @ViewChild('dagRaw', {static: false}) dagRaw!: DagRaw;

@@ -163,6 +163,9 @@ describe('Directed Acyclic Graph Renderer', () => {
       height: 1200px;
       width: 1200px;
     }`],
+// TODO: Make this AOT compatible. See b/352713444
+jit: true,
+
 })
 class TestComponent {
   @ViewChild('dagRender', {static: false}) dagRender!: DirectedAcyclicGraph;
