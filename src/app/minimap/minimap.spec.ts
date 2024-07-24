@@ -254,6 +254,7 @@ describe('Minimap', () => {
       .container {
         width: 150px;
       }`],
+  jit: true,
 })
 class TestComponent {
   @ViewChild('minimap', {static: false}) minimap!: Minimap;

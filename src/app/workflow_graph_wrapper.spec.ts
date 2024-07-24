@@ -105,6 +105,7 @@ describe('Workflow graph wrapper', () => {
       height: 300px;
       display: flex;
     }`],
+  jit: true,
 })
 class TestComponent {
   dagSpec = {skeleton: fakeGraph.skeleton, meta: fakeGraph.state};

@@ -119,7 +119,8 @@ describe('Node State Badge', () => {
 
 @Component({
   template:
-      '<ai-dag-node-state-badge #badge [nodeState]="nodeState"></ai-dag-node-state-badge>'
+      '<ai-dag-node-state-badge #badge [nodeState]="nodeState"></ai-dag-node-state-badge>',
+  jit: true,
 })
 class TestComponent {
   @Input({required: true}) nodeState!: NodeState;
