@@ -26,6 +26,9 @@ class NgVarContext<T> {
 }
 
 /**
+ * IMPORTANT: for new Angular code, use the built-in `@let` syntax instead.
+ * See https://angular.dev/api/core/@let.
+ *
  * A simple directive that allows declaring variables in templates, similar to
  * ngIf.
  */
@@ -40,6 +43,10 @@ export class NgVar<T> {
   }
 }
 
+/**
+ * IMPORTANT: for new Angular code, use the built-in `@let` syntax instead.
+ * See https://angular.dev/api/core/@let.
+ */
 @NgModule({
   declarations: [NgVar],
   exports: [NgVar],
