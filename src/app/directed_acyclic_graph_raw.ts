@@ -18,7 +18,7 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {CdkDrag, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnChanges, OnDestroy, OnInit, Optional, Output, QueryList, SimpleChanges, TemplateRef, ViewChildren} from '@angular/core';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
@@ -284,7 +284,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     // Avoid pointer/reference stability, so that angular will pick up the
     // change, in case someone modifies the list directly
     this.$nodes = this.makeSafeNodes(nodes.slice(0));
-    this.updateGraphLayoutAndReselect();
   }
   get nodes() {
     return this.$nodes;
@@ -295,7 +294,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     // Avoid pointer/reference stability, so that angular will pick up the
     // change, in case someone modifies the list directly
     this.$edges = edges.slice(0);
-    this.updateGraphLayoutAndReselect();
   }
   get edges() {
     return this.$edges;
@@ -308,7 +306,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.$groups = this.makeSafeNodes(groups.slice(0));
     this.nodeMap = DagNode.createNodeMap(this.nodes, this.edges, this.groups);
     this.sanitizeExpandedGroups();
-    this.updateGraphLayoutAndReselect();
   }
   get groups(): EnhancedDagGroup[] {
     return this.$groups as EnhancedDagGroup[];
@@ -372,8 +369,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       @Optional() private readonly stateService?: DagStateService,
   ) {
     this.updateGraphLayout = debounce(this.updateGraphLayout, 50, this);
-    this.updateGraphLayoutAndReselect =
-        debounce(this.updateGraphLayoutAndReselect, 50, this);
     this.updateDAG = this.updateDAG.bind(this);
     this.updateGraphLayoutFromNodesChange =
         this.updateGraphLayoutFromNodesChange.bind(this);
@@ -405,6 +400,12 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       }
     }) ||
         [];
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['nodes'] || changes['edges'] || changes['groups']) {
+      this.updateGraphLayoutAndReselect();
+    }
   }
 
   ngOnDestroy() {
@@ -553,7 +554,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.updateGraphLayoutSync();
   }
 
-  // This method is debounced in the constructor by 50ms
   updateGraphLayoutAndReselect() {
     const selectedPath = this.selectedNode?.path;
     const selectedId = selectedPath && isSamePath(selectedPath, this.dagPath) ?
