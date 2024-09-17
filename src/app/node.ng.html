@@ -20,7 +20,10 @@
           [size]="fetchIcon(node.icon, 'size')"
         ></workflow-graph-icon>
       </span>
-      <span *ngIf="isTextIcon(node.icon)" class="icon text left">{{
+      <span
+        *ngIf="isTextIcon(node.icon)"
+        class="icon text left"
+        [style.font]="fetchIcon(node.icon, 'font')">{{
         fetchIcon(node.icon, "text")
       }}</span>
     </div>

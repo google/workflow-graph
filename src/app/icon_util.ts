@@ -31,6 +31,7 @@ export const iconConfigDefaults = {
   iconColors: 'normal',
   color: 'black',
   contrastColor: 'white',
+  font: '',
   get size() {
     return sizeMap[(this as unknown as NodeIcon).iconset!] || 'small';
   },
@@ -91,6 +92,9 @@ export function fetchIcon(icon: NodeIcon, key: keyof NodeIcon|'bg'): string {
       break;
     case 'text':
       val = icon.text || iconConfigDefaults.text;
+      break;
+    case 'font':
+      val = icon.font || iconConfigDefaults.font;
       break;
     default:
       throw new Error(`Unknown icon key [${key}] is being fetched`);
