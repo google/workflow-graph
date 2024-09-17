@@ -514,10 +514,12 @@ export interface IconConfig {
  *
  * - `bg`: Defaults to `common`
  * - `color`: Defaults to `white`
+ * - `font`: Defaults to blank (no font override)
  */
 export interface TextIconConfig {
   text: string;
   color?: string;
+  font?: string;
 }
 
 /** Type verification for text-like icons */

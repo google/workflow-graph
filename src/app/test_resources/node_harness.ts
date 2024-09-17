@@ -15,25 +15,33 @@
  * limitations under the License.
  */
 
-import {ComponentHarness} from '@angular/cdk/testing';
+import {ComponentHarness, TestElement} from '@angular/cdk/testing';
 import {MatIconHarness} from '@angular/material/icon/testing';
 
 /** Test harness for the Dag Node Element component. */
 export class DagNodeElHarness extends ComponentHarness {
   // Needed to be able to use static fromText method.
   static hostSelector = 'ai-dag-node';
+  static nodeTextIconSelector = '.icon-space span.icon.text.left';
 
-  /** Returns the `<cfc-icon>|<span>` element for the node logo */
-  async nodeIcon(): Promise<MatIconHarness> {
+  /** Returns the `<cfc-icon>|<span>` element for the node icon */
+  async nodeIcon(): Promise<MatIconHarness|undefined> {
     if (await this.hasTextIcon()) {
-      return this.locatorFor(MatIconHarness.with(
-          {selector: '.icon-space .icon.left .mat-icon'}))();
+      return undefined;
     }
     return this.locatorFor(
         MatIconHarness.with({selector: '.icon-space .icon.left .mat-icon'}))();
   }
 
-  /** Returns the `<cfc-icon>` element for the node logo */
+  /** Returns the `<span>` element for the node text icon */
+  async nodeTextIcon(): Promise<TestElement|undefined> {
+    if (!await this.hasTextIcon()) {
+      return undefined;
+    }
+    return this.locatorFor(DagNodeElHarness.nodeTextIconSelector)();
+  }
+
+  /** Returns the `<cfc-icon>` element for the node state icon */
   stateIcon() {
     return this.locatorFor(
         MatIconHarness.with({selector: '.icon-space .icon.right .mat-icon'}))();
@@ -42,7 +50,7 @@ export class DagNodeElHarness extends ComponentHarness {
   /** Is the icon for the current node Text instead of SVG */
   async hasTextIcon() {
     const element =
-        await this.locatorForOptional('.icon-space span.icon.left')();
+        await this.locatorForOptional(DagNodeElHarness.nodeTextIconSelector)();
     return !!element;
   }
 
