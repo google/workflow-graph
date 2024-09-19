@@ -31,6 +31,7 @@ import {type DagSpec, WorkflowGraphProps} from './workflow_graph_wrapper_types';
  * Wrapper for DirectedAcyclicGraph.
  */
 @Component({
+  standalone: false,
   selector: 'workflow-graph',
   template: `
   <ai-dag-scaffold [features]="features" [userConfig]="userConfig" (userConfigChange)="userConfigChange.next($event)">

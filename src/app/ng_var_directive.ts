@@ -32,7 +32,8 @@ class NgVarContext<T> {
  * A simple directive that allows declaring variables in templates, similar to
  * ngIf.
  */
-@Directive({selector: '[ngVar]'})
+@Directive({standalone: false,
+            selector: '[ngVar]'})
 export class NgVar<T> {
   @Input() ngVar!: T;
 

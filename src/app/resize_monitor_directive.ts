@@ -31,7 +31,8 @@ const RESIZE_DEBOUNCE_TIME_MS = 85;
  * Simple directive that attaches a ResizeObserver on the given element and
  * notifies listeners on resize events.
  */
-@Directive({selector: '[monitorResize]'})
+@Directive({standalone: false,
+            selector: '[monitorResize]'})
 export class ResizeMonitorDirective implements OnDestroy, AfterViewInit,
                                                OnInit {
   @Output() readonly resize = new EventEmitter<ResizeEventData>();

@@ -157,6 +157,7 @@ type Orientation = 'center'|'right'|'left';
  * Renders the workflow DAG.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-raw',
   styleUrls: ['directed_acyclic_graph_raw.scss'],
   templateUrl: 'directed_acyclic_graph_raw.ng.html',

@@ -61,6 +61,7 @@ function sizeToPixels(size: IconSize): number {
  * The <workflow-graph-icon> component.
  */
 @Component({
+  standalone: false,
   selector: 'workflow-graph-icon',
   templateUrl: './icon_wrapper.ng.html',
   styleUrls: ['./icon_wrapper.scss'],

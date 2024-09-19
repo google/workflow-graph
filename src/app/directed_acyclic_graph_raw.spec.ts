@@ -406,6 +406,7 @@ describe('Directed Acyclic Graph Raw', () => {
 });
 
 @Component({
+  standalone: false,
   template: `
     <div class="container">
       <ai-dag-raw #dagRaw

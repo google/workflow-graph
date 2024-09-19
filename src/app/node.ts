@@ -37,6 +37,7 @@ import {debounce} from './util_functions';
  * shares state across all elements it's attached to.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-node',
   styleUrls: ['node.scss'],
   templateUrl: 'node.ng.html',

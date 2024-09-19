@@ -99,6 +99,7 @@ interface ElementOffset {
  * Renders the workflow DAG.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-renderer',
   styleUrls: ['directed_acyclic_graph.scss'],
   templateUrl: 'directed_acyclic_graph.ng.html',

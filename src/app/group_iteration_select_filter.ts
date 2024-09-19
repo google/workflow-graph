@@ -24,6 +24,7 @@ import {debounceTime, takeUntil} from 'rxjs/operators';
  * Renders the search field for the Group Iteration Select input.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-iteration-selector-filter',
   templateUrl: 'group_iteration_select_filter.ng.html',
   host: {

@@ -31,6 +31,7 @@ export {type MinimapPosition};
  * set `minimapPosition` to `'bottom'` to avoid overlapping content.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-sidebar',
   styleUrls: ['sidebar.scss'],
   templateUrl: 'sidebar.ng.html',

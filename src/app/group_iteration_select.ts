@@ -43,6 +43,7 @@ type IterationSelectOption = (DagNode|DagGroup)&{hidden?: boolean};
  * shares state across all elements it's attached to.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-iteration-selector',
   styleUrls: ['group_iteration_select.scss'],
   templateUrl: 'group_iteration_select.ng.html',

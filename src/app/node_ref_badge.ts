@@ -38,6 +38,7 @@ const cssVars = {
  * shares state across all elements it's attached to.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-node-ref-badge',
   styleUrls: ['node_ref_badge.scss'],
   templateUrl: 'node_ref_badge.ng.html',

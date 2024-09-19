@@ -118,6 +118,7 @@ describe('Node State Badge', () => {
 });
 
 @Component({
+  standalone: false,
   template:
       '<ai-dag-node-state-badge #badge [nodeState]="nodeState"></ai-dag-node-state-badge>',
   jit: true,

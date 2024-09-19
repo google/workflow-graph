@@ -229,6 +229,7 @@ describe('ZoomingLayer', () => {
 });
 
 @Component({
+  standalone: false,
   template: `
       <div
         zoomingLayer

@@ -25,6 +25,7 @@ import {WorkflowGraphIconModule} from './icon_wrapper';
 
 /** Renders a badge with an icon and description of a node state. */
 @Component({
+  standalone: false,
   selector: 'ai-dag-node-state-badge',
   styleUrls: ['node_state_badge.scss'],
   templateUrl: 'node_state_badge.ng.html',

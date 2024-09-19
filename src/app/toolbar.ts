@@ -96,6 +96,7 @@ const DIALOG_WIDTH = '600px';
  * Renders the workflow DAG.
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-toolbar',
   styleUrls: ['toolbar.scss'],
   templateUrl: 'toolbar.ng.html',

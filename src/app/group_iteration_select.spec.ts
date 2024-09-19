@@ -115,6 +115,7 @@ describe('Iteration Selector', () => {
 });
 
 @Component({
+  standalone: false,
   template: `
       <div class="container">
         <ai-dag-iteration-selector

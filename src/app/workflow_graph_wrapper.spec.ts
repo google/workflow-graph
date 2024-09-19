@@ -93,6 +93,7 @@ describe('Workflow graph wrapper', () => {
 });
 
 @Component({
+  standalone: false,
   template: `
       <workflow-graph
         [dagSpec]="dagSpec"

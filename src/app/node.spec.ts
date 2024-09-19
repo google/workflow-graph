@@ -155,6 +155,7 @@ describe('DAG Node', () => {
 });
 
 @Component({
+  standalone: false,
   template: `
     <div class="container">
       <ai-dag-node #node

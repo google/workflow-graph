@@ -45,6 +45,7 @@ export {
  * Allows for a grouped view of toolbar and dag
  */
 @Component({
+  standalone: false,
   selector: 'ai-dag-scaffold',
   styleUrls: [
     'scaffold.scss',
