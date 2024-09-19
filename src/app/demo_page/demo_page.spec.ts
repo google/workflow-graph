@@ -111,6 +111,7 @@ describe('Demo Page', () => {
 
 
 @Component({
+  standalone: false,
   template:
       `<div style="height: 1200px;">
         <dag-demo-page />

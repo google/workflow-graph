@@ -235,6 +235,7 @@ describe('Minimap', () => {
 });
 
 @Component({
+  standalone: false,
   template: `
       <div class="container">
         <minimap

@@ -171,6 +171,7 @@ function translateColor(col: string, isBg = false) {
 
 /** Demo component for directed acyclic graph view. */
 @Component({
+  standalone: false,
   selector: 'dag-demo-page',
   styleUrls: [
     'demo_page.scss',

@@ -27,6 +27,7 @@ import {CustomNode, DagGroup, DagNode, Point, type SelectedNode} from '../node_s
 
 /** Minimap component for Workflow Graph. */
 @Component({
+  standalone: false,
   selector: 'minimap',
   styleUrls: [
     'minimap.scss',
