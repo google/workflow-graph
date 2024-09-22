@@ -66,7 +66,7 @@ describe('DAG Node', () => {
          expect(harness).toBeDefined();
          expect(await harness.getTitle()).toBe(fakeNode.getNodeDisplayName());
          expect(await harness.getSubtitle()).toBe(fakeNode.description);
-         expect(await (await harness.nodeIcon()).getName())
+         expect(await (await harness.nodeIcon())!.getName())
              .toBe(fakeNode.icon!.name!);
        }));
 
@@ -89,6 +89,42 @@ describe('DAG Node', () => {
          await harness.triggerMouseleave();
          expect(await host.hasClass('hovered')).toBeFalse();
          expect(nodeEl.hoveredChanged.emit).toHaveBeenCalledTimes(2);
+       }));
+
+    it('Renders correctly with text icon', fakeAsync(async () => {
+         const node = new DagNode('b', 'artifact', 'RUNNING', {
+           icon: {
+             text: 'abc',
+             color: 'blue',
+           },
+         });
+         fixture.componentInstance.fakeNode = node;
+
+         expect(nodeEl).toBeDefined();
+         expect(nodeEl.node).toBeDefined();
+         expect(harness).toBeDefined();
+         const textIcon = await harness.nodeTextIcon();
+         expect(await textIcon!.text()).toBe(node.icon!.text!);
+         expect(await textIcon!.getAttribute('style')).toBeNull();
+       }));
+
+    it('Allows overriding text icon font', fakeAsync(async () => {
+         const node = new DagNode('b', 'artifact', 'RUNNING', {
+           icon: {
+             text: 'abc',
+             color: 'blue',
+             font: '20px Verdana',
+           },
+         });
+         fixture.componentInstance.fakeNode = node;
+
+         expect(nodeEl).toBeDefined();
+         expect(nodeEl.node).toBeDefined();
+         expect(harness).toBeDefined();
+         const textIcon = await harness.nodeTextIcon();
+         expect(await textIcon!.text()).toBe(node.icon!.text!);
+         expect(await textIcon!.getAttribute('style'))
+             .toBe('font: 20px Verdana;');
        }));
   });
 
