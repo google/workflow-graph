@@ -1,6 +1,8 @@
 @use '@angular/material' as mat;
 @include mat.all-component-typographies();
 @include mat.core();
+@include mat.app-background();
+@include mat.elevation-classes();
 
 $my-primary: mat.define-palette(mat.$blue-palette, 500);
 $my-accent: mat.define-palette(mat.$blue-palette, A200, A100, A400);
