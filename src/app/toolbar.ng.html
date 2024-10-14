@@ -17,7 +17,7 @@
       <ng-container *ngIf="!label"> {{ graphState }} Graph </ng-container>
     </div>
   </ng-container>
-  <div class="cell progress" *ngIf="graphState === 'Runtime'">
+  <div class="cell progress" *ngIf="graphState === 'Runtime' && !features.hideProgressCell">
     <workflow-graph-icon
       *ngIf="!!icon"
       role="img"

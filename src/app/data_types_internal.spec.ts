@@ -22,7 +22,8 @@ describe('DirectedAcyclicGraph Internal Methods', () => {
   it('convertStateToRuntime works as intended', () => {
     const runtimeStates: NodeState[] = [
       'NO_STATE_RUNTIME', 'CANCELLED', 'CANCELLING', 'CANCEL_PENDING', 'FAILED',
-      'PENDING', 'RUNNING', 'SKIPPED', 'SUCCEEDED', 'TIMEOUT'
+      'PENDING', 'RUNNING', 'SKIPPED', 'SUCCEEDED', 'TIMEOUT', 'DISABLED',
+      'PAUSED', 'UNKNOWN'
     ];
     const staticStates: NodeState[] = ['NO_STATE_STATIC'];
 
@@ -38,7 +39,8 @@ describe('DirectedAcyclicGraph Internal Methods', () => {
     const nonStates: NodeState[] = ['NO_STATE_RUNTIME', 'NO_STATE_STATIC'];
     const otherStates: NodeState[] = [
       'CANCELLED', 'CANCELLING', 'CANCEL_PENDING', 'FAILED', 'PENDING',
-      'RUNNING', 'SKIPPED', 'SUCCEEDED', 'TIMEOUT'
+      'RUNNING', 'SKIPPED', 'SUCCEEDED', 'TIMEOUT', 'DISABLED', 'PAUSED',
+      'UNKNOWN'
     ];
     nonStates.forEach(s => {
       expect(isNoState(s)).toBe(true);
