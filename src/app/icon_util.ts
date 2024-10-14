@@ -161,6 +161,10 @@ export function iconForState(state: NodeState, theme: DagTheme): IconConfig|
       icon = {name: 'status-warning', iconset: 'cloud_ai'};
       break;
 
+    case 'PAUSED':
+      icon = {name: 'status-paused', iconset: 'common'};
+      break;
+
     case 'CANCEL_PENDING':
     case 'CANCELLING':
       icon = {name: 'working'};
@@ -174,8 +178,16 @@ export function iconForState(state: NodeState, theme: DagTheme): IconConfig|
       icon = {name: 'status-canceled', iconset: 'cloud_ai'};
       break;
 
+    case 'DISABLED':
+      icon = {name: 'disabled', iconset: 'common'};
+      break;
+
     case 'FAILED':
       icon = {name: 'status-error', iconset: 'cloud_ai'};
+      break;
+
+    case 'UNKNOWN':
+      icon = {name: 'status-inactive', iconset: 'common'};
       break;
 
     case 'NO_STATE_RUNTIME':
@@ -225,8 +237,17 @@ export function labelForState(translationsService: TranslationsService):
       case 'TIMEOUT':
         return translationsService.translateMessage('nodeStateTimeout');
 
+      case 'PAUSED':
+        return translationsService.translateMessage('nodeStatePaused');
+
       case 'NOT_TRIGGERED':
         return translationsService.translateMessage('nodeStateNotTriggered');
+
+      case 'DISABLED':
+        return translationsService.translateMessage('nodeStateDisabled');
+
+      case 'UNKNOWN':
+        return translationsService.translateMessage('nodeStateUnknown');
 
       case 'NO_STATE_RUNTIME':
       case 'NO_STATE_STATIC':

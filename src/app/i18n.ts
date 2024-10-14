@@ -29,10 +29,13 @@ export const NODE_STATE_TRANSLATIONS = {
   'nodeStateCancelled': 'Cancelled',
   'nodeStateRunning': 'Running',
   'nodeStateTimeout': 'Timeout',
+  'nodeStatePaused': 'Paused',
   'nodeStateCached': 'Cached',
   'nodeStateNotTriggered': 'Not Triggered',
   'nodeStateCompleted': 'Completed',
   'nodeStateFailed': 'Failed',
+  'nodeStateDisabled': 'Disabled',
+  'nodeStateUnknown': 'Unknown',
 };
 
 export const DEFAULT_TRANSLATIONS = {
