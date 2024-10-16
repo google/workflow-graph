@@ -197,6 +197,16 @@
   </aside>
 </ng-template>
 <ng-template #renderGroup let-group>
+  <ng-container *ngIf="isCustomNode(getControlNodeFor(group));">
+    <ng-template *ngTemplateOutlet="renderCustomGroup; context: {$implicit: group}">
+    </ng-template>
+  </ng-container>
+  <ng-container *ngIf="!isCustomNode(getControlNodeFor(group));">
+    <ng-template *ngTemplateOutlet="renderStandardGroup; context: {$implicit: group}">
+    </ng-template>
+  </ng-container>
+</ng-template>
+<ng-template #renderStandardGroup let-group>
   <ng-container *ngIf="isDagreInit(group)">
     <aside
       class="group-border fade-in"
@@ -260,6 +270,161 @@
             </ng-container>
           </ng-container>
         </ai-dag-node>
+        <ai-dag-iteration-selector
+            *ngIf="group.treatAsLoop"
+            [style.height.px]="isGroupExpanded(group) ? getControlNodeFor(group).height * 0.6 : 0"
+            [style.width.px]="getControlNodeFor(group).width"
+            [parentNodeSelected]="selectedNode?.node === group"
+            [unTabbable]="!isGroupExpanded(group)"
+            [attr.aria-hidden]="!isGroupExpanded(group)"
+            [sourceGroup]="group.getNodeDisplayName()"
+            [iterations]="getIterationsFor(group)"
+            [(iteration)]="group.selectedLoopId"
+            (onIterSelect)="broadcastIterChange(group, $event!)"
+          />
+      </header>
+      <footer class="sub-dag">
+        <button
+          class="collapsed-expand-click-area"
+          [attr.tabindex]="isGroupExpanded(group) ? -1 : 0"
+          [attr.aria-hidden]="isGroupExpanded(group)"
+          role="button"
+          aria-label="Expand Surface for DAG Group"
+          i18n-aria-label="Expand Surface for DAG Group"
+          [attr.aria-controls]="a11yIdFor(group)"
+          [attr.aria-expanded]="isGroupExpanded(group)"
+          (click)="toggleExpand(group)"
+        ></button>
+        <ai-dag-raw
+          #subDag
+          *ngIf="!group.treatAsLoop"
+          [dagPath]="makePathTo(group.id)"
+          [extraPadding]="showControlNode(group) ? 'control-node' : 'none'"
+          [sizeConfig]="sizeConfig"
+          [nodes]="group.nodes"
+          [edges]="group.edges"
+          [groups]="group.groups"
+          (graphResize)="storeSubDagDims($event, group)"
+          [resolveReference]="resolveReference"
+        ></ai-dag-raw>
+        <ng-container *ngIf="!!(group.treatAsLoop && group._cachedSelection)">
+          <ai-dag-raw
+            #subDag
+            *ngIf="getNodeType(group._cachedSelection) !== 'group'"
+            [dagPath]="makePathTo(group.id)"
+            [extraPadding]="'loop'"
+            [sizeConfig]="sizeConfig"
+            [nodes]="[group._cachedSelection]"
+            (graphResize)="storeSubDagDims($event, group)"
+            [resolveReference]="resolveReference"
+          ></ai-dag-raw>
+          <ai-dag-raw
+            #subDag
+            *ngIf="getNodeType(group._cachedSelection) === 'group'"
+            [dagPath]="makePathTo([group.id, group._cachedSelection.id])"
+            [extraPadding]="'loop'"
+            [sizeConfig]="sizeConfig"
+            [nodes]="group._cachedSelection.nodes"
+            [edges]="group._cachedSelection.edges"
+            [groups]="group._cachedSelection.groups"
+            (graphResize)="storeSubDagDims($event, group)"
+            [resolveReference]="resolveReference"
+          ></ai-dag-raw>
+        </ng-container>
+      </footer>
+      <!-- The reason we use a nested span is so that the fade-in animation
+        doesn't affect moments when the iteration count should be invisible by
+        fading out. An example where this would break without this approach
+        would be when you reset the nodes while the DAG is expanded.
+
+        This causes the DAG to open up, fade-in the label before hiding it,
+        which looks very glitchy
+      -->
+      <span *ngIf="group.treatAsLoop" class="fade-in" [attr.aria-hidden]="isGroupExpanded(group)">
+        <span class="iteration-counter"> {{ getIterationsFor(group).length }} iterations </span>
+      </span>
+      <button
+        class="expand-toggle"
+        role="button"
+        [attr.tabindex]="isGroupExpanded(group) ? 0 : -1"
+        [attr.aria-hidden]="!isGroupExpanded(group)"
+        aria-label="Expand / Collapse Toggle for DAG Group"
+        i18n-aria-label="Expand / Collapse Toggle for DAG Group"
+        [attr.aria-controls]="a11yIdFor(group)"
+        [attr.aria-expanded]="isGroupExpanded(group)"
+        (click)="toggleExpand(group)"
+      >
+        <workflow-graph-icon class="caret" icon="up" iconset="common" size="medium"></workflow-graph-icon>
+        <workflow-graph-icon class="caret" icon="down" iconset="common" size="medium"></workflow-graph-icon>
+      </button>
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #renderCustomGroup let-group>
+  <ng-container *ngIf="isDagreInit(group)">
+    <aside
+      class="group-border fade-in"
+      role="presentation"
+      [class.expanded]="isGroupExpanded(group)"
+      [style.transform]="group.cssTransform"
+      [style.width.px]="group.width"
+      [style.height.px]="group.height - group.padY!"
+    ></aside>
+    <div
+      [attr.id]="a11yIdFor(group)"
+      [ngClass]="['group', classNameState(group)]"
+      [class.expanded]="isGroupExpanded(group)"
+      [style.transform]="group.cssTransform"
+      [style.width.px]="group.width!"
+      [style.height.px]="(group.height! - group.padY!)"
+      (wheel)="onNodeWheel($event)"
+    >
+      <header
+        *ngIf="showControlNode(group) && getCustomControlNodeFor(group)"
+        class="control-node-scaffold fade-in"
+        [style.width.px]=" getCustomControlNodeFor(group).width"
+        [style.height.px]=" getCustomControlNodeFor(group).height"
+      >
+        <div
+        class="control-node-shadow"
+        [style.width.px]="getCustomControlNodeFor(group).width"
+        [style.height.px]="getCustomControlNodeFor(group).height"
+        ></div>
+        <ng-container *ngIf="getCustomControlNodeFor(group) as controlNode">
+          <article
+            *ngIf="isDagreInit(group)"
+            class="custom-node"
+            [attr.node-title]=" getCustomControlNodeFor(group).getNodeDisplayName()"
+            [style.transform]=" getCustomControlNodeFor(group).cssTransform"
+            [style.width.px]=" getCustomControlNodeFor(group).width"
+            [style.height.px]=" getCustomControlNodeFor(group).height"
+            [style.overflow]="'none'"
+            (wheel)="onNodeWheel($event)"
+          >
+            <ng-container *ngIf="getCustomNodeTemplateFor(getCustomControlNodeFor(group))">
+              <ng-container
+                *ngTemplateOutlet="getCustomNodeTemplateFor(getCustomControlNodeFor(group)); context: {
+                node:controlNode,
+                nodes,
+                edges,
+                updateDAG,
+                isPanning,
+                updateGraphLayoutFromNodesChange,
+                toggleSelection: customNodeToggleSelectionCurry(getCustomControlNodeFor(group))
+              }"
+              ></ng-container>
+            </ng-container>
+            <ng-container *ngIf="!getCustomNodeTemplateFor(getCustomControlNodeFor(group))">
+              <div class="custom-node-error" role="alert" tabindex="0">
+                <span
+                  >Could not find the <code>templateRef</code> specified for
+                  <code>{{ group.id }}</code> (template: <code>{{ group.templateRef }}</code
+                  >)
+                </span>
+              </div>
+            </ng-container>
+          </article>
+        </ng-container>
         <ai-dag-iteration-selector
             *ngIf="group.treatAsLoop"
             [style.height.px]="isGroupExpanded(group) ? getControlNodeFor(group).height * 0.6 : 0"
