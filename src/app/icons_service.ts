@@ -35,6 +35,9 @@ const SHELL_SMALL_ICONSET_VERSION = 232;
 const COMMON_ICONSET = 'common';
 const COMMON_ICONSET_VERSION = 124;
 
+const ANTHOS_ICONSET = 'anthos';
+const ANTHOS_ICONSET_VERSION = 6;
+
 /** Valid sizes for iconsets */
 export type IconSizes = 'small'|'medium'|'large';
 
@@ -55,6 +58,7 @@ export const sizeMap: IconSizeMap = {
   [SHELL_ICONSET]: 'medium',
   [AI_ICONSET]: 'medium',
   [COMMON_ICONSET]: 'medium',
+  [ANTHOS_ICONSET]: 'small',
 };
 
 /**
@@ -86,6 +90,7 @@ export class DagIconsService {
       [SHELL_ICONSET, 'medium', SHELL_MEDIUM_ICONSET_VERSION],
       [COMMON_ICONSET, 'medium', COMMON_ICONSET_VERSION],
       [COMMON_ICONSET, 'small', COMMON_ICONSET_VERSION],
+      [ANTHOS_ICONSET, 'small', ANTHOS_ICONSET_VERSION],
     ];
 
     icons.forEach(([iconset, size, version]) => {
