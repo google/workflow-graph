@@ -55,6 +55,11 @@ const MSG_WORKFLOW_GRAPH_NODE_STATE_CACHED = goog.getMsg('Cached');
 const MSG_WORKFLOW_GRAPH_NODE_STATE_TIMEOUT = goog.getMsg('Timeout');
 
 /**
+ * @desc Label for an execution that is paused.
+ */
+const MSG_WORKFLOW_GRAPH_NODE_STATE_PAUSED = goog.getMsg('Paused');
+
+/**
  * @desc Label for an execution that did not run because its trigger
  * policy didn't match.
  */
@@ -66,14 +71,27 @@ const MSG_WORKFLOW_GRAPH_NODE_STATE_NOT_TRIGGERED =
  */
 const MSG_WORKFLOW_GRAPH_NODE_STATE_COMPLETED = goog.getMsg('Completed');
 
+/**
+ * @desc Label for an execution that execution is disabled.
+ */
+const MSG_WORKFLOW_GRAPH_NODE_STATE_DISABLED = goog.getMsg('Disabled');
+
+/**
+ * @desc Label for an execution that execution is unknown.
+ */
+const MSG_WORKFLOW_GRAPH_NODE_STATE_UNKNOWN = goog.getMsg('Unknown');
+
 export const TRANSLATIONS: Translations = {
   'nodeStateWorking': MSG_WORKFLOW_GRAPH_NODE_STATE_WORKING,
   'nodeStatePending': MSG_WORKFLOW_GRAPH_NODE_STATE_PENDING,
   'nodeStateCancelled': MSG_WORKFLOW_GRAPH_NODE_STATE_CANCELLED,
   'nodeStateRunning': MSG_WORKFLOW_GRAPH_NODE_STATE_RUNNING,
   'nodeStateTimeout': MSG_WORKFLOW_GRAPH_NODE_STATE_TIMEOUT,
+  'nodeStatePaused': MSG_WORKFLOW_GRAPH_NODE_STATE_PAUSED,
   'nodeStateCached': MSG_WORKFLOW_GRAPH_NODE_STATE_CACHED,
   'nodeStateNotTriggered': MSG_WORKFLOW_GRAPH_NODE_STATE_NOT_TRIGGERED,
   'nodeStateCompleted': MSG_WORKFLOW_GRAPH_NODE_STATE_COMPLETED,
   'nodeStateFailed': MSG_WORKFLOW_GRAPH_NODE_STATE_FAILED,
+  'nodeStateDisabled': MSG_WORKFLOW_GRAPH_NODE_STATE_DISABLED,
+  'nodeStateUnknown': MSG_WORKFLOW_GRAPH_NODE_STATE_UNKNOWN,
 };

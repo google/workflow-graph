@@ -313,7 +313,7 @@ export type RuntimeState = 'Static'|'Runtime';
  */
 export type NodeState = 'NO_STATE_STATIC'|'NO_STATE_RUNTIME'|'CANCELLED'|
     'CANCELLING'|'CANCEL_PENDING'|'FAILED'|'PENDING'|'RUNNING'|'SKIPPED'|
-    'SUCCEEDED'|'TIMEOUT'|'NOT_TRIGGERED';
+    'SUCCEEDED'|'TIMEOUT'|'NOT_TRIGGERED'|'DISABLED'|'PAUSED'|'UNKNOWN';
 
 type State2Priority = {
   [state in NodeState]: number;
@@ -336,6 +336,9 @@ export const STATE_PRIORITY: State2Priority = {
   'TIMEOUT': 4,
   'FAILED': 4,
   'CANCELLED': 5,
+  'DISABLED': 5,
+  'PAUSED': 5,
+  'UNKNOWN': 6,
 };
 
 /**
@@ -456,6 +459,11 @@ export interface FeatureToggleOptions {
    * Incompatible with `scrollToZoom: true`.
    */
   naturalScrolling?: boolean;
+
+  /**
+   * Hides the progress cell in the toolbar. Defaults to `false`.
+   */
+  hideProgressCell?: boolean;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -476,6 +484,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   enableShortcuts: false,
   enableCenterCameraOnFocus: true,
   naturalScrolling: false,
+  hideProgressCell: false,
 };
 
 /**
@@ -655,19 +664,20 @@ export const DEFAULT_THEME: DagTheme = {
     ['PENDING', baseColors['gray']],
     ...['CANCEL_PENDING', 'CANCELLING'].map(s => [s, baseColors['blue']]),
     ...['RUNNING', 'SKIPPED', 'SUCCEEDED'].map(s => [s, baseColors['green']]),
-    ['TIMEOUT', baseColors['yellow']],
+    ...['TIMEOUT', 'PAUSED'].map(s => [s, baseColors['yellow']]),
     ['FAILED', baseColors['red']],
-    ...['CANCELLED', 'NOT_TRIGGERED'].map(s => [s, baseColors['gray']]),
+    ...['CANCELLED', 'NOT_TRIGGERED', 'DISABLED', 'UNKNOWN'].map(
+        s => [s, baseColors['gray']]),
     ...['NO_STATE_RUNTIME', 'NO_STATE_STATIC'].map(s => [s, '']),
   ]),
   statusBg: Object.fromEntries([
     ...['RUNNING', 'SKIPPED', 'SUCCEEDED'].map(
         k => [k, baseColors['bg']['green']]),
     ...['CANCEL_PENDING', 'CANCELLING'].map(k => [k, baseColors['bg']['blue']]),
-    ...['PENDING', 'CANCELLED', 'NOT_TRIGGERED'].map(
+    ...['PENDING', 'CANCELLED', 'NOT_TRIGGERED', 'DISABLED', 'UNKNOWN'].map(
         k => [k, baseColors['bg']['gray']]),
     ...['NO_STATE_RUNTIME', 'NO_STATE_STATIC'].map(k => [k, 'transparent']),
-    ['TIMEOUT', baseColors['bg']['yellow']],
+    ...['TIMEOUT', 'PAUSED'].map(k => [k, baseColors['bg']['yellow']]),
     ['FAILED', baseColors['bg']['red']],
   ]),
   edgeColor: baseColors['blue'],
