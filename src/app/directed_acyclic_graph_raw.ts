@@ -113,6 +113,10 @@ function setGroupSizeProps(
   const expandedGroup = group as EnhancedDagGroup;
   let width = getNodeWidth(group.state, group.conditionalQuery) + 6 * nodePad;
   let height = nodeHeight + 5 * nodePad;
+  if (group.customControlNode) {
+    width = group.customControlNode.width + 6 * nodePad;
+    height = group.customControlNode.height + 5 * nodePad;
+  }
   // Size of protrusion outside the border for a group
   let padY = 0;
   const {expandedDims} = expandedGroup;
@@ -440,6 +444,11 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   /** Fetch cached DagNode for Group */
   getControlNodeFor(group: DagGroup) {
     return this.controlNodes[group.id];
+  }
+
+  /** Fetch cached DagNode for Group */
+  getCustomControlNodeFor(group: DagGroup) {
+    return this.controlNodes[group.id] as CustomNode;
   }
 
   showControlNode(group: DagGroup) {
