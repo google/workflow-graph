@@ -185,6 +185,10 @@ export const NODE_WIDTH = 284;
 export const NODE_VERTICAL_SPACING = 60;
 /** Default Node Horizontal Spacing */
 export const NODE_HORIZONTAL_SPACING = 40;
+/** Default Node Width Padding */
+export const NODE_WIDTH_PADDING = 6;
+/** Default Node Height Padding */
+export const NODE_HEIGHT_PADDING = 5;
 
 
 /**

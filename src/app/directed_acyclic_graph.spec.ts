@@ -24,10 +24,10 @@ import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angul
 import {ScreenshotTest} from '../screenshot_test';
 
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
-import {DagNode as Node, GraphSpec, type NodeRef} from './node_spec';
+import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
-import {fakeGraph} from './test_resources/fake_data';
+import {createDagSkeletonWithCustomGroups, fakeGraph} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
@@ -131,6 +131,41 @@ describe('Directed Acyclic Graph Renderer', () => {
              .toHaveBeenCalledTimes(2);
        }));
 
+    describe('with custom groups', () => {
+      let fixture: ComponentFixture<TestComponent>;
+
+      afterEach(fakeAsync(() => {
+        fixture.destroy();
+      }));
+
+      function setup(
+          options: {hideControlNodeOnExpand?: boolean,
+                    expanded?: boolean} = {}) {
+        const {
+          hideControlNodeOnExpand = false,
+          expanded = false,
+        } = options;
+        fixture = TestBed.createComponent(TestComponent);
+        const skeleton = createDagSkeletonWithCustomGroups(expanded)
+        const graphSpec =
+            Node.createFromSkeleton(skeleton.skeleton, skeleton.state);
+        fixture.componentRef.setInput('graph', graphSpec);
+        fixture.detectChanges();
+      }
+
+      it('renders correctly', async () => {
+        setup();
+        await screenShot.expectMatch(`graph_custom_control_node`);
+      });
+
+      it('renders correctly with group expanded and control hidden',
+         async () => {
+           setup({expanded: true});
+           await screenShot.expectMatch(
+               `graph_expanded_with_custom_control_node_hidden`);
+         });
+    });
+
     describe('when loading', () => {
       let fixture: ComponentFixture<TestComponent>;
       beforeEach(() => {
@@ -156,21 +191,43 @@ describe('Directed Acyclic Graph Renderer', () => {
           [groups]="graph.groups"
           [followNode]="followNode"
           [loading]="loading"
+          [customNodeTemplates]="{'outlineBasic': outlineBasic}"
       >
       </ai-dag-renderer>
-    </div>`,
+    </div>
+
+    <ng-template #outlineBasic let-node="node">
+      <div
+        [style.position]="'absolute'"
+        [style.top]="'0'"
+        [style.left]="'0'"
+        [style.right]="'0'"
+        [style.bottom]="'0'"
+        [style.overflow]="'auto'"
+        [style.padding.em]=".5"
+        [style.background]="'rgb(255,255,255)'"
+        [style.display]="'flex'"
+        [style.flex-direction]="'column'"
+        [style.border]="'1px solid rgb(26, 115, 232)'"
+        [style.border-radius]="'6px'"
+      >
+        <div [style.display]="'flex'">
+          <b>{{node.displayName}}</b>
+        </div>
+      </div>
+    </ng-template>`,
   styles: [`
     .container {
       height: 1200px;
       width: 1200px;
     }`],
-// TODO: Make this AOT compatible. See b/352713444
-jit: true,
+  // TODO: Make this AOT compatible. See b/352713444
+  jit: true,
 
 })
 class TestComponent {
   @ViewChild('dagRender', {static: false}) dagRender!: DirectedAcyclicGraph;
-  graph: GraphSpec = FAKE_DATA;
+  @Input() graph: GraphSpec = FAKE_DATA;
   @Input() followNode: NodeRef|null = null;
   @Input() loading = false;
 }

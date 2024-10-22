@@ -247,7 +247,8 @@ export interface GroupToggleEvent {
 export class DagGroup implements
     Omit<GraphSpec, 'nodeMap'>,
     PartialBy<
-        Required<Omit<DagGroupMeta, 'definition'|'groupMeta'>>,
+        Required<
+            Omit<DagGroupMeta, 'definition'|'groupMeta'|'customControlNode'>>,
         'icon'|'subType'> {
   id = '';
   displayName = '';
@@ -259,6 +260,7 @@ export class DagGroup implements
   descriptionTooltip = '';
   hasControlNode = false;
   hideControlNodeOnExpand = false;
+  customControlNode?: CustomNode;
   treatAsLoop = false;
   conditionalQuery = '';
   callout: NodeCallout = '';
@@ -288,6 +290,7 @@ export class DagGroup implements
         modifiers = new Set<NodeModifier>(),
         hasControlNode = false,
         hideControlNodeOnExpand = false,
+        customControlNode = undefined,
         expanded = false,
         stateTooltip = '',
         iconTooltip = '',
@@ -298,6 +301,10 @@ export class DagGroup implements
         artifactRefs = [],
         selectedLoopId,
       }: GetOptionalParamsFor<DagGroup> = {}) {
+    if (!!customControlNode && !hideControlNodeOnExpand) {
+      throw new Error(
+          'Custom control nodes are not supported in the expanded state');
+    }
     Object.assign(this, {
       id,
       nodes,
@@ -312,6 +319,7 @@ export class DagGroup implements
       modifiers,
       hasControlNode,
       hideControlNodeOnExpand,
+      customControlNode,
       expanded,
       stateTooltip,
       iconTooltip,
@@ -327,6 +335,11 @@ export class DagGroup implements
   /** Generates a `DagNode` control for this group if allowed */
   generateControlNode() {
     if (!this.hasControlNode) return;
+    if (this.customControlNode) {
+      this.height = this.customControlNode.height;
+      this.width = this.customControlNode.width;
+      return this.customControlNode;
+    }
     return new DagNode(this.id, 'execution', this.state, {...this});
   }
 
@@ -514,6 +527,7 @@ export interface DagGroupMeta extends DagNodeMeta {
   groupMeta?: StateTable;
   /** Should we generate a controlNode via parameters given to group */
   hasControlNode?: boolean;
+  customControlNode?: CustomNode;
   /**
    * Should the DagGroup be shown as a loop, in which case no `edges` should be
    * passed in
@@ -772,6 +786,7 @@ export class DagNode implements
       callout,
       hasControlNode,
       hideControlNodeOnExpand,
+      customControlNode,
       expanded,
       displayName,
       stateTooltip,
@@ -787,12 +802,17 @@ export class DagNode implements
     } = nodeMeta as DagGroupMeta;
     assertCompleteDereference(
         remains, 'Not all fields of DagGroup were assigned via Skeleton');
+    if (!!customControlNode && !hideControlNodeOnExpand) {
+      throw new Error(
+          'Custom control nodes are not supported in the expanded state');
+    }
     return new DagGroup(id, undefined, undefined, undefined, state, {
       description,
       descriptionTooltip,
       conditionalQuery,
       hasControlNode,
       hideControlNodeOnExpand,
+      customControlNode,
       expanded,
       modifiers,
       callout,

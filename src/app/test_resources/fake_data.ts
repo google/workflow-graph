@@ -20,8 +20,7 @@
  * various testing scenarios
  */
 
-// common_typos_disable
-import {baseColors, DagNodeSkeleton, DagSkeleton, repeatedMetaNodes, StateTable} from '../node_spec';
+import {baseColors, CustomNode, DagNode, DagNodeSkeleton, DagSkeleton, repeatedMetaNodes, StateTable} from '../node_spec';
 
 /**
  * The standard Fake Graph that can be used by `DagNode.createFromSkeleton()` to
@@ -545,3 +544,69 @@ export const fakeGraph: DagSkeleton = {
     }]
   } as DagNodeSkeleton],
 };
+
+/** Helper function to create a DAG skeleton with custom group control nodes */
+export function createDagSkeletonWithCustomGroups(expanded: boolean):
+    DagSkeleton {
+  return {
+    skeleton: [{
+      id: 'client',
+      type: 'execution',
+      next: [
+        {
+          id: 'customGroup',
+          type: 'group',
+          definition: [
+            {
+              id: 'node1',
+              type: 'execution',
+              next: [
+                {
+                  id: 'node2',
+                  type: 'execution',
+                },
+              ],
+            },
+          ],
+          next: [
+            {
+              id: 'backend',
+              type: 'execution',
+            },
+          ],
+        },
+      ],
+    } as DagNodeSkeleton],
+    state: {
+      'client': {
+        state: 'NO_STATE_RUNTIME',
+      },
+      'backend': {
+        state: 'NO_STATE_RUNTIME',
+      },
+      'customGroupControlNode': {
+        templateRef: 'outlineBasic',
+        width: 300,
+        height: 150,
+        includeInStepCount: false,
+      },
+      'customGroup': {
+        state: 'NO_STATE_RUNTIME',
+        displayName: 'Custom group node',
+        hasControlNode: true,
+        hideControlNodeOnExpand: true,
+        expanded,
+        customControlNode: new CustomNode(
+            new DagNode(
+                'customGroupControlNode', 'execution', 'NO_STATE_STATIC', {
+                  displayName: 'Custom group control node',
+                }),
+            'outlineBasic',
+            400,
+            73,
+            ),
+        groupMeta: {},
+      },
+    } as StateTable,
+  };
+}

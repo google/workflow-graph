@@ -226,7 +226,7 @@
           [style.width.px]="getControlNodeFor(group).width"
           [style.height.px]="getControlNodeFor(group).height"
         ></div>
-        <ai-dag-node
+        <ai-dag-node *ngIf="!isCustomNode(getControlNodeFor(group))"
           class="control-node"
           [class.kill-bottom-border]="group.treatAsLoop && isGroupExpanded(group)"
           [attr.tabindex]="isGroupExpanded(group) ? 0 : -1"
@@ -260,6 +260,41 @@
             </ng-container>
           </ng-container>
         </ai-dag-node>
+        <ng-container *ngIf="!!isCustomNode(getControlNodeFor(group))">
+          <article
+            *ngIf="isDagreInit(group)"
+            class="custom-node"
+            [attr.node-title]=" getControlNodeFor(group).getNodeDisplayName()"
+            [style.transform]=" getControlNodeFor(group).cssTransform"
+            [style.width.px]=" getControlNodeFor(group).width"
+            [style.height.px]=" getControlNodeFor(group).height"
+            [style.overflow]="'none'"
+            (wheel)="onNodeWheel($event)"
+          >
+            <ng-container *ngIf="getCustomNodeTemplateFor(getCustomControlNodeFor(group))">
+              <ng-container
+                *ngTemplateOutlet="getCustomNodeTemplateFor(getCustomControlNodeFor(group)); context: {
+                node: getControlNodeFor(group),
+                nodes,
+                edges,
+                updateDAG,
+                isPanning,
+                updateGraphLayoutFromNodesChange,
+                toggleSelection: customNodeToggleSelectionCurry(getCustomControlNodeFor(group))
+              }"
+              ></ng-container>
+            </ng-container>
+            <ng-container *ngIf="!getCustomNodeTemplateFor(getCustomControlNodeFor(group))">
+              <div class="custom-node-error" role="alert" tabindex="0">
+                <span
+                  >Could not find the <code>templateRef</code> specified for
+                  <code>{{ group.id }}</code> (template: <code>{{ group.templateRef }}</code
+                  >)
+                </span>
+              </div>
+            </ng-container>
+          </article>
+        </ng-container>
         <ai-dag-iteration-selector
             *ngIf="group.treatAsLoop"
             [style.height.px]="isGroupExpanded(group) ? getControlNodeFor(group).height * 0.6 : 0"

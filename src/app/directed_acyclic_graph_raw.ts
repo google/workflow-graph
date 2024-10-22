@@ -23,7 +23,7 @@ import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
-import {convertStateToRuntime, createDAGFeatures, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, type LayoutOptions, NodeIcon, type PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
+import {convertStateToRuntime, createDAGFeatures, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, Dimension, Direction, getMargin, isNoState, type LayoutOptions, NODE_HEIGHT, NODE_HEIGHT_PADDING, NODE_WIDTH_PADDING, NodeIcon, type PadType, PointWithTransform, RankAlignment, SizeConfig, SVG_ELEMENT_SIZE} from './data_types_internal';
 import {GroupIterationSelectorModule} from './group_iteration_select';
 import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
@@ -111,8 +111,13 @@ function setGroupSizeProps(
 ) {
   const {getNodeWidth, height: nodeHeight} = dims;
   const expandedGroup = group as EnhancedDagGroup;
-  let width = getNodeWidth(group.state, group.conditionalQuery) + 6 * nodePad;
-  let height = nodeHeight + 5 * nodePad;
+  let width = getNodeWidth(group.state, group.conditionalQuery) +
+      NODE_WIDTH_PADDING * nodePad;
+  let height = nodeHeight + NODE_HEIGHT_PADDING * nodePad;
+  if (group.customControlNode) {
+    width = group.customControlNode.width + NODE_WIDTH_PADDING * nodePad;
+    height = group.customControlNode.height + NODE_HEIGHT_PADDING * nodePad;
+  }
   // Size of protrusion outside the border for a group
   let padY = 0;
   const {expandedDims} = expandedGroup;
@@ -438,8 +443,16 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   /** Fetch cached DagNode for Group */
-  getControlNodeFor(group: DagGroup) {
-    return this.controlNodes[group.id];
+  getControlNodeFor(group: DagGroup): DagNode|CustomNode {
+    const controlNode = this.controlNodes[group.id];
+    if (!!group.customControlNode) return group.customControlNode as CustomNode;
+
+    return controlNode as DagNode;
+  }
+
+  /** Fetch cached DagNode for Group */
+  getCustomControlNodeFor(group: DagGroup) {
+    return this.controlNodes[group.id] as CustomNode;
   }
 
   showControlNode(group: DagGroup) {
