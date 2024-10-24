@@ -2,7 +2,6 @@
 @use '@angular/cdk' as cdk;
 
 @include mat.all-component-typographies();
-@include mat.core();
 @include mat.app-background();
 @include mat.elevation-classes();
 @include cdk.a11y-visually-hidden();
