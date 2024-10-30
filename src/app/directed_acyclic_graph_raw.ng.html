@@ -262,7 +262,7 @@
         </ai-dag-node>
         <ng-container *ngIf="!!isCustomNode(getControlNodeFor(group))">
           <article
-            *ngIf="isDagreInit(group)"
+            *ngIf="isDagreInit(group) && getControlNodeFor(group)"
             class="custom-node"
             [attr.node-title]=" getControlNodeFor(group).getNodeDisplayName()"
             [style.transform]=" getControlNodeFor(group).cssTransform"
