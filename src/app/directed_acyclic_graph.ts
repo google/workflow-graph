@@ -717,6 +717,10 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
     return {transformX, transformY, offsetWidth, offsetHeight};
   }
 
+  toggleGroupExpand(group: string|DagGroup, value?: boolean) {
+    this.rootDag?.toggleExpand(group, value);
+  }
+
   resizeGraph(dims: GraphDims) {
     if (this.rootDagInitialized && this.graphWidth === dims.width &&
         this.graphHeight === dims.height) {
