@@ -531,8 +531,29 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
    *     expanded segments)
    */
   expandUntil(path: string[]): number {
+    return this.updateExpandedStateAlongPath(path, true);
+  }
+
+  /**
+   * Collapse all `sub-dag`s along the path specified
+   *
+   * @return the number of collapses performed (not including previously
+   *     expanded segments)
+   */
+  collapseUntil(path: string[]): number {
+    return this.updateExpandedStateAlongPath(path, false);
+  }
+
+  /**
+   * Common function for expanding or collapsing `sub-dag`s along the path
+   * specified
+   *
+   * @return the number of collapses performed (not including previously
+   *     expanded segments)
+   */
+  protected updateExpandedStateAlongPath(path: string[], expanded: boolean) {
     let dagEl = this.rootDag;
-    let expansions = 0;
+    let expandedStateChanges = 0;
     let pathDepth = 0;
     path = [...path];
     while (path.length) {
@@ -563,15 +584,15 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
         return false;
       });
       if (!dagEl) break;
-      if (parent?.toggleExpand(segment, true)) {
+      if (parent?.toggleExpand(segment, expanded)) {
         // this will be true when expansion succeeded (not when it was a no-op)
-        expansions++;
+        expandedStateChanges++;
         // Detect changes so groups can expand properly
         this.detectChanges();
       }
       pathDepth++;
     }
-    return expansions;
+    return expandedStateChanges;
   }
 
   getGraphSpec(): GraphSpec {
