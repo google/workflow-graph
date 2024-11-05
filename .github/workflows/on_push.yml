@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@0609f0983b7a228f052f81ef4c3d6510cae254ad
+      - uses: pnpm/action-setup@v4
         with:
-          version: 6.10.0
+          version: 9
       - uses: actions/setup-node@v3
         with:
           node-version: '18'

@@ -3,8 +3,6 @@
 
 @include mat.all-component-typographies();
 @include mat.core();
-@include mat.app-background();
-@include mat.elevation-classes();
 @include cdk.a11y-visually-hidden();
 
 $my-primary: mat.define-palette(mat.$blue-palette, 500);

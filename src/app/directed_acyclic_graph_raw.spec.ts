@@ -129,8 +129,9 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(fixture.componentInstance.dagRaw.groups[1].expanded).toBe(true);
        }));
 
-    it('Groups with expanded attribute are expanded on load',
-       fakeAsync(async () => {
+    // SKIP-PUBLIC
+    xit('Groups with expanded attribute are expanded on load',
+       waitForAsync(async () => {
          fixture.componentInstance.dagRaw.groups[1].expanded = true;
          fixture.detectChanges();
          expect(fixture.componentInstance.dagRaw.expandedGroups.has(
@@ -197,7 +198,8 @@ describe('Directed Acyclic Graph Raw', () => {
           expect(deltaY.stopPropagation).toHaveBeenCalled();
         });
 
-        it('captures events on scrollable custom nodes', () => {
+        // SKIP-PUBLIC
+        xit('captures events on scrollable custom nodes', () => {
           const {el, deltaX, deltaY} = setup('.custom-node');
 
           simulateDispatch(el, deltaX);
@@ -227,7 +229,8 @@ describe('Directed Acyclic Graph Raw', () => {
           expect(delta.stopPropagation).toHaveBeenCalled();
         });
 
-        it('does not capture an event that wouldn\'t srcroll', () => {
+        // SKIP-PUBLIC
+        xit('does not capture an event that wouldn\'t srcroll', () => {
           const {el} = setup('ai-dag-node');
 
           const deltaP = fakeWheelEvent({deltaX: 1, deltaY: 1});
