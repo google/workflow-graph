@@ -173,11 +173,8 @@ function translateColor(col: string, isBg = false) {
 @Component({
   standalone: false,
   selector: 'dag-demo-page',
-  styleUrls: [
-    'demo_page.scss',
-  ],
+  styleUrls: ['demo_page.scss', '../material_theme.scss'],
   templateUrl: './demo_page.ng.html',
-  encapsulation: ViewEncapsulation.None,
 })
 export class DagDemoPage {
   @ViewChild('dagRef') dagRef: ElementRef|undefined;

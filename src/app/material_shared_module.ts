@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import {OverlayContainer} from '@angular/cdk/overlay';
 import {NgModule} from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
@@ -28,6 +28,8 @@ import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
+
+import {CustomOverlayContainer} from './custom_overlay';
 
 export {MatDialog, MatIconRegistry, MatSelectChange};
 
@@ -60,6 +62,7 @@ export {MatDialog, MatIconRegistry, MatSelectChange};
     MatButtonToggleModule,
     MatTooltipModule,
   ],
+  providers: [{provide: OverlayContainer, useClass: CustomOverlayContainer}]
 
 })
 export class MaterialSharedModule {

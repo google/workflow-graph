@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, NgModule, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
+import {OverlayContainer} from '@angular/cdk/overlay';
+import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, HostBinding, Injectable, Input, NgModule, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
@@ -47,17 +48,13 @@ export {
 @Component({
   standalone: false,
   selector: 'ai-dag-scaffold',
-  styleUrls: [
-    'scaffold.scss',
-    './material_theme.scss',
-  ],
+  styleUrls: ['scaffold.scss', 'material_theme.scss'],
   templateUrl: 'scaffold.ng.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     DagLogger,
     STATE_SERVICE_PROVIDER,
   ],
-  encapsulation: ViewEncapsulation.None,
 })
 export class DagScaffold implements AfterContentInit, OnDestroy {
   private features?: FeatureToggleOptions;
@@ -93,6 +90,7 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
         .subscribe((userConfig: UserConfig) => {
           this.userConfigChange.emit(userConfig);
         });
+    this.createGlobalStyles();
   }
 
   ngAfterContentInit() {
@@ -103,6 +101,27 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
   ngOnDestroy() {
     this.destroy.next();
     this.destroy.complete();
+  }
+
+  private createGlobalStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+.cdk-visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+  outline: 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  left: 0;
+}`;
+    document.head.appendChild(style);
   }
 
   /**
