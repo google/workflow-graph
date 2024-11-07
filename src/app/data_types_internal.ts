@@ -468,6 +468,13 @@ export interface FeatureToggleOptions {
    * Hides the progress cell in the toolbar. Defaults to `false`.
    */
   hideProgressCell?: boolean;
+
+  /**
+   * Disables loading material styles. Use this if your host application already
+   * loads the Material stylesheets and wants to avoid duplicates.
+   * Defaults to `false`.
+   */
+  disableLoadingMaterialStyles?: boolean;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -489,6 +496,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   enableCenterCameraOnFocus: true,
   naturalScrolling: false,
   hideProgressCell: false,
+  disableLoadingMaterialStyles: false,
 };
 
 /**

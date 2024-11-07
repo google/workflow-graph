@@ -19,17 +19,19 @@ $graph-theme: mat.define-light-theme(
   )
 );
 
-// Include theme styles for core and each component used in your app.
-@include mat.core-theme($graph-theme);
-@include mat.tooltip-theme($graph-theme);
-@include mat.button-theme($graph-theme);
-@include mat.icon-button-theme($graph-theme);
-@include mat.dialog-theme($graph-theme);
-@include mat.select-theme($graph-theme);
-@include mat.table-theme($graph-theme);
-@include mat.option-theme($graph-theme);
-@include mat.checkbox-theme($graph-theme);
-@include mat.optgroup-theme($graph-theme);
-@include mat.progress-spinner-theme($graph-theme);
-@include mat.slide-toggle-theme($graph-theme);
-@include mat.button-toggle-theme($graph-theme);
+@mixin graph-material-styles() {
+  // Include theme styles for core and each component used in your app.
+  @include mat.core-theme($graph-theme);
+  @include mat.tooltip-theme($graph-theme);
+  @include mat.button-theme($graph-theme);
+  @include mat.icon-button-theme($graph-theme);
+  @include mat.dialog-theme($graph-theme);
+  @include mat.select-theme($graph-theme);
+  @include mat.table-theme($graph-theme);
+  @include mat.option-theme($graph-theme);
+  @include mat.checkbox-theme($graph-theme);
+  @include mat.optgroup-theme($graph-theme);
+  @include mat.progress-spinner-theme($graph-theme);
+  @include mat.slide-toggle-theme($graph-theme);
+  @include mat.button-toggle-theme($graph-theme);
+}

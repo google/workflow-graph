@@ -2,10 +2,7 @@
  * Dag scaffolding base style definitions
  */
 
-/* Mixin and deps imports */
-@import './mixins';
-
-ai-dag-scaffold {
+:host {
   flex: 1 1 0%;
   display: flex;
   flex-direction: column;

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import {NgIf} from '@angular/common';
 import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, NgModule, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -24,6 +25,7 @@ import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, createDAGFeatures, type DagTheme, DEFAULT_THEME, defaultFeatures, type FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
 import {DagLogger, DagLoggerModule} from './logger/dag_logger';
+import {MaterialStylesLoader} from './material_styles_loader';
 import {DagToolbar} from './toolbar';
 import {type UserConfig, UserConfigService} from './user_config.service';
 
@@ -47,20 +49,16 @@ export {
 @Component({
   standalone: false,
   selector: 'ai-dag-scaffold',
-  styleUrls: [
-    'scaffold.scss',
-    './material_theme.scss',
-  ],
+  styleUrls: ['scaffold.scss'],
   templateUrl: 'scaffold.ng.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     DagLogger,
     STATE_SERVICE_PROVIDER,
   ],
-  encapsulation: ViewEncapsulation.None,
 })
 export class DagScaffold implements AfterContentInit, OnDestroy {
-  private features?: FeatureToggleOptions;
+  protected features?: FeatureToggleOptions;
   private theme?: DagTheme;
   private hasInited = false;
   private readonly destroy = new Subject<void>();
@@ -131,6 +129,8 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
   ],
   imports: [
     DagLoggerModule,
+    MaterialStylesLoader,
+    NgIf,
   ],
   exports: [
     DagScaffold,
