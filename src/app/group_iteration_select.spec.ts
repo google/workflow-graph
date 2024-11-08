@@ -16,7 +16,7 @@
  */
 
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ComponentFixture, discardPeriodicTasks, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {MatSelectHarness} from '@angular/material/select/testing';
 
@@ -29,14 +29,28 @@ import {initTestBed} from './test_resources/test_utils';
 const FAKE_DATA: GraphSpec =
     Node.createFromSkeleton(fakeGraph.skeleton, fakeGraph.state);
 
-describe('Iteration Selector', () => {
-  beforeEach(waitForAsync(async () => {
-    await initTestBed({
-      declarations: [TestComponent],
-      imports: [GroupIterationSelectorModule],
-    });
-  }));
+async function setup(params?: {selectedIterationId?: string}) {
+  await initTestBed({
+    declarations: [TestComponent],
+    imports: [GroupIterationSelectorModule],
+  });
 
+  const fixture = TestBed.createComponent(TestComponent);
+  fixture.componentInstance.selectedIterationId = params?.selectedIterationId;
+  fixture.detectChanges();
+
+  const loader = TestbedHarnessEnvironment.loader(fixture);
+  const select = await loader.getHarness(MatSelectHarness);
+
+  await select.open();
+  fixture.detectChanges();
+
+  const rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
+
+  return {fixture, select, rootLoader};
+}
+
+describe('Iteration Selector', () => {
   describe('Tests after opening select input', () => {
     const SEARCH_DEBOUNCE_TIME = 51;
 
@@ -45,17 +59,11 @@ describe('Iteration Selector', () => {
     let overlay: DagGroupIterationOverlayHarness;
 
     beforeEach(waitForAsync(async () => {
-      fixture = TestBed.createComponent(TestComponent);
-      fixture.detectChanges();
-
-      const loader = TestbedHarnessEnvironment.loader(fixture);
-      select = await loader.getHarness(MatSelectHarness);
-
-      await select.open();
-      fixture.detectChanges();
-
-      const rootLoader = TestbedHarnessEnvironment.documentRootLoader(fixture);
-      overlay = await rootLoader.getHarness(DagGroupIterationOverlayHarness);
+      const setupResult = await setup();
+      fixture = setupResult.fixture;
+      select = setupResult.select;
+      overlay = await setupResult.rootLoader.getHarness(
+          DagGroupIterationOverlayHarness);
     }));
 
     afterEach(fakeAsync(() => {
@@ -112,6 +120,31 @@ describe('Iteration Selector', () => {
          discardPeriodicTasks();
        }));
   });
+
+  describe('No initial selection', () => {
+    let harness: MatSelectHarness;
+    beforeEach(waitForAsync(async () => {
+      const params = await setup();
+      harness = params.select;
+    }));
+
+    it('selects the first failed iteration by default', fakeAsync(async () => {
+         expect(await harness.getValueText()).toBe('Iteration 5');
+       }));
+  })
+
+  describe('Initial selection', () => {
+    let harness: MatSelectHarness;
+
+    beforeEach(waitForAsync(async () => {
+      const params = await setup({selectedIterationId: 'it-4'});
+      harness = params.select;
+    }));
+
+    it('Sets the selected iteration as default', fakeAsync(async () => {
+         expect(await harness.getValueText()).toBe('Iteration 4');
+       }))
+  })
 });
 
 @Component({
@@ -119,7 +152,8 @@ describe('Iteration Selector', () => {
   template: `
       <div class="container">
         <ai-dag-iteration-selector
-          [iterations]="iterations"
+          [iterationsConfig]="
+            {iterations: iterations, selectedIterationId: selectedIterationId}"
         />
       </div>`,
   styles: [`
@@ -129,11 +163,12 @@ describe('Iteration Selector', () => {
       position: relative;
     }
   `],
-// TODO: Make this AOT compatible. See b/352713444
-jit: true,
+  // TODO: Make this AOT compatible. See b/352713444
+  jit: true,
 
 })
 class TestComponent {
   iterations: Array<(DagNode | DagGroup)> =
       [...FAKE_DATA.groups[1].groups, ...FAKE_DATA.groups[1].nodes];
+  @Input() selectedIterationId?: string;
 }

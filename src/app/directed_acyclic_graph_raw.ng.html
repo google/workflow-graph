@@ -303,8 +303,9 @@
             [unTabbable]="!isGroupExpanded(group)"
             [attr.aria-hidden]="!isGroupExpanded(group)"
             [sourceGroup]="group.getNodeDisplayName()"
-            [iterations]="getIterationsFor(group)"
-            [(iteration)]="group.selectedLoopId"
+            [iterationsConfig]="
+              {iterations: getIterationsFor(group), selectedIterationId: group.selectedLoopId}"
+            (iterationChange)="group.selectedLoopId = $event"
             (onIterSelect)="broadcastIterChange(group, $event!)"
           />
       </header>

@@ -67,6 +67,7 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   goodItersShown = 0;
   badItersShown = 0;
   $iteration = '';
+  $iterationFromInput = '';
   expanded = false;
   focusedOption = '';
   softIteration = '';
@@ -77,7 +78,6 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
   @Input() sourceGroup: string = 'Group';
   @Input() unTabbable = false;
   @Input() parentNodeSelected = false;
-  @Input('iterations')
   set iterations(iters: IterationSelectOption[]) {
     this.$iterations = iters;
     this.iterMap = Object.fromEntries(iters.map(i => [i.id, i]));
@@ -101,24 +101,32 @@ export class GroupIterationSelector implements OnInit, OnDestroy {
     this.badIters = badIters.sort(
         (a, b) => STATE_PRIORITY[b.state] - STATE_PRIORITY[a.state]);
     this.badItersShown = this.badIters.filter(({hidden}) => !hidden).length;
-    this.calculateIteration();
   }
   get iterations() {
     return this.$iterations;
   }
-  @Input('iteration')
   set iteration(id: string) {
     if (!id) return;
     const oldIter = this.$iteration;
     this.$iteration = id;
-    this.calculateIteration();
     if (id !== oldIter) this.iterationChange.emit(id);
+    this.calculateIteration();
   }
   get iteration() {
     return this.$iteration;
   }
   @Output() iterationChange = new EventEmitter<string>();
   @Output() onIterSelect = new EventEmitter<DagNode|DagGroup|undefined>();
+
+  @Input()
+  set iterationsConfig(config: {
+    iterations: IterationSelectOption[];
+    selectedIterationId?: string
+  }) {
+    this.iterations = config.iterations;
+    this.iteration = config.selectedIterationId ?? '';
+    this.calculateIteration();
+  }
 
   constructor(
       private readonly cdr: ChangeDetectorRef,

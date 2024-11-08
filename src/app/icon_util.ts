@@ -99,7 +99,7 @@ export function fetchIcon(icon: NodeIcon, key: keyof NodeIcon|'bg'): string {
     default:
       throw new Error(`Unknown icon key [${key}] is being fetched`);
   }
-  if (!val) {
+  if (!val && iconConfigDefaults[key]) {
     console.error(`Could not fetch a value for [key: ${key}] in: ${
         JSON.stringify(icon)}`);
   }

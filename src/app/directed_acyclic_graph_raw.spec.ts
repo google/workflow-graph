@@ -80,16 +80,16 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(
              (fixture.componentInstance.dagRaw.selectedNode?.node as DagGroup)
                  .selectedLoopId)
-             .toBe('it-5');
+             .toBe('it-2');
 
          const select = await loader.getHarness(MatSelectHarness);
          await select.open();
-         await select.clickOptions({text: 'Iteration 2'});
+         await select.clickOptions({text: 'Iteration 5'});
 
          expect(
              (fixture.componentInstance.dagRaw.selectedNode?.node as DagGroup)
                  .selectedLoopId)
-             .toBe('it-2');
+             .toBe('it-5');
        }));
 
     it('Preserves selection data on reassignment', waitForAsync(async () => {
