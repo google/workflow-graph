@@ -86,6 +86,8 @@ interface CameraMoveOpts {
   animate?: boolean;
   /** The camera should center on this point, or use as its top-left anchor */
   align?: 'center'|'top-left';
+  /** Should move to this point, regardless of offsets or zoom */
+  ignoreOffset?: boolean;
 }
 
 interface ElementOffset {
@@ -804,22 +806,27 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   /**
    * Minimap view window panning handler
    */
-  windowPan(newPosition: Point) {
+  windowPan(newPosition: Point, ignoreOffset = false) {
     // Calculating the graph's offset from the top and left edges of the
     // available canvas, when the zoom is under 1.
-    const offsets = this.zoom >= 1 ? {x: 0, y: 0} : {
-      x: (this.graphWidth * this.zoom - this.graphWidth) / -2,
-      y: (this.graphHeight * this.zoom - this.graphHeight) / -2,
-    };
+    if (!ignoreOffset) {
+      const offsets = this.zoom >= 1 ? {x: 0, y: 0} : {
+        x: (this.graphWidth * this.zoom - this.graphWidth) / -2,
+        y: (this.graphHeight * this.zoom - this.graphHeight) / -2,
+      };
 
-    this.graphX = -clampVal(
-        newPosition.x, -offsets.x,
-        (this.graphWidth * Math.max(this.zoom, 1) - this.lastResizeEv.width -
-         offsets.x));
-    this.graphY = -clampVal(
-        newPosition.y, -offsets.y,
-        this.graphHeight * Math.max(this.zoom, 1) - this.lastResizeEv.height -
-            offsets.y);
+      this.graphX = -clampVal(
+          newPosition.x, -offsets.x,
+          (this.graphWidth * Math.max(this.zoom, 1) - this.lastResizeEv.width -
+           offsets.x));
+      this.graphY = -clampVal(
+          newPosition.y, -offsets.y,
+          this.graphHeight * Math.max(this.zoom, 1) - this.lastResizeEv.height -
+              offsets.y);
+    } else {
+      this.graphX = newPosition.x;
+      this.graphY = newPosition.y;
+    }
     this.applyShifts();
   }
 
@@ -832,6 +839,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   async centerCameraOn(pt: Point, {
     animate = true,
     align = 'center',
+    ignoreOffset = false,
   }: CameraMoveOpts = {}) {
     if (align === 'center') {
       const {width, height} = this.lastResizeEv;
@@ -847,7 +855,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
     this.animateMove = animate;
     this.detectChanges();
     await this.sleep(10);
-    this.windowPan(pt);
+    this.windowPan(pt, ignoreOffset);
     this.detectChanges();
     animate && await this.sleep(1000);
   }
