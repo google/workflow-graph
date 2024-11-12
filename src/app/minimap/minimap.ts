@@ -23,6 +23,7 @@ import {takeUntil} from 'rxjs/operators';
 
 import {DagStateService} from '../dag-state.service';
 import {convertStateToRuntime, defaultFeatures, type MinimapPosition, SVG_ELEMENT_SIZE} from '../data_types_internal';
+import {MaterialSharedModule} from '../material_shared_module';
 import {CustomNode, DagGroup, DagNode, Point, type SelectedNode} from '../node_spec';
 
 /** Minimap component for Workflow Graph. */
@@ -224,6 +225,7 @@ export class Minimap implements OnChanges, OnInit {
   imports: [
     CommonModule,
     DragDropModule,
+    MaterialSharedModule,
   ],
 })
 export class MinimapModule {
