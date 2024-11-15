@@ -50,7 +50,6 @@ export const fakeGraph: GraphSkeleton = {
       type: 'execution',
       next: [{
         edgeOpts: {
-          // NOTE: fromMarkerStyle = 'arrow' is the same as 'circle'.
           fromMarkerStyle: 'arrow',
           toMarkerStyle: 'arrow',
         },

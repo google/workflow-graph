@@ -953,6 +953,21 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return `url(#${this.getArrowMarkerId(edge)})`;
   }
 
+  getFromArrowMarkerId(edge: DagEdge|undefined): string {
+    if (!edge || !edge.points) return '';
+    const [from, to] = [edge.from, edge.to].map(s => s.replace(/[^\w]/g, '-'));
+    return `${this.path.join('-')}_arrow_${to}_${from}`;
+  }
+
+  getEdgeMarkerStartId(edge: DagEdge|undefined): string|undefined {
+    const markerStyle = edge?.fromMarkerStyle || this.theme.edgeFromMarkerStyle;
+    if (!edge || !edge.points || markerStyle === 'circle' ||
+        markerStyle === 'hidden') {
+      return undefined;
+    }
+    return `url(#${this.getFromArrowMarkerId(edge)})`;
+  }
+
   getControlPointsForBezierCurve(start: Point, end: Point): Point[] {
     if (this.layout.rankDirection === 'LR' ||
         this.layout.rankDirection === 'RL') {

@@ -431,6 +431,8 @@ export interface DagEdge {
    * this edge
    */
   weight?: number;
+  /** The number of ranks to keep between the source and target of the edge. */
+  minlen?: number;
 }
 
 /**
