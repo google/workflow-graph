@@ -39,11 +39,31 @@
             />
           </marker>
         </defs>
+        <defs *ngIf="getEdgeWidth(e, false) as eWidth">
+          <marker
+            [attr.id]="getFromArrowMarkerId(e)"
+            viewBox="0 0 10 10"
+            refX="10"
+            refY="5"
+            [attr.markerWidth]="eWidth + 7"
+            [attr.markerHeight]="eWidth + 7"
+            markerUnits="userSpaceOnUse"
+            orient="auto-start-reverse"
+          >
+            <path
+                class="arrow"
+                d="M 0 1 L 10 5 L 0 9 z"
+                [attr.stroke]="getEdgeColor(e) || '#9ba1a7'"
+                [attr.fill]="getEdgeColor(e) || '#9ba1a7'"
+            />
+          </marker>
+        </defs>
         <path
           class="line"
           [attr.d]="buildPath(e)"
           [attr.stroke]="getEdgeColor(e)"
           [attr.stroke-width]="getEdgeWidth(e)"
+          [attr.marker-start]="getEdgeMarkerStartId(e)"
           [attr.marker-end]="getEdgeMarkerEndId(e)"
         />
       </g>
@@ -71,7 +91,7 @@
     <ng-container *ngFor="let e of edges; trackBy: edgeTrack">
       <g *ngIf="isDagreInit(e)" class="marker-group fade-in">
         <g
-          *ngIf="(e.fromMarkerStyle || theme.edgeFromMarkerStyle) !== 'hidden'"
+          *ngIf="(e.fromMarkerStyle || theme.edgeFromMarkerStyle) === 'circle'"
           [ngClass]="edgeMarkerClassesFor(e, 'from')">
           <circle
             r="4"
