@@ -911,9 +911,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   toggleExpand(group: string|DagGroup, value?: boolean) {
     const id = group instanceof DagGroup ? group.id : group;
     const beforeCt = this.expandedGroups.size;
+    const isGroupExpanded = this.isGroupExpanded(group);
 
     // TODO: A11y announcements translation b/300590261
-    if (this.isGroupExpanded(group) && value !== true) {
+    if (isGroupExpanded && value !== true) {
       const groupToCollapse =
           group instanceof DagGroup ? group : this.nodeMap.groups[id]?.group;
       if (groupToCollapse) groupToCollapse.expanded = false;
@@ -922,7 +923,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       this.onGroupExpandToggled.emit({groupId: id, isExpanded: false});
       this.stateService?.setGroupExpandToggled(
           {groupId: id, isExpanded: false});
-    } else if (value !== false) {
+    } else if (!isGroupExpanded && value !== false) {
       this.expandedGroups.add(id);
       this.liveAnnouncer?.announce('Expanded');
       this.onGroupExpandToggled.emit({groupId: id, isExpanded: true});
