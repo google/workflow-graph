@@ -252,6 +252,7 @@ export class DagGroup implements
         'icon'|'subType'> {
   id = '';
   displayName = '';
+  groupLabel = '';
   nodes: DagNode[] = [];
   edges: DagEdge[] = [];
   groups: DagGroup[] = [];
@@ -283,6 +284,7 @@ export class DagGroup implements
       id: string, nodes: DagNode[] = [], edges: DagEdge[] = [],
       groups: DagGroup[] = [], state: NodeState = 'NO_STATE_STATIC', {
         displayName = '',
+        groupLabel = '',
         description = '',
         descriptionTooltip = '',
         conditionalQuery = '',
@@ -312,6 +314,7 @@ export class DagGroup implements
       groups,
       state,
       displayName,
+      groupLabel,
       description,
       descriptionTooltip,
       conditionalQuery,
@@ -525,6 +528,8 @@ export type DagCustomNodeMeta = DagNodeMeta&Partial<CustomNodeProps>;
  * - `hasControlNode` is only allowed for `DagGroup` entries
  */
 export interface DagGroupMeta extends DagNodeMeta {
+  /** A label to display on the group */
+  groupLabel?: string;
   /** The nested metadata for this group's members */
   groupMeta?: StateTable;
   /** Should we generate a controlNode via parameters given to group */
@@ -791,6 +796,7 @@ export class DagNode implements
       customControlNode,
       expanded,
       displayName,
+      groupLabel,
       stateTooltip,
       iconTooltip,
       subType,
@@ -819,6 +825,7 @@ export class DagNode implements
       modifiers,
       callout,
       displayName,
+      groupLabel,
       stateTooltip,
       iconTooltip,
       subType,

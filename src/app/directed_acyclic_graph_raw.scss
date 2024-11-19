@@ -308,6 +308,26 @@
       transition: opacity $graph-change-speed;
       transition-delay: calc(2 * #{$graph-change-speed});
     }
+    > .group-label {
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 50px;
+      padding: 0.25em 0.75em;
+      position: absolute;
+      top: 0;
+      left: 5%;
+      transform: translateY(-50%);
+      /* This color is needed to maintain GAR level contrast with #fff text */
+      background: #1a73e8;
+      color: white;
+      opacity: 1;
+      transition: opacity $graph-change-speed;
+      transition-delay: calc(2 * #{$graph-change-speed});
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 80%;
+    }
     > .expand-toggle {
       &:focus-visible {
         opacity: 1;
