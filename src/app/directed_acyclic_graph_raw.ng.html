@@ -389,6 +389,13 @@
       <span *ngIf="group.treatAsLoop" class="fade-in" [attr.aria-hidden]="isGroupExpanded(group)">
         <span class="iteration-counter"> {{ getIterationsFor(group).length }} iterations </span>
       </span>
+      @if (showGroupLabel(group)) {
+        <div class="group-label">
+          <span class="fade-in">
+            <span> {{ group.groupLabel }} </span>
+          </span>
+        </div>
+      }
       <button
         class="expand-toggle"
         role="button"

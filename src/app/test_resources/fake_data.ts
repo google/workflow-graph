@@ -593,6 +593,7 @@ export function createDagSkeletonWithCustomGroups(expanded: boolean):
       'customGroup': {
         state: 'NO_STATE_RUNTIME',
         displayName: 'Custom group node',
+        groupLabel: 'Label for custom group',
         hasControlNode: true,
         hideControlNodeOnExpand: true,
         expanded,
