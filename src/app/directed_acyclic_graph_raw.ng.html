@@ -325,7 +325,6 @@
             [sourceGroup]="group.getNodeDisplayName()"
             [iterationsConfig]="
               {iterations: getIterationsFor(group), selectedIterationId: group.selectedLoopId}"
-            (iterationChange)="group.selectedLoopId = $event"
             (onIterSelect)="broadcastIterChange(group, $event!)"
           />
       </header>

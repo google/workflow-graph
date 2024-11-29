@@ -21,6 +21,7 @@ import {Component, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angular/core/testing';
 import {MatSelectHarness} from '@angular/material/select/testing';
 
+import {DagStateService} from './dag-state.service';
 import {createDAGFeatures} from './data_types_internal';
 import {DagRaw, DagRawModule} from './directed_acyclic_graph_raw';
 import {DagEdge, DagGroup, DagNode as Node, DagNode, GraphSpec} from './node_spec';
@@ -36,6 +37,19 @@ describe('Directed Acyclic Graph Raw', () => {
     await initTestBed({
       declarations: [TestComponent],
       imports: [DagRawModule],
+      providers: [{
+        provide: DagStateService,
+        useValue: jasmine.createSpyObj(
+            'DagStateService',
+            [
+              'listenAll',
+              'destroyAll',
+              'setIterationChange',
+              'setSelectedNode',
+              'setExpandPath',
+              'setGroupExpandToggled',
+            ]),
+      }]
     });
   }));
 
@@ -74,6 +88,12 @@ describe('Directed Acyclic Graph Raw', () => {
              .toBe('TransformedTable');
        }));
 
+    it('Does not emit iteration change events on init',
+       waitForAsync(async () => {
+         expect(TestBed.inject(DagStateService).setIterationChange)
+             .not.toHaveBeenCalled();
+       }));
+
     it('Sets "selectedLoopId" when iteration is changed',
        waitForAsync(async () => {
          await harness.clickExecutionNode('TensorFlow Training');
@@ -90,6 +110,8 @@ describe('Directed Acyclic Graph Raw', () => {
              (fixture.componentInstance.dagRaw.selectedNode?.node as DagGroup)
                  .selectedLoopId)
              .toBe('it-5');
+         expect(TestBed.inject(DagStateService).setIterationChange)
+             .toHaveBeenCalled();
        }));
 
     it('Preserves selection data on reassignment', waitForAsync(async () => {
@@ -424,8 +446,8 @@ describe('Directed Acyclic Graph Raw', () => {
       height: 400px;
       width: 400px;
     }`],
-// TODO: Make this AOT compatible. See b/352713444
-jit: true,
+  // TODO: Make this AOT compatible. See b/352713444
+  jit: true,
 
 })
 class TestComponent {

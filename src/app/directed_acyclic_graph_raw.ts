@@ -236,7 +236,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   @Input() noEmptySpaceAlloc = false;
-  @Output() groupIterationChanged = new EventEmitter<GroupIterationRecord>();
   @Output() onGroupExpandToggled = new EventEmitter<GroupToggleEvent>();
 
   @Input() resolveReference?: (ref: NodeRef) => DagNode | DagGroup | undefined;
@@ -471,10 +470,11 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   broadcastIterChange(
       group: DagGroup, iterationNode: GroupIterationRecord['iterationNode']) {
     (group as any)._cachedSelection = iterationNode;
-    group.selectedLoopId = iterationNode.id;
-    const iter = {path: this.dagPath, group, iterationNode};
-    this.groupIterationChanged.emit(iter);
-    this.stateService?.setIterationChange(iter);
+    if (group.selectedLoopId !== iterationNode.id) {
+      group.selectedLoopId = iterationNode.id;
+      const iter = {path: this.dagPath, group, iterationNode};
+      this.stateService?.setIterationChange(iter);
+    }
   }
 
   /**
