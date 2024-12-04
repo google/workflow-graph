@@ -3,14 +3,12 @@
  */
 
 /* Mixin and deps imports */
-@import './mixins';
-
-$toolbar-color: #5f6368;
+@import 'mixins';
 
 @mixin text-styles {
   font-size: 12.5px;
   font-weight: $ace-font-weight-medium;
-  color: $toolbar-color;
+  color: var(--workflow-graph-color-non-primary);
 }
 
 @mixin disable-selection {
@@ -38,7 +36,7 @@ $toolbar-color: #5f6368;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   z-index: 1;
   font-family: $default-font;
-  
+  background: var(--workflow-graph-color-surface);
   .flex {
     flex: 1 0 0%;
   }
@@ -52,13 +50,13 @@ $toolbar-color: #5f6368;
   display: flex;
   align-items: center;
   &:not(.right) {
-    border-right: 1px solid #dbdde1;
+    border-right: 1px solid var(--workflow-graph-color-hairline);
   }
   &.right {
-    border-left: 1px solid #dbdde1;
+    border-left: 1px solid var(--workflow-graph-color-hairline);
   }
   > workflow-graph-icon {
-    color: #80868b;
+    color: var(--workflow-graph-color-non-primary);
     transition: color 0.25s;
     margin: 0 0.25em 0 0;
   }
@@ -80,7 +78,7 @@ $toolbar-color: #5f6368;
     width: 28px;
     height: 28px;
     line-height: 28px;
-    color: $toolbar-color;
+    color: var(--workflow-graph-color-non-primary);
     padding: 0;
     border: 0;
 
