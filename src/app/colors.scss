@@ -1,0 +1,199 @@
+@mixin colors() {
+  --workflow-graph-color-primary-container: var(
+    --cm-sys-color-primary-container,
+    #e8f0fe
+  );
+  --workflow-graph-color-surface: var(--cm-sys-color-surface, #fff);
+  --workflow-graph-color-surface-variant: var(
+    --cm-sys-color-surface-variant,
+    #f9fafb
+  );
+  --workflow-graph-color-surface-on-surface: var(
+    --cm-sys-color-on-surface,
+    #202124
+  );
+  --workflow-graph-color-surface-on-surface-variant: var(
+    --cm-sys-color-on-surface-variant,
+    #5f6368
+  );
+  --workflow-graph-color-surface-elevation-1: var(
+    --cm-sys-color-surface-elevation1,
+    #fff
+  );
+  --workflow-graph-color-hairline: var(--cm-sys-color-hairline, #dadce0);
+  --workflow-graph-color-non-primary: var(--cm-sys-color-non-primary, #5f6368);
+  --workflow-graph-color-outline: #263c4043;
+  --workflow-graph-color-neutral-container: var(
+    --cm-sys-color-neutral-container,
+    #f1f3f4
+  );
+  --workflow-graph-color-on-primary: var(--cm-sys-color-on-primary, #fff);
+  --workflow-graph-color-status-error: var(
+    --cm-sys-color-status-error,
+    #d93025
+  );
+  --workflow-graph-color-status-on-error: var(
+    --cm-sys-color-status-on-error,
+    #fff
+  );
+  --workflow-graph-color-state-disabled: var(
+    --cm-sys-color-state-disabled,
+    #b5b6b8
+  );
+  --workflow-graph-color-state-pending: #9ba1a7;
+  --workflow-graph-color-state-disabled-container: var(
+    --cm-sys-color-state-disabled-container,
+    #e8e8e8
+  );
+
+  --workflow-graph-base-color-black: #171717;
+  --workflow-graph-base-color-blue: #1a73e8;
+  --workflow-graph-base-color-blue-transparent-05: transparentize(#1a73e8, 0.5);
+  --workflow-graph-base-color-blue-transparent-088: transparentize(
+    #1a73e8,
+    0.88
+  );
+  --workflow-graph-base-color-blue-transparent-095: transparentize(
+    #1a73e8,
+    0.95
+  );
+  --workflow-graph-base-color-blue-transparent-1: transparentize(#1a73e8, 1);
+  --workflow-graph-base-color-green: var(
+    --cm-sys-color-status-success,
+    #188038
+  );
+  --workflow-graph-base-color-red: var(--cm-sys-color-status-error, #d93025);
+  --workflow-graph-base-color-yellow: var(
+    --cm-sys-color-status-warning,
+    #e37400
+  );
+  --workflow-graph-base-color-orange: #fbbc04;
+  --workflow-graph-base-color-purple: #af5cf7;
+  --workflow-graph-base-color-gray: #5f6368;
+
+  --workflow-graph-base-color-background-blue: #e8f0fe;
+  --workflow-graph-base-color-background-green: var(
+    --cm-sys-color-status-success-container,
+    #e6f4ea
+  );
+  --workflow-graph-base-color-background-red: var(
+    --cm-sys-color-status-error-container,
+    #fce8e6
+  );
+  --workflow-graph-base-color-background-yellow: var(
+    --cm-sys-color-status-warning-container,
+    #fef7e0
+  );
+  --workflow-graph-base-color-background-gray: var(
+    --cm-sys-color-status-neutral-container,
+    #f0f0f0
+  );
+  --workflow-graph-base-color-background-white: #fff;
+}
+
+@mixin colors-dark() {
+  --workflow-graph-color-primary-container: var(
+    --cm-sys-color-primary-container,
+    #394457
+  );
+  --workflow-graph-color-surface: var(--cm-sys-color-surface, #131314);
+  --workflow-graph-color-surface-variant: var(
+    --cm-sys-color-surface-variant,
+    #1f2123
+  );
+  --workflow-graph-color-hairline: var(--cm-sys-color-hairline, #5f6368);
+  --workflow-graph-color-non-primary: var(--cm-sys-color-non-primary, #e8eaed);
+  --workflow-graph-color-outline: var(--cm-sys-color-outline, #9aa0a6);
+  --workflow-graph-color-neutral-container: var(
+    --cm-sys-color-neutral-container,
+    #4d4e51
+  );
+  --workflow-graph-color-on-primary: var(--cm-sys-color-on-primary, #202124);
+  --workflow-graph-color-status-error: var(
+    --cm-sys-color-status-error,
+    #ee675c
+  );
+  --workflow-graph-color-status-on-error: var(
+    --cm-sys-color-status-on-error,
+    #000
+  );
+  --workflow-graph-color-state-disabled: var(
+    --cm-sys-color-state-disabled,
+    #6c6d70
+  )
+  --workflow-graph-color-state-disabled-container: var(
+    --cm-sys-color-state-disabled-container,
+    #38393c
+  );
+
+  --workflow-graph-color-surface-on-surface: var(
+    --cm-sys-color-on-surface,
+    #e8eaed
+  );
+  --workflow-graph-color-surface-on-surface-variant: var(
+    --cm-sys-color-on-surface-variant,
+    #9aa0a6
+  );
+  --workflow-graph-color-surface-elevation-1: var(
+    --cm-sys-color-surface-elevation1,
+    #2a2b2e
+  );
+
+  --workflow-graph-base-color-black: #171717;
+  --workflow-graph-base-color-blue: #8ab4f8;
+  --workflow-graph-base-color-blue-transparent-05: transparentize(#8ab4f8, 0.5);
+  --workflow-graph-base-color-blue-transparent-088: transparentize(
+    #8ab4f8,
+    0.88
+  );
+  --workflow-graph-base-color-blue-transparent-095: transparentize(
+    #8ab4f8,
+    0.95
+  );
+  --workflow-graph-base-color-blue-transparent-1: transparentize(#8ab4f8, 1);
+  --workflow-graph-base-color-green: var(
+    --cm-sys-color-status-success,
+    #5bb974
+  );
+  --workflow-graph-base-color-red: var(--cm-sys-color-status-error, #ee675c);
+  --workflow-graph-base-color-yellow: var(
+    --cm-sys-color-status-warning,
+    #fcc934
+  );
+  --workflow-graph-base-color-orange: #fbbc04;
+  --workflow-graph-base-color-purple: #af5cf7;
+  --workflow-graph-base-color-gray: #5f6368;
+
+  --workflow-graph-base-color-background-blue: #020a17;
+  --workflow-graph-base-color-background-green: var(
+    --cm-sys-color-status-success-container,
+    #37493f
+  );
+  --workflow-graph-base-color-background-red: var(
+    --cm-sys-color-status-error-container,
+    #523a3b
+  );
+  --workflow-graph-base-color-background-yellow: var(
+    --cm-sys-color-status-warning-container,
+    #554c33
+  );
+  --workflow-graph-base-color-background-gray: var(
+    --cm-sys-color-status-neutral-container,
+    #1e1e1f
+  );
+  --workflow-graph-base-color-background-white: #fff;
+}
+
+@mixin workflow-graph-colors($parentSelector: 'body') {
+  @layer styles;
+
+  @layer styles {
+    #{$parentSelector} {
+      @include colors();
+    }
+
+    #{$parentSelector}.workflow-graph-theme-dark {
+      @include colors-dark();
+    }
+  }
+}

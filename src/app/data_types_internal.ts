@@ -409,6 +409,9 @@ export function createDefaultZoomConfig(opts: Partial<ZoomConfig>): ZoomConfig {
   return Object.assign({}, defaultZoomConfig, opts);
 }
 
+/** The color theme to use for DAG color variables */
+export type Theme = 'device'|'light'|'dark';
+
 /**
  * The different features that can be toggled on the DAG Component
  */
@@ -475,6 +478,12 @@ export interface FeatureToggleOptions {
    * Defaults to `false`.
    */
   disableLoadingMaterialStyles?: boolean;
+
+  /**
+   * Specifies the workflow graph color theme to use. Defaults to `light`.
+   * Custom themes can override the theme behavior.
+   */
+  theme?: Theme;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -497,6 +506,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   naturalScrolling: false,
   hideProgressCell: false,
   disableLoadingMaterialStyles: false,
+  theme: 'light',
 };
 
 /**
@@ -610,30 +620,29 @@ export function generateTheme(theme: PartialDagTheme) {
  * Component
  */
 export const baseColors = {
-  'black': '#171717',
-  'blue': '#1A73E8',
-  'green': '#1E8E3E',
-  'red': '#E94235',
-  'yellow': '#D56E03',
-  'orange': '#fbbc04',
-  'purple': '#af5cf7',
-  'gray': '#5F6368',
+  'black': 'var(--workflow-graph-base-color-black)',
+  'blue': 'var(--workflow-graph-base-color-blue)',
+  'green': 'var(--workflow-graph-base-color-green)',
+  'red': 'var(--workflow-graph-base-color-red)',
+  'yellow': 'var(--workflow-graph-base-color-yellow)',
+  'orange': 'var(--workflow-graph-base-color-orange)',
+  'purple': 'var(--workflow-graph-base-color-purple)',
+  'gray': 'var(--workflow-graph-base-color-gray)',
   'bg': {
-    'blue': '#E8F0FE',
-    'green': '#E6F4EA',
-    'red': '#FCE8E6',
-    'yellow': '#FEF7E0',
-    'gray': '#f0f0f0',
-    'white': '#FFFFFF',
+    'blue': 'var(--workflow-graph-base-color-background-blue)',
+    'green': 'var(--workflow-graph-base-color-background-green)',
+    'red': 'var(--workflow-graph-base-color-background-red)',
+    'yellow': 'var(--workflow-graph-base-color-background-yellow)',
+    'gray': 'var(--workflow-graph-base-color-background-gray)',
+    'white': 'var(--workflow-graph-base-color-background-white)',
     'none': 'transparent',
     'dots': {
-      'gray': '#e0e0e0',
-      'darkGray': '#cccccc',
+      'gray': 'var(--workflow-graph-color-hairline)',
     }
   },
   'minimap': {
-    'gray': '#DFDFDF',
-    'blue': '#4285F4',
+    'gray': 'var(--workflow-graph-base-color-gray)',
+    'blue': 'var(--workflow-graph-base-color-blue)',
   }
 };
 

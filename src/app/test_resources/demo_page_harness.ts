@@ -26,4 +26,9 @@ export class DemoPageHarness extends ComponentHarness {
     return this.locatorFor(
         MatNativeSelectHarness.with({selector: '#dataset-select'}))();
   }
+
+  getColorThemeInput(): Promise<MatNativeSelectHarness> {
+    return this.locatorFor(
+        MatNativeSelectHarness.with({selector: '#color-theme-select'}))();
+  }
 }

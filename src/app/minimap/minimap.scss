@@ -37,7 +37,7 @@
         rgba(#000, 0.05) 2px,
         rgba(#000, 0.05) 4px
       )
-      white;
+      var(--workflow-graph-color-surface-elevation-1);
     outline: 1px solid $minimap-primary-color;
     border-radius: 4px;
     overflow: hidden;
@@ -49,7 +49,7 @@
     .bounds {
       pointer-events: none;
       width: 100%;
-      background: white;
+      background: var(--workflow-graph-color-surface);
       overflow: hidden;
       .dag-preview {
         transform-origin: 0 0;

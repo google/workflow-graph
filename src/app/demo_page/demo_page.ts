@@ -29,6 +29,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
+import {Theme} from '../data_types_internal';
 import {baseColors, BLUE_THEME, CLASSIC_THEME, DagreOptions, DagreRankAlignment, DagreRankDirection, DagreRankerAlgorithm, DEFAULT_DAGRE_CONFIG, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, DirectedAcyclicGraphModule, FeatureToggleOptions, generateTheme, MinimapPosition, NodeState, ZoomConfig} from '../directed_acyclic_graph';
 import {WorkflowGraphIconModule} from '../icon_wrapper';
 import {cloneGraph, DagEdge, DagGroup, DagNode, getNodeType, GraphSpec, MarkerStyle, NodeRef, SelectedNode} from '../node_spec';
@@ -434,6 +435,11 @@ export class DagDemoPage {
       default:
         throw new Error(`unexpected value ${f}!`);
     }
+  }
+  setDagTheme(event: Event) {
+    const feat = this.dagFeatures = {...this.dagFeatures};
+    const val = (event.target as HTMLSelectElement).value;
+    return feat.theme = val as Theme;
   }
   setDagreOption(f: keyof DagreOptions, event: Event) {
     // This form of rudimentary checking is required due to property renaming

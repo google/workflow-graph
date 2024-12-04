@@ -1,3 +1,10 @@
 @use 'material_theme';
 
 @include material_theme.graph-material-styles();
+@layer styles;
+
+@layer styles {
+  .workflow-graph-theme-dark {
+    @include material_theme.graph-material-dark-mode-colors();
+  }
+}

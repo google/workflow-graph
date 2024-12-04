@@ -18,6 +18,17 @@ $graph-theme: mat.define-light-theme(
   )
 );
 
+$graph-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
+
 @mixin graph-material-styles() {
   // Include theme styles for core and each component used in your app.
   @include mat.core-theme($graph-theme);
@@ -33,4 +44,8 @@ $graph-theme: mat.define-light-theme(
   @include mat.progress-spinner-theme($graph-theme);
   @include mat.slide-toggle-theme($graph-theme);
   @include mat.button-toggle-theme($graph-theme);
+}
+
+@mixin graph-material-dark-mode-colors {
+  @include mat.all-component-colors($graph-dark-theme);
 }

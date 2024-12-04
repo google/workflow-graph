@@ -18,6 +18,7 @@
 import {CommonModule} from '@angular/common';
 import {Component, Input, NgModule} from '@angular/core';
 
+import {ColorThemeLoader} from './color_theme_loader';
 import {DEFAULT_THEME, IconConfig, isNoState, type NodeState} from './data_types_internal';
 import {TranslationsService} from './i18n';
 import {bgForState, fetchIcon, iconForState, labelForState} from './icon_util';
@@ -53,6 +54,7 @@ export {type NodeState};
 @NgModule({
   imports: [
     CommonModule,
+    ColorThemeLoader,
     WorkflowGraphIconModule,
   ],
   declarations: [
