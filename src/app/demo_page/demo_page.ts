@@ -435,6 +435,11 @@ export class DagDemoPage {
         throw new Error(`unexpected value ${f}!`);
     }
   }
+  setDagTheme(event: Event) {
+    const feat = this.dagFeatures = {...this.dagFeatures};
+    const val = (event.target as HTMLSelectElement).value;
+    return feat.theme = val as 'light' | 'dark' | 'auto';
+  }
   setDagreOption(f: keyof DagreOptions, event: Event) {
     // This form of rudimentary checking is required due to property renaming
     // being turned on in the UI

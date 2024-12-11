@@ -17,8 +17,8 @@
  */
 
 import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
-import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
+import {CommonModule, DOCUMENT} from '@angular/common';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Inject, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
 import {Subject, Subscription} from 'rxjs';
@@ -321,6 +321,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
       @Optional() private readonly dagLogger: DagLogger|null,
       private readonly shortcutService: ShortcutService,
       readonly stateService: DagStateService,
+      @Inject(DOCUMENT) private readonly document: Document,
   ) {
     this.focusElement = debounce(this.focusElement, 50, this);
     this.onVisualUpdate = debounce(this.onVisualUpdate, 50, this);
@@ -385,6 +386,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
       features: v => {
         this.$features = v;
         this.handleResize();
+        this.handleTheme();
       },
       layout: v => {
         this.layout = v;
@@ -764,6 +766,15 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   handleResize() {
     if (this.rootDagInitialized) return this.handleResizeAsync();
     return this.handleResizeSync();
+  }
+
+  private handleTheme() {
+    this.document.body.classList.toggle(
+        'workflow-graph-theme-auto', this.features.theme === 'auto');
+    this.document.body.classList.toggle(
+        'workflow-graph-theme-dark', this.features.theme === 'dark');
+    this.document.body.classList.toggle(
+        'workflow-graph-theme-light', this.features.theme === 'light');
   }
 
   /** This method is asyncified in the constructor by using `debounce` */

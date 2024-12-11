@@ -28,6 +28,7 @@ import {DagLogger, DagLoggerModule} from './logger/dag_logger';
 import {MaterialStylesLoader} from './material_styles_loader';
 import {DagToolbar} from './toolbar';
 import {type UserConfig, UserConfigService} from './user_config.service';
+import {WorkflowGraphThemeLoader} from './workflow_graph_theme_loader';
 
 /**
  * Expose internal Shared Objects
@@ -130,6 +131,7 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
   imports: [
     DagLoggerModule,
     MaterialStylesLoader,
+    WorkflowGraphThemeLoader,
     NgIf,
   ],
   exports: [

@@ -8,11 +8,11 @@
 /* stylelint-disable no-unknown-animations -- All of the animations are imported from mixins.scss */
 
 /* Colors */
-$select-menu-filter-bg: rgb(250, 250, 250);
-$select-menu-divider-color: rgba(0, 0, 0, 0.12);
-$select-menu-selected-bg: rgb(230, 236, 250);
-$select-menu-selected-color: rgb(28, 58, 169);
-$select-menu-group-title-color: rgba(0, 0, 0, 0.54);
+$select-menu-filter-bg: var(--workflow-graph-color-surface-elevation-1);
+$select-menu-divider-color: var(--workflow-graph-color-outline);
+$select-menu-selected-bg: var(--workflow-graph-color-primary-container);
+$select-menu-selected-color: var(--workflow-graph-color-on-primary);
+$select-menu-group-title-color: var(--workflow-graph-color-surface-on-surface);
 
 :host {
   cursor: pointer;
@@ -21,9 +21,10 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
   position: absolute;
   bottom: 5px;
   left: 0;
-  color: #3c4043;
   transform: translateY(100%);
-  transition: height 0.25s, border-color 0.25s;
+  transition:
+    height 0.25s,
+    border-color 0.25s;
   pointer-events: all;
   &.untab {
     overflow: hidden;
@@ -38,7 +39,7 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
 
   ::ng-deep mat-select.group-iteration-select {
     width: 100%;
-    background: white;
+    background: var(--workflow-graph-color-surface-elevation-1);
     height: 100%;
     border-top: 0;
     border: 1px solid $node-border-color;
@@ -73,7 +74,7 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
     }
 
     .mat-mdc-select-arrow svg {
-      fill: #3c4043;
+      fill: var(--workflow-graph-color-surface-on-surface);
     }
 
     .content-wrap {
@@ -91,7 +92,7 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
         flex: 1 1 0%;
         font-weight: $ace-font-weight-medium;
         font-size: 14px;
-        color: #3c4043;
+        color: var(--workflow-graph-color-surface-on-surface);
       }
 
       .empty-state {
@@ -111,7 +112,7 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
 ::ng-deep div.ai-dag-iteration-select-panel.mat-mdc-select-panel {
   min-width: 300px;
   padding: 0;
-  background: white;
+  background: var(--workflow-graph-color-surface-elevation-1);
 
   .ai-dag-iteration-select-filter {
     z-index: 1;
@@ -127,7 +128,16 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
     position: sticky;
     top: 0;
 
+    .ai-dag-iteration-selector-filter-label {
+      color: var(--workflow-graph-color-surface-on-surface);
+    }
+
+    .workflow-graph-icon-filter {
+      color: var(--workflow-graph-color-surface-on-surface);
+    }
+
     input {
+      color: var(--workflow-graph-color-surface-on-surface);
       background-color: transparent;
       border: 0px;
       min-width: 0;
@@ -142,6 +152,7 @@ $select-menu-group-title-color: rgba(0, 0, 0, 0.54);
       width: 14px;
       height: 14px;
       line-height: 14px;
+      color: var(--workflow-graph-color-surface-on-surface);
       mat-icon {
         width: 14px;
         height: 14px;
