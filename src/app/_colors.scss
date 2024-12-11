@@ -1,0 +1,72 @@
+@mixin colors() {
+  --workflow-graph-color-primary-container: #E8F0FE;
+  --workflow-graph-color-surface: #fff;
+  --workflow-graph-color-surface-variant: #f7f7f7;
+  --workflow-graph-color-surface-on-surface: #202124;
+  --workflow-graph-color-surface-on-surface-variant: #5F6368;
+  --workflow-graph-color-surface-elevation-1: #fff;
+  --workflow-graph-color-hairline: #dbdde1;
+  --workflow-graph-color-non-primary: #5f6368;
+  --workflow-graph-color-outline: #263c4043;
+  --workflow-graph-color-neutral-container: #f1f3f4;
+  --workflow-graph-color-on-primary: #fff;
+  --workflow-graph-color-status-error: #D93025;
+  --workflow-graph-color-status-on-error: #fff;
+
+  --workflow-graph-base-color-black: #171717;
+  --workflow-graph-base-color-blue: #1A73E8;
+  --workflow-graph-base-color-blue-transparent-05: transparentize(#1A73E8, 0.5);
+  --workflow-graph-base-color-blue-transparent-088: transparentize(#1A73E8, 0.88);
+  --workflow-graph-base-color-blue-transparent-095: transparentize(#1A73E8, 0.95);
+  --workflow-graph-base-color-blue-transparent-1: transparentize(#1A73E8, 1);
+  --workflow-graph-base-color-green: #1E8E3E;
+  --workflow-graph-base-color-red: #E94235;
+  --workflow-graph-base-color-yellow: #D56E03;
+  --workflow-graph-base-color-orange: #fbbc04;
+  --workflow-graph-base-color-purple: #af5cf7;
+  --workflow-graph-base-color-gray: #5F6368;
+
+  --workflow-graph-base-color-background-blue: #e8f0fe;
+  --workflow-graph-base-color-background-green: #e6f4ea;
+  --workflow-graph-base-color-background-red: #fce8e6;
+  --workflow-graph-base-color-background-yellow: #fef7e0;
+  --workflow-graph-base-color-background-gray: #f0f0f0;
+  --workflow-graph-base-color-background-white: #fff;
+}
+
+@mixin colors-dark() {
+  --workflow-graph-color-primary-container: #394457; // primary-container
+  --workflow-graph-color-surface: #131314; // surface
+  --workflow-graph-color-surface-variant: #1F2123; // surface-variant
+  --workflow-graph-color-hairline: #444746;
+  --workflow-graph-color-non-primary: #e8eaed;
+  --workflow-graph-color-outline: #9AA0A6;
+  --workflow-graph-color-neutral-container: #4D4E51;
+  --workflow-graph-color-on-primary: #202124;
+  --workflow-graph-color-status-error: #ee675c;
+  --workflow-graph-color-status-on-error: #000;
+
+  --workflow-graph-color-surface-on-surface: #E8EAED; // on-surface
+  --workflow-graph-color-surface-on-surface-variant: #BDC1C6; // on-surface-variant
+  --workflow-graph-color-surface-elevation-1: #242425; // surface-elevation-1
+
+  --workflow-graph-base-color-black: #171717;
+  --workflow-graph-base-color-blue: #8AB4F8; // theme-primary
+  --workflow-graph-base-color-blue-transparent-05: transparentize(#8AB4F8, 0.5);
+  --workflow-graph-base-color-blue-transparent-088: transparentize(#8AB4F8, 0.88);
+  --workflow-graph-base-color-blue-transparent-095: transparentize(#8AB4F8, 0.95);
+  --workflow-graph-base-color-blue-transparent-1: transparentize(#8AB4F8, 1);
+  --workflow-graph-base-color-green: #5BB974; // status-success
+  --workflow-graph-base-color-red: #E94235;
+  --workflow-graph-base-color-yellow: #D56E03;
+  --workflow-graph-base-color-orange: #fbbc04;
+  --workflow-graph-base-color-purple: #af5cf7;
+  --workflow-graph-base-color-gray: #5F6368;
+
+  --workflow-graph-base-color-background-blue: #e8f0fe;
+  --workflow-graph-base-color-background-green: #37493F; // success-container
+  --workflow-graph-base-color-background-red: #523A3B; // error-container
+  --workflow-graph-base-color-background-yellow: #554C33; // warning-container
+  --workflow-graph-base-color-background-gray: #1E1E1F; // neutral-container
+  --workflow-graph-base-color-background-white: #fff;
+}

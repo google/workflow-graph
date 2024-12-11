@@ -1,3 +1,14 @@
 @use 'material_theme';
 
 @include material_theme.graph-material-styles();
+
+
+.workflow-graph-theme-auto {
+  @media (prefers-color-scheme: dark) {
+    @include material_theme.graph-material-dark-mode-colors();
+  }
+}
+
+.workflow-graph-theme-dark {
+  @include material_theme.graph-material-dark-mode-colors();
+}

@@ -1,0 +1,16 @@
+@use '_colors';
+
+.workflow-graph-theme-light {
+  @include colors.colors();
+}
+
+.workflow-graph-theme-auto {
+  @include colors.colors();
+  @media (prefers-color-scheme: dark) {
+    @include colors.colors-dark();
+  }
+}
+
+.workflow-graph-theme-dark {
+  @include colors.colors-dark();
+}

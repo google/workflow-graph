@@ -18,11 +18,11 @@
 import {Component, HostBinding, Input, ViewEncapsulation} from '@angular/core';
 
 @Component({
-  selector: 'workflow-graph-material-styles-loader',
+  selector: 'workflow-graph-theme-loader',
   template: '',
-  styleUrls: ['./material_styles_loader.scss'],
+  styleUrls: ['./workflow_graph_theme_loader.scss'],
   standalone: true,
   encapsulation: ViewEncapsulation.None,
 })
-export class MaterialStylesLoader {
+export class WorkflowGraphThemeLoader {
 }
