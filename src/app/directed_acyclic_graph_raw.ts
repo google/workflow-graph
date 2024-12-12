@@ -283,6 +283,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   @Input() loading = false;
+  @Input() visible = true;
 
   @Input('nodes')
   set nodes(nodes: DagNode[]) {
