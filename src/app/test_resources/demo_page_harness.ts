@@ -17,6 +17,7 @@
 
 import {ComponentHarness} from '@angular/cdk/testing';
 import {MatNativeSelectHarness} from '@angular/material/input/testing';
+import {MatSelectHarness} from '@angular/material/select/testing';
 
 /** Test harness for the Demo Page. */
 export class DemoPageHarness extends ComponentHarness {
@@ -25,5 +26,9 @@ export class DemoPageHarness extends ComponentHarness {
   getDatasetInput(): Promise<MatNativeSelectHarness> {
     return this.locatorFor(
         MatNativeSelectHarness.with({selector: '#dataset-select'}))();
+  }
+
+  getNodeSelectInput(): Promise<MatSelectHarness> {
+    return this.locatorFor(MatSelectHarness.with({selector: '#node-select'}))();
   }
 }
