@@ -29,8 +29,8 @@ export const iconConfigDefaults = {
   name: '',
   iconset: 'common',
   iconColors: 'normal',
-  color: 'black',
-  contrastColor: 'white',
+  color: 'var(--workflow-graph-base-color-black)',
+  contrastColor: 'var(--workflow-graph-color-surface)',
   font: '',
   get size() {
     return sizeMap[(this as unknown as NodeIcon).iconset!] || 'small';

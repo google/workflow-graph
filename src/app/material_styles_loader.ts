@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, HostBinding, Input, ViewEncapsulation} from '@angular/core';
 
 @Component({
   selector: 'workflow-graph-material-styles-loader',

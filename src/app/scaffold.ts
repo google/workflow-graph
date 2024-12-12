@@ -16,11 +16,12 @@
  */
 
 import {NgIf} from '@angular/common';
-import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, NgModule, OnDestroy, Output, ViewEncapsulation} from '@angular/core';
+import {AfterContentInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, EventEmitter, HostBinding, Input, NgModule, OnDestroy, Output, signal, ViewEncapsulation} from '@angular/core';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
+import {ColorThemeLoader} from './color_theme_loader';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, createDAGFeatures, type DagTheme, DEFAULT_THEME, defaultFeatures, type FeatureToggleOptions, generateTheme} from './data_types_internal';
 import {DirectedAcyclicGraph} from './directed_acyclic_graph';
@@ -130,6 +131,7 @@ export class DagScaffold implements AfterContentInit, OnDestroy {
   imports: [
     DagLoggerModule,
     MaterialStylesLoader,
+    ColorThemeLoader,
     NgIf,
   ],
   exports: [
