@@ -385,15 +385,16 @@
         This causes the DAG to open up, fade-in the label before hiding it,
         which looks very glitchy
       -->
-      <span *ngIf="group.treatAsLoop" class="fade-in" [attr.aria-hidden]="isGroupExpanded(group)">
-        <span class="iteration-counter"> {{ getIterationsFor(group).length }} iterations </span>
-      </span>
       @if (showGroupLabel(group)) {
         <div class="group-label">
           <span class="fade-in">
             <span> {{ group.groupLabel }} </span>
           </span>
         </div>
+      } @else if (group.treatAsLoop) {
+        <span class="fade-in" [attr.aria-hidden]="isGroupExpanded(group)">
+          <span class="iteration-counter"> {{ getIterationsFor(group).length }} iterations </span>
+        </span>
       }
       <button
         class="expand-toggle"
