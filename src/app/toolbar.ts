@@ -21,6 +21,7 @@ import {FormsModule} from '@angular/forms';
 
 import {AccessibilityHelpCenter} from './a11y/a11y_help_center';
 import {ShortcutService} from './a11y/shortcut.service';
+import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, clampVal, createDAGFeatures, type DagTheme, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, type FeatureToggleOptions, generateTheme, isNoState, RuntimeState, type ZoomConfig} from './data_types_internal';
@@ -368,6 +369,7 @@ export class DagToolbar {
 @NgModule({
   imports: [
     CommonModule,
+    ColorThemeLoader,
     WorkflowGraphIconModule,
     FormsModule,
     NgVarModule,

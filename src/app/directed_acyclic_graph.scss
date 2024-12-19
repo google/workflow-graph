@@ -9,6 +9,7 @@
   flex: 1 1 0%;
   display: inline-block;
   position: relative;
+  background: var(--workflow-graph-color-surface);
   &:not(.no-flex) {
     width: 100%;
     height: 100%;
@@ -78,7 +79,7 @@
     opacity: 0;
     pointer-events: none;
   }
-  background: #f6f7f7;
+  background: var(--workflow-graph-color-surface-variant);
   transition: opacity $graph-change-speed;
   display: flex;
   align-items: center;

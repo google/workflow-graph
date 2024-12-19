@@ -23,6 +23,9 @@ import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angul
 
 import {ScreenshotTest} from '../screenshot_test';
 
+import {ColorThemeLoader} from './color_theme_loader';
+import {DagStateService} from './dag-state.service';
+import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
@@ -38,10 +41,9 @@ describe('Directed Acyclic Graph Renderer', () => {
   beforeEach(waitForAsync(async () => {
     await initTestBed({
       declarations: [TestComponent],
-      imports: [DirectedAcyclicGraphModule],
+      imports: [DirectedAcyclicGraphModule, ColorThemeLoader],
     });
     screenShot = new ScreenshotTest(module.id);
-
   }));
 
   describe('UI', () => {
@@ -221,6 +223,9 @@ describe('Directed Acyclic Graph Renderer', () => {
       height: 1200px;
       width: 1200px;
     }`],
+  providers: [
+    // STATE_SERVICE_PROVIDER,
+  ],
   // TODO: Make this AOT compatible. See b/352713444
   jit: true,
 
