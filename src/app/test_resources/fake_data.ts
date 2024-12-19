@@ -611,3 +611,49 @@ export function createDagSkeletonWithCustomGroups(expanded: boolean):
     } as StateTable,
   };
 }
+
+export function createDagSkeletonWithGroups(treatAsLoop: boolean): DagSkeleton {
+  return {
+    state: {
+      'fakeGroup': {
+        state: 'TIMEOUT',
+        description: 'Defaulted to iteration-2',
+        hasControlNode: true,
+        treatAsLoop,
+        selectedLoopId: 'fakeNode1',
+        groupLabel: 'Fake Group',
+        icon: {
+          name: 'group-iterative',
+          iconset: 'cloud_ai',
+          size: 'medium',
+        },
+        groupMeta: {
+          'fakeNode1': {
+            state: 'SUCCEEDED',
+            displayName: 'Fake Node 1',
+          },
+          'fakeNode2': {
+            state: 'SUCCEEDED',
+            displayName: 'Fake Node 2',
+          },
+        },
+      },
+    } as StateTable,
+    skeleton: [
+      {
+        id: 'fakeGroup',
+        type: 'group',
+        definition: [
+          {
+            id: 'fakeNode1',
+            type: 'execution',
+          },
+          {
+            id: 'fakeNode2',
+            type: 'artifact',
+          },
+        ],
+      },
+    ] as DagNodeSkeleton[],
+  };
+}
