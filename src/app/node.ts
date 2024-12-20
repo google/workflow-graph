@@ -157,8 +157,8 @@ export class DagNodeEl implements OnInit, OnDestroy {
   /** Get different properties from the node callout */
   getCallout(node: DagNode, prop: 'text'|'color'|'bg') {
     const defaultVal = {
-      color: 'gray',
-      bg: '#dad4d4',
+      color: 'var(--workflow-graph-base-color-gray)',
+      bg: 'var(--workflow-graph-hairline)',
     };
     const {callout} = node;
     if (typeof callout === 'string') {

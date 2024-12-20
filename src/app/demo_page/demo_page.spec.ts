@@ -106,6 +106,13 @@ describe('Demo Page', () => {
       await screenShot.expectMatch('edge-marker-styles');
     });
   });
+
+  describe('Dark mode', () => {
+    it('Renders correctly (screenshot)', async () => {
+      await (await harness.getColorThemeInput()).selectOptions({text: 'Dark'});
+      await screenShot.expectMatch('dark-mode');
+    });
+  });
 });
 
 

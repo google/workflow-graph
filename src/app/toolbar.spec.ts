@@ -22,6 +22,7 @@ import {ComponentFixture, fakeAsync, flush, TestBed, waitForAsync} from '@angula
 
 import {ScreenshotTest} from '../screenshot_test';
 
+import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {defaultFeatures} from './data_types_internal';
@@ -43,7 +44,8 @@ describe('DagToolbar', () => {
   beforeEach(waitForAsync(async () => {
     await initTestBed({
       declarations: [TestComponent],
-      imports: [DagToolbarModule],
+      imports: [DagToolbarModule, ColorThemeLoader],
+      providers: [STATE_SERVICE_PROVIDER],
     });
   }));
 
@@ -162,15 +164,15 @@ describe('DagToolbar', () => {
       <button id="rightButton"> Click me</button>
     </ng-template>`,
   providers: [
-    STATE_SERVICE_PROVIDER,
+    //  STATE_SERVICE_PROVIDER,
   ],
   styles: [`
     .container {
       height: 400px;
       width: 400px;
     }`],
-// TODO: Make this AOT compatible. See b/352713444
-jit: true,
+  // TODO: Make this AOT compatible. See b/352713444
+  jit: true,
 
 })
 class TestComponent {

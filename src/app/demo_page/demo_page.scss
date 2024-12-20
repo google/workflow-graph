@@ -14,6 +14,17 @@ $graph-theme: mat.define-light-theme(
   )
 );
 
+$graph-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
+
 :host {
   font-family: 'Roboto', sans-serif;
   margin: 0;
@@ -48,6 +59,8 @@ h2 {
     overflow-y: auto;
     height: 100%;
     box-sizing: border-box;
+    background: var(--workflow-graph-color-surface);
+    color: var(--workflow-graph-color-surface-on-surface);
 
     .demo-button {
       margin: 4px 8px;
@@ -114,4 +127,8 @@ h2 {
     background-color: #efefef;
     cursor: pointer;
   }
+}
+
+.workflow-graph-theme-dark .demo-main {
+  @include mat.all-component-colors($graph-dark-theme);
 }

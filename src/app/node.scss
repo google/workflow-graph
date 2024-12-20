@@ -19,7 +19,7 @@
     .node-main:after {
       content: '';
       pointer-events: none;
-      background-color: transparentize($color: $active-color, $amount: 0.88);
+      background-color: var(--workflow-graph-base-color-blue-transparent-088);
       display: block;
       border-radius: 6px;
       @include fullbleed;
@@ -37,31 +37,28 @@
     // stylelint-disable-next-line declaration-no-important -- This needs to be
     // there to allow proper styling of conditional icons (that are injected via
     // JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
-    color: #bdc1c6 !important;
+    color: var(--workflow-graph-color-state-disabled) !important;
   }
   &[state='pending'],
   &[runtime='static'] .node-main {
-    .node-title {
-      color: #8a8f94;
-    }
     .icon-space.node-type {
       &.inverted {
         // stylelint-disable-next-line declaration-no-important -- This needs to
         // be there to allow proper styling of icon colors (that are injected
         // via JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
-        background: #e8eaed !important;
+        background: var(--workflow-graph-color-neutral-container) !important;
         .icon.left {
-          color: #9ba1a7;
+          color: var(--workflow-graph-color-surface-on-surface-variant);
         }
       }
       .icon.left {
-        color: #bdc1c6;
+        color:  var(--workflow-graph-color-state-disabled);
       }
     }
   }
 
   &[type='execution'][runtime='static'] .node-main {
-    background: #f7f7f7;
+    background: var(--workflow-graph-color-surface-variant);
   }
 
   &[type='artifact'][runtime='static'] .node-main {
@@ -85,7 +82,7 @@
     }
   }
   .node-main {
-    background: white;
+    background: var(--workflow-graph-color-surface);
     border: 1px solid $node-border-color;
     border-radius: 6px;
     box-sizing: content-box;
@@ -127,14 +124,14 @@
           overflow: hidden;
         }
         .node-title {
-          color: #3c4043;
+          color: var(--workflow-graph-color-surface-on-surface);
           font-weight: $ace-font-weight-medium;
           font-size: 14px;
           line-height: 1.4;
           transition: color 0.25s;
         }
         .description-text {
-          color: #6a727c;
+          color: var(--workflow-graph-color-surface-on-surface-variant);
           font-size: 12px;
           line-height: 1.3;
         }
@@ -208,13 +205,6 @@
       align-items: center;
     }
   }
-}
-
-:not(:host(.hovered)) .text-area .callout {
-  // stylelint-disable-next-line declaration-no-important -- This needs to
-  // be there to allow proper styling of callout colors (that are injected
-  // via JavaScript).
-  color: transparent !important;
 }
 
 :host(.hovered) .text-area .callout {

@@ -25,6 +25,7 @@ import {Subject, Subscription} from 'rxjs';
 import {takeUntil, throttleTime} from 'rxjs/operators';
 
 import {ShortcutService} from './a11y/shortcut.service';
+import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, createDAGFeatures, createNewSizeConfig, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, EdgeStyle, type FeatureToggleOptions, generateTheme, getMargin, isPoint, type LayoutOptions, type Logger, MarkerStyle, type MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, type ZoomConfig} from './data_types_internal';
@@ -965,6 +966,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
     MatProgressSpinnerModule,
     MinimapModule,
     ZoomingLayer,
+    ColorThemeLoader,
   ],
   declarations: [
     DirectedAcyclicGraph,

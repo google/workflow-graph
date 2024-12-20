@@ -3,7 +3,7 @@
  */
 
 /* Mixin and deps imports */
-@import './mixins.scss';
+@import 'mixins';
 
 /* stylelint-disable no-unknown-animations -- All of the animations are imported from mixins.scss */
 
@@ -46,16 +46,16 @@
     // stylelint-disable-next-line declaration-no-important -- This needs to
     // be there to allow proper styling of icon colors (that are injected
     // via JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
-    background: #e8eaed !important;
+    background: var(--workflow-graph-color-surface-variant) !important;
     // stylelint-disable-next-line declaration-no-important -- This needs to
     // be there to allow proper styling of icon colors (that are injected
     // via JavaScript). See go/dag-component#heading=h.d2s34awaiaeo
-    color: #9ba1a7 !important;
+    color: var(--workflow-graph-color-surface-on-surface-variant) !important;
     border-color: $node-border-color;
   }
 
   &[type='execution'][runtime='static'] .scale-wrap {
-    background: #f7f7f7;
+    background: var(--workflow-graph-color-surface-variant);
   }
 
   &[type='artifact'][runtime='static'] .scale-wrap {

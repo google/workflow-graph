@@ -51,7 +51,7 @@
     &.edge .edge-group {
       transition: top $graph-change-speed, left $graph-change-speed;
       &.pending-or-static .line {
-        stroke: #9ba1a7;
+        stroke: $pending-or-static-color;
       }
       &.animated {
         .line{
@@ -83,7 +83,7 @@
 
       .pending-or-static {
         .inner-circle {
-          fill: #fff;
+          fill: var(--workflow-graph-base-color-background-white);
           display: initial;
         }
         .outer-circle {
@@ -122,8 +122,8 @@
     font-weight: bold;
     padding: 0.5em;
     overflow: auto;
-    background-color: #f44336;
-    color: white;
+    background-color: var(--workflow-graph-color-status-error);
+    color: var(--workflow-graph-color-status-on-error);
     display: flex;
     align-items: center;
     text-align: center;
@@ -174,7 +174,7 @@
     @include offsetCenter;
     border: 2px dashed;
     border-radius: 17px;
-    color: #bdc1c6;
+    color: var(--workflow-graph-color-outline);
     transition: width $graph-change-speed, height $graph-change-speed,
       color 0.25s, transform $graph-change-speed;
     &:hover,
@@ -254,7 +254,7 @@
         content: '';
         display: block;
         border-radius: 6px;
-        background-color: #fff;
+        background-color: var(--workflow-graph-color-surface);
         border: 1px solid $node-border-color;
         bottom: 0;
         right: 0;
@@ -279,10 +279,7 @@
         cursor: pointer;
         &:hover,
         &:focus-visible {
-          background-color: transparentize(
-            $color: $minimap-primary-color,
-            $amount: 0.95
-          );
+          background-color: var(--workflow-graph-base-color-blue-transparent-095);
         }
         &:focus-visible {
           outline: none;
@@ -302,8 +299,8 @@
       left: 2%;
       transform: translateY(-50%);
       /* This color is needed to maintain GAR level contrast with #fff text */
-      background: #1a73e8;
-      color: white;
+      background: var(--workflow-graph-base-color-blue);
+      color: var(--workflow-graph-color-on-primary);
       opacity: 1;
       transition: opacity $graph-change-speed;
       transition-delay: calc(2 * #{$graph-change-speed});
@@ -318,8 +315,8 @@
       left: 5%;
       transform: translateY(-50%);
       /* This color is needed to maintain GAR level contrast with #fff text */
-      background: #1a73e8;
-      color: white;
+      background: var(--workflow-graph-base-color-blue);
+      color: var(--workflow-graph-color-on-primary);
       opacity: 1;
       transition: opacity $graph-change-speed;
       transition-delay: calc(2 * #{$graph-change-speed});
@@ -345,7 +342,7 @@
       transform: translate(50%, -50%);
       border: 2px solid;
       border-radius: 50%;
-      background: #fff;
+      background: var(--workflow-graph-color-surface);
       opacity: 0;
       transition: border-color 0.25s, color 0.25s, opacity 0.25s;
       > .caret {
@@ -382,7 +379,8 @@
     @include offsetCenter;
     display: inline-block;
     padding: 1px 2px;
-    background: white;
+    background: var(--workflow-graph-color-surface);
+    color: var(--workflow-graph-color-surface-on-surface);
     border-radius: 20px;
     text-overflow: ellipsis;
     overflow: hidden;

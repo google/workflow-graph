@@ -2,4 +2,7 @@
 <article aria-label="Graph area" i18n-aria-label="Aria label for graph area of Workflow Graph" class="flex">
   <ng-content select="ai-dag-renderer"></ng-content>
 </article>
-<workflow-graph-material-styles-loader *ngIf="!features?.disableLoadingMaterialStyles"/>
+<workflow-graph-material-styles-loader
+  *ngIf="!features?.disableLoadingMaterialStyles"
+/>
+<workflow-graph-color-theme-loader/>

@@ -20,6 +20,7 @@ import {Component, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {ScreenshotTest} from '../../screenshot_test';
+import {ColorThemeLoader} from '../color_theme_loader';
 import {STATE_SERVICE_PROVIDER} from '../dag-state.service.provider';
 import {MinimapPosition} from '../data_types_internal';
 import {GraphSpec} from '../node_spec';
@@ -43,7 +44,7 @@ describe('Minimap', () => {
   beforeEach(waitForAsync(async () => {
     await initTestBed({
       declarations: [TestComponent],
-      imports: [MinimapModule],
+      imports: [MinimapModule, ColorThemeLoader],
       providers: [STATE_SERVICE_PROVIDER],
     });
     screenShot = new ScreenshotTest(module.id);
@@ -250,11 +251,13 @@ describe('Minimap', () => {
           [x]="x"
           [y]="y"
         />
+        <workflow-graph-color-theme-loader/>
       </div>`,
   styles: [`
       .container {
         width: 150px;
       }`],
+  providers: [STATE_SERVICE_PROVIDER],
   jit: true,
 })
 class TestComponent {

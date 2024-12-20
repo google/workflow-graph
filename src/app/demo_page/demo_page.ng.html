@@ -101,11 +101,12 @@
           rgba(0, 0, 0, 0.005),
           rgba(0, 0, 0, 0.005) 5px,
           rgba(0, 0, 0, 0.05) 5px,
-          rgba(0, 0, 0, 0.05) 10px) #fff'"
+          rgba(0, 0, 0, 0.05) 10px) var(--workflow-graph-color-surface)'"
         [style.display]="'flex'"
         [style.flex-direction]="'column'"
         [style.border]="(selectedNode?.node === node ? 3 : 1) + 'px solid rgb(26, 115, 232)'"
         [style.transition]="'width .25s, height .25s, border .25s'"
+        [style.color]="'var(--workflow-graph-color-surface-on-surface)'"
         (focusin)="[$event.preventDefault(), $event.stopPropagation()]"
       >
         <div [style.display]="'flex'" [style.align-items]="'center'">
@@ -120,7 +121,7 @@
         <div>
           <div><small><b>Interact with this node</b></small></div>
           <button mat-stroked-button
-            [style.background]="'white'"
+            [style.background]="'var(--workflow-graph-color-surface)'"
             (click)="updateDAG(node.height = node.height + 25)"
           >
             <workflow-graph-icon
@@ -131,7 +132,7 @@
             </workflow-graph-icon>
           </button>
           <button mat-stroked-button
-            [style.background]="'white'"
+            [style.background]="'var(--workflow-graph-color-surface)'"
             (click)="updateDAG(node.height = node.height - 25)"
           >
             <workflow-graph-icon
@@ -142,14 +143,14 @@
             </workflow-graph-icon>
           </button>
           <button mat-stroked-button
-            [style.background]="'white'"
+            [style.background]="'var(--workflow-graph-color-surface)'"
             [style.font-size.px]="9"
             (click)="updateDAG(node.hideEdgeMarkers = !node.hideEdgeMarkers)"
           >
             Edge-Markers: {{!node.hideEdgeMarkers}}
           </button>
           <button mat-stroked-button
-            [style.background]="'white'"
+            [style.background]="'var(--workflow-graph-color-surface)'"
             [style.font-size.px]="9"
             (click)="[
               node.includeInStepCount = !node.includeInStepCount,
@@ -170,7 +171,7 @@
         [style.bottom]="'0'"
       >
         <button mat-stroked-button *ngIf="!node.options.showVid"
-            [style.background]="'white'"
+            [style.background]="'var(--workflow-graph-color-surface)'"
             [style.font-size.px]="11"
             (click)="[
               node.options.showVid = true,
@@ -325,7 +326,7 @@
         appearance="fill"
         class="demo-select"
       >
-        <mat-label>Select an option</mat-label>
+        <mat-label>Color preset</mat-label>
         <select
           [(ngModel)]="selectedThemeName"
           (change)="setCurrTheme()"
@@ -343,7 +344,7 @@
         appearance="fill"
         class="demo-select"
       >
-        <mat-label>Select an option</mat-label>
+        <mat-label>Edge style</mat-label>
         <select
           [(ngModel)]="selectedEdgeStyle"
           (change)="setCurrTheme(true)"
@@ -357,6 +358,22 @@
           </option>
         </select>
       </mat-form-field>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select"
+      >
+        <mat-label>Color theme</mat-label>
+        <select
+          [(ngModel)]="dagFeatures.theme"
+          (change)="setDagTheme($event)"
+          matNativeControl
+          id="color-theme-select"
+        >
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="device">Device</option>
+        </select>
+      </mat-form-field>
       <mat-slide-toggle
         [checked]="customArtifactColors"
         class="demo-button"
@@ -364,7 +381,7 @@
       >
         Custom Artifact Colors
       </mat-slide-toggle>
-    </div>
+          </div>
     <mat-divider />
     <div class="demo-control-group">
       <p class="demo-control-header">
@@ -620,7 +637,7 @@
           <div>
             <div><small><b>Interact with this node</b></small></div>
             <button mat-stroked-button
-              [style.background]="'white'"
+              [style.background]="'var(--workflow-graph-color-surface)'"
               (click)="updateDAG(node.height = node.height + 25)"
             >
               <workflow-graph-icon
@@ -631,7 +648,7 @@
               </workflow-graph-icon>
             </button>
             <button mat-stroked-button
-              [style.background]="'white'"
+              [style.background]="'var(--workflow-graph-color-surface)'"
               (click)="updateDAG(node.height = node.height - 25)"
             >
               <workflow-graph-icon
@@ -642,14 +659,14 @@
               </workflow-graph-icon>
             </button>
             <button mat-stroked-button
-              [style.background]="'white'"
+              [style.background]="'var(--workflow-graph-color-surface)'"
               [style.font-size.px]="9"
               (click)="updateDAG(node.hideEdgeMarkers = !node.hideEdgeMarkers)"
             >
               Edge-Markers: {{!node.hideEdgeMarkers}}
             </button>
             <button mat-stroked-button
-              [style.background]="'white'"
+              [style.background]="'var(--workflow-graph-color-surface)'"
               [style.font-size.px]="9"
               (click)="[
                 node.includeInStepCount = !node.includeInStepCount,
@@ -670,7 +687,7 @@
           [style.bottom]="'0'"
         >
           <button mat-stroked-button *ngIf="!node.options.showVid"
-              [style.background]="'white'"
+              [style.background]="'var(--workflow-graph-color-surface)'"
               [style.font-size.px]="11"
               (click)="[
                 node.options.showVid = true,
