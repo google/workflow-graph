@@ -460,13 +460,15 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   showGroupLabel(group: DagGroup) {
-    if (group.treatAsLoop || !group.groupLabel) return false;
+    if (!group.groupLabel) return false;
     if (this.isGroupExpanded(group) && group.hasControlNode &&
         !group.hideControlNodeOnExpand) {
-      return false
+      return false;
     }
-    return true
+
+    return true;
   }
+
   broadcastIterChange(
       group: DagGroup, iterationNode: GroupIterationRecord['iterationNode']) {
     (group as any)._cachedSelection = iterationNode;
