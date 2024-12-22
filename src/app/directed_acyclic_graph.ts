@@ -29,7 +29,7 @@ import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {baseColors, BLUE_THEME, clampVal, CLASSIC_THEME, createDAGFeatures, createNewSizeConfig, type DagTheme, DEFAULT_LAYOUT_OPTIONS, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, EdgeStyle, type FeatureToggleOptions, generateTheme, getMargin, isPoint, type LayoutOptions, type Logger, MarkerStyle, type MinimapPosition, nanSafePt, NODE_HEIGHT, NODE_WIDTH, NodeState, OrientationMarginConfig, RankAlignment, RankDirection, RankerAlgorithim, SCROLL_STEP_PER_DELTA, SizeConfig, SVG_ELEMENT_SIZE, type ZoomConfig} from './data_types_internal';
-import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims} from './directed_acyclic_graph_raw';
+import {DagRaw, DagRawModule, EnhancedDagGroup, GraphDims, setEnhancedGroupSelection} from './directed_acyclic_graph_raw';
 import {DagLogger} from './logger/dag_logger';
 import {Minimap, MinimapModule} from './minimap/minimap';
 import {type DagEdge, DagGroup, DagNode, GraphSpec, GroupIterationRecord, GroupToggleEvent, isDagreInit, NodeMap, type NodeRef, Point, type SelectedNode} from './node_spec';
@@ -577,7 +577,9 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
           const loopGroup = parent?.$groups?.find(g => g.id === segment);
           if (loopGroup) {
             const selectedLoop = path.shift()!;
-            loopGroup.selectedLoopId = selectedLoop;
+            const selectedLoopNode =
+                loopGroup.groups.find(n => n.id === selectedLoop);
+            setEnhancedGroupSelection(loopGroup, selectedLoopNode!);
             // Increase pathDepth as we've consumed 2 path segments
             pathDepth++;
             return true;
@@ -592,6 +594,8 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
         expandedStateChanges++;
         // Detect changes so groups can expand properly
         this.detectChanges();
+        // Detect changes in new dagEl so QueryList is updated properly
+        dagEl.detectChanges();
       }
       pathDepth++;
     }
