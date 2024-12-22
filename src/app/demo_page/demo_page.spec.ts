@@ -113,6 +113,21 @@ describe('Demo Page', () => {
       await screenShot.expectMatch('dark-mode');
     });
   });
+
+  describe('Node selection', () => {
+    it('Selects correct nested iteration loop node (screenshot)', async () => {
+      await harness.getNodeSelectInput().then(
+          select => select.clickOptions(
+              {text: 'Trainer (TensorFlow Training, it-1)'}));
+      await screenShot.expectMatch('select-nested-iteration-loop');
+    });
+
+    it('Selects correct nested group node (screenshot)', async () => {
+      await harness.getNodeSelectInput().then(
+          select => select.clickOptions({text: 'Fake Exec 1 (sub1)'}));
+      await screenShot.expectMatch('select-nested-group');
+    })
+  })
 });
 
 

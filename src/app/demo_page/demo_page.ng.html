@@ -556,6 +556,30 @@
         </select>
       </mat-form-field>
     </div>
+    <mat-divider />
+    <div class="demo-control-group">
+      <p class="demo-control-header">
+        Node selection
+      </p>
+      <mat-form-field
+        appearance="fill"
+        class="demo-select-full-width"
+      >
+        <mat-label>Node/Group</mat-label>
+        <mat-select
+          [(ngModel)]="selectedNode"
+          [compareWith]="selectedNodeComparator"
+          id="node-select"
+        >
+          <mat-option
+            *ngFor="let selectable of allSelectableNodesAndGroups"
+            [value]="selectable"
+          >
+            {{selectable.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </div>
 </div>
 

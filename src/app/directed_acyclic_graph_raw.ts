@@ -131,6 +131,20 @@ function setGroupSizeProps(
   return Object.assign(expandedGroup, {width, height, padY});
 }
 
+/**
+ * Sets the selection state of a group.
+ * _cachedSelection is a property that should be refactored to be clearer. It is
+ * used to determine which node/group is rendered within an iteration group.
+ */
+export function setEnhancedGroupSelection(
+    group: DagGroup,
+    selection: DagGroup|DagNode,
+) {
+  const enhancedGroup = group as EnhancedDagGroup;
+  enhancedGroup._cachedSelection = selection;
+  enhancedGroup.selectedLoopId = selection?.id;
+}
+
 /** Dimension config for a raw DAG */
 export interface GraphDims {
   width: number;
@@ -283,6 +297,12 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   @Input() loading = false;
+
+  /**
+   * If set to false, the contents of the DAG will not be rendered to optimize
+   * for performance.
+   */
+  @Input() visible = true;
 
   @Input('nodes')
   set nodes(nodes: DagNode[]) {
@@ -471,7 +491,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       group: DagGroup, iterationNode: GroupIterationRecord['iterationNode']) {
     (group as any)._cachedSelection = iterationNode;
     if (group.selectedLoopId !== iterationNode.id) {
-      group.selectedLoopId = iterationNode.id;
+      setEnhancedGroupSelection(group, iterationNode);
       const iter = {path: this.dagPath, group, iterationNode};
       this.stateService?.setIterationChange(iter);
     }
@@ -938,6 +958,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       this.stateService?.setGroupExpandToggled({groupId: id, isExpanded: true});
     }
     this.updateGraphLayout();
+    this.detectChanges();
     return beforeCt !== this.expandedGroups.size;
   }
 
