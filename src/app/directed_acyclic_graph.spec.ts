@@ -30,7 +30,7 @@ import {DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acycl
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
-import {createDagSkeletonWithCustomGroups, fakeGraph} from './test_resources/fake_data';
+import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
@@ -165,6 +165,38 @@ describe('Directed Acyclic Graph Renderer', () => {
            setup({expanded: true});
            await screenShot.expectMatch(
                `graph_expanded_with_custom_control_node_hidden`);
+         });
+    });
+
+    describe('with group labels', () => {
+      let fixture: ComponentFixture<TestComponent>;
+
+      afterEach(fakeAsync(() => {
+        fixture.destroy();
+      }));
+
+      function setup(options: {treatAsLoop?: boolean} = {}) {
+        const {
+          treatAsLoop = false,
+        } = options;
+        fixture = TestBed.createComponent(TestComponent);
+        const skeleton = createDagSkeletonWithGroups(treatAsLoop);
+        const graphSpec =
+            Node.createFromSkeleton(skeleton.skeleton, skeleton.state);
+        fixture.componentRef.setInput('graph', graphSpec);
+        fixture.detectChanges();
+      }
+
+      it('renders group label when it is given', async () => {
+        setup();
+        await screenShot.expectMatch(`graph_group_with_label`);
+      });
+
+      it('renders group label instead of number of iterations correctly when treatAsLoop is true',
+         async () => {
+           setup({treatAsLoop: true});
+           await screenShot.expectMatch(
+               `graph_group_with_label_and_treat_as_loop`);
          });
     });
 
