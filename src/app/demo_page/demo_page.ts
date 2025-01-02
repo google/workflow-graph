@@ -17,7 +17,7 @@
 
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
-import {Component, ElementRef, NgModule, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, Input, NgModule, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatOptionModule} from '@angular/material/core';
@@ -30,7 +30,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {Theme} from '../data_types_internal';
+import {type Theme} from '../data_types_internal';
 import {baseColors, BLUE_THEME, CLASSIC_THEME, DagreOptions, DagreRankAlignment, DagreRankDirection, DagreRankerAlgorithm, DEFAULT_DAGRE_CONFIG, DEFAULT_THEME, defaultFeatures, defaultZoomConfig, DirectedAcyclicGraphModule, FeatureToggleOptions, generateTheme, MinimapPosition, NodeState, ZoomConfig} from '../directed_acyclic_graph';
 import {WorkflowGraphIconModule} from '../icon_wrapper';
 import {cloneGraph, DagEdge, DagGroup, DagNode, getNodeType, GraphSpec, MarkerStyle, NodeRef, SelectedNode} from '../node_spec';
@@ -208,6 +208,19 @@ function getAllSelectableNestedNodesAndGroups(
   encapsulation: ViewEncapsulation.None,
 })
 export class DagDemoPage {
+  /**
+   * Overrides the theme config of the DAG - used internally for demoing dark
+   * mode.
+   */
+  @Input()
+  set themeOverride(theme: Theme) {
+    this.dagFeatures.theme = theme;
+  }
+
+  get themeOverride() {
+    return this.dagFeatures.theme || defaultFeatures.theme!;
+  }
+
   @ViewChild('dagRef') dagRef: ElementRef|undefined;
 
   dagLoading = false;
