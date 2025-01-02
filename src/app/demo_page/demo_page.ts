@@ -20,6 +20,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {Component, ElementRef, NgModule, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
+import {MatOptionModule} from '@angular/material/core';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -170,6 +171,32 @@ function translateColor(col: string, isBg = false) {
   }
 }
 
+function getAllSelectableNestedNodesAndGroups(
+    params: {nodes: DagNode[], groups: DagGroup[]},
+    path: string[] = []): Array<SelectedNode&{label: string}> {
+  const allNodesAndGroups = [];
+  const pathLabel = path.length ? ` (${path.join(', ')})` : '';
+  for (const subGroup of params.groups) {
+    allNodesAndGroups.push(
+        {node: subGroup, path, label: `${subGroup.id}${pathLabel}`});
+    if (!subGroup.treatAsLoop) {
+      allNodesAndGroups.push(...getAllSelectableNestedNodesAndGroups(
+          subGroup, [...path, subGroup.id]));
+    } else {
+      // We need to skip the iteration node itself, as it is not selectable
+      subGroup.groups.forEach((iterationGroup) => {
+        allNodesAndGroups.push(...getAllSelectableNestedNodesAndGroups(
+            iterationGroup, [...path, subGroup.id, iterationGroup.id]));
+      });
+    }
+  }
+  for (const subNode of params.nodes) {
+    allNodesAndGroups.push(
+        {node: subNode, path, label: `${subNode.id}${pathLabel}`});
+  }
+  return allNodesAndGroups;
+}
+
 /** Demo component for directed acyclic graph view. */
 @Component({
   standalone: false,
@@ -237,6 +264,7 @@ export class DagDemoPage {
   userConfigChange = new Subject<UserConfig>();
   destroy = new Subject<void>();
 
+  allSelectableNodesAndGroups: Array<SelectedNode&{label: string}> = [];
   constructor(public dialog: MatDialog) {
     this.setCurrDataset(DEFAULT_DATASET, true);
     this.resetAll();
@@ -339,6 +367,8 @@ export class DagDemoPage {
     const newGraph = cloneGraph(this.datasets[name]);
     this.calibrateNodes(newGraph);
     this.currDataset = newGraph;
+    this.allSelectableNodesAndGroups =
+        getAllSelectableNestedNodesAndGroups(newGraph);
   }
 
   onDatasetChanged(event: Event) {
@@ -531,6 +561,14 @@ export class DagDemoPage {
     this.destroy.next();
     this.destroy.complete();
   }
+
+  triggerSelection(node: SelectedNode) {
+    this.selectedNode = node;
+  }
+
+  selectedNodeComparator(a: SelectedNode, b: SelectedNode) {
+    return a.node.id === b.node.id && a.path.join('') === b.path.join('');
+  }
 }
 
 @NgModule({
@@ -546,6 +584,7 @@ export class DagDemoPage {
     DagScaffoldModule,
     DagToolbarModule,
     MatSelectModule,
+    MatOptionModule,
     WorkflowGraphIconModule,
     MatDialogModule,
     FormsModule,

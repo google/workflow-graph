@@ -1,5 +1,5 @@
 <aside
-  *ngIf="!noEmptySpaceAlloc"
+  *ngIf="!noEmptySpaceAlloc && visible"
   aria-hidden="true"
   class="empty-space-alloc"
   [style.width.px]="graphWidth"
@@ -9,6 +9,7 @@
   [ngClass]="['dag-component', toggleClass(collapsed, 'collapse')]"
   [style.width.px]="graphWidth"
   [style.height.px]="graphHeight"
+  *ngIf="visible"
 >
   <svg class="edge canvas" aria-hidden="true">
     <ng-container *ngFor="let e of edges; trackBy: edgeTrack">
@@ -351,6 +352,7 @@
           [groups]="group.groups"
           (graphResize)="storeSubDagDims($event, group)"
           [resolveReference]="resolveReference"
+          [visible]="isGroupExpanded(group)"
         ></ai-dag-raw>
         <ng-container *ngIf="!!(group.treatAsLoop && group._cachedSelection)">
           <ai-dag-raw
@@ -362,6 +364,7 @@
             [nodes]="[group._cachedSelection]"
             (graphResize)="storeSubDagDims($event, group)"
             [resolveReference]="resolveReference"
+            [visible]="isGroupExpanded(group)"
           ></ai-dag-raw>
           <ai-dag-raw
             #subDag
@@ -374,6 +377,7 @@
             [groups]="group._cachedSelection.groups"
             (graphResize)="storeSubDagDims($event, group)"
             [resolveReference]="resolveReference"
+            [visible]="isGroupExpanded(group)"
           ></ai-dag-raw>
         </ng-container>
       </footer>
