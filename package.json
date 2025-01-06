@@ -61,7 +61,7 @@
     "dagre": "^0.8.5",
     "lodash": "^4.17.21",
     "rxjs": "7.5.7",
-    "safevalues": "^0.4.3",
+    "safevalues": "^1.0.1",
     "systemjs": "6.1.2",
     "tslib": "2.4.1",
     "zone.js": "~0.14.0"
