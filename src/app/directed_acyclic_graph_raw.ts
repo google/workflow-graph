@@ -29,11 +29,63 @@ import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
-import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, GroupToggleEvent, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode} from './node_spec';
+import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, GroupToggleEvent, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode, SnapPoint} from './node_spec';
 import {UserConfigService} from './user_config.service';
 import {debounce, isPinch} from './util_functions';
 
 // tslint:disable:no-dict-access-on-struct-type
+
+const CENTER = 0.5;
+const START = 0;
+const END = 1;
+
+const DEFAULT_EDGE_START_SNAP_ANCHORS = {
+  'LR': {
+    horizontalPercent: END,
+    verticalPercent: CENTER,
+  },
+  'RL': {
+    horizontalPercent: START,
+    verticalPercent: CENTER,
+  },
+  'BT': {
+    horizontalPercent: CENTER,
+    verticalPercent: START,
+  },
+  'TB': {
+    horizontalPercent: CENTER,
+    verticalPercent: END,
+  },
+
+};
+
+const DEFAULT_EDGE_END_SNAP_ANCHORS = {
+  'LR': {
+    horizontalPercent: START,
+    verticalPercent: CENTER,
+  },
+  'RL': {
+    horizontalPercent: END,
+    verticalPercent: CENTER,
+  },
+  'BT': {
+    horizontalPercent: CENTER,
+    verticalPercent: END,
+  },
+  'TB': {
+    horizontalPercent: CENTER,
+    verticalPercent: START,
+  },
+
+};
+
+/**
+ * Calculates the where alongside an axis will the edge be attached, based on
+ * the node length along said axis, and edge's anchor and offset.
+ */
+function edgeAttachmentPoint(length: number, percent: number, offset: number) {
+  return length * (percent - 0.5) + offset;
+}
 
 /**
  * To better position edge labels, we need a higher resolution representation of
@@ -735,19 +787,6 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  getTopCenterPoint(node: DagNode|DagGroup): Point {
-    return {x: node.x, y: node.y - node.height / 2};
-  }
-  getBottomCenterPoint(node: DagNode|DagGroup): Point {
-    return {x: node.x, y: node.y + node.height / 2};
-  }
-  getLeftCenterPoint(node: DagNode|DagGroup): Point {
-    return {x: node.x - node.width / 2, y: node.y};
-  }
-  getRightCenterPoint(node: DagNode|DagGroup): Point {
-    return {x: node.x + node.width / 2, y: node.y};
-  }
-
   /**
    * Set edge points with the node border center point based on direction.
    * http://screen/9pr65gGswBgzicS
@@ -767,28 +806,47 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     const fromTarget = this.ensureTargetEntity(edge.from);
     const toTarget = this.ensureTargetEntity(edge.to);
 
-    const layoutDirection = this.layout.rankDirection;
-    if (layoutDirection === 'LR') {
-      edge.points = [
-        this.getRightCenterPoint(fromTarget),
-        this.getLeftCenterPoint(toTarget),
-      ];
-    } else if (layoutDirection === 'RL') {
-      edge.points = [
-        this.getLeftCenterPoint(fromTarget),
-        this.getRightCenterPoint(toTarget),
-      ];
-    } else if (layoutDirection === 'BT') {
-      edge.points = [
-        this.getTopCenterPoint(fromTarget),
-        this.getBottomCenterPoint(toTarget),
-      ];
-    } else {
-      edge.points = [
-        this.getBottomCenterPoint(fromTarget),
-        this.getTopCenterPoint(toTarget),
-      ];
-    }
+    const layoutDirection = this.layout.rankDirection ?? 'TB';
+
+    const startHorizontalAnchor = edge.startSnapPoint?.horizontalPercent ??
+        DEFAULT_EDGE_START_SNAP_ANCHORS[layoutDirection].horizontalPercent;
+    const startVerticalAnchor = edge.startSnapPoint?.verticalPercent ??
+        DEFAULT_EDGE_START_SNAP_ANCHORS[layoutDirection].verticalPercent;
+    const endHorizontalAnchor = edge.endSnapPoint?.horizontalPercent ??
+        DEFAULT_EDGE_END_SNAP_ANCHORS[layoutDirection].horizontalPercent;
+    const endVerticalAnchor = edge.endSnapPoint?.verticalPercent ??
+        DEFAULT_EDGE_END_SNAP_ANCHORS[layoutDirection].verticalPercent;
+
+    const startPoint = {
+      x: fromTarget.x +
+          edgeAttachmentPoint(
+              fromTarget.width,
+              startHorizontalAnchor,
+              edge.startSnapPoint?.horizontalOffset ?? 0,
+              ),
+      y: fromTarget.y +
+          edgeAttachmentPoint(
+              fromTarget.height,
+              startVerticalAnchor,
+              edge.startSnapPoint?.verticalOffset ?? 0,
+              ),
+    };
+    const endPoint = {
+      x: toTarget.x +
+          edgeAttachmentPoint(
+              toTarget.width,
+              endHorizontalAnchor,
+              edge.endSnapPoint?.horizontalOffset ?? 0,
+              ),
+      y: toTarget.y +
+          edgeAttachmentPoint(
+              toTarget.height,
+              endVerticalAnchor,
+              edge.endSnapPoint?.verticalOffset ?? 0,
+              ),
+    };
+
+    edge.points = [startPoint, endPoint];
   }
 
   /**

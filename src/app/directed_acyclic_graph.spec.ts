@@ -26,11 +26,11 @@ import {ScreenshotTest} from '../screenshot_test';
 import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {DirectedAcyclicGraph, DirectedAcyclicGraphModule} from './directed_acyclic_graph';
+import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
-import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph} from './test_resources/fake_data';
+import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithEdgeOffsets} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
@@ -212,6 +212,24 @@ describe('Directed Acyclic Graph Renderer', () => {
         await screenShot.expectMatch(`graph_loading`);
       });
     });
+
+    describe('with edge offsets', () => {
+      let fixture: ComponentFixture<TestComponent>;
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(TestComponent);
+        const graphSpec = Node.createFromSkeleton(
+            fakeGraphWithEdgeOffsets.skeleton, fakeGraphWithEdgeOffsets.state);
+        fixture.componentRef.setInput('graph', graphSpec);
+        fixture.componentRef.setInput(
+            'theme', generateTheme({edgeStyle: 'snapped'}));
+        fixture.detectChanges();
+      });
+
+      it('renders correctly', async () => {
+        await screenShot.expectMatch(`graph_with_edge_offsets`);
+      });
+    });
   });
 });
 
@@ -226,6 +244,7 @@ describe('Directed Acyclic Graph Renderer', () => {
           [followNode]="followNode"
           [loading]="loading"
           [customNodeTemplates]="{'outlineBasic': outlineBasic}"
+          [theme]="theme"
       >
       </ai-dag-renderer>
     </div>
@@ -267,4 +286,5 @@ class TestComponent {
   @Input() graph: GraphSpec = FAKE_DATA;
   @Input() followNode: NodeRef|null = null;
   @Input() loading = false;
+  @Input() theme = generateTheme({});
 }

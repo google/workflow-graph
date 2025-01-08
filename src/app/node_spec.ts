@@ -413,6 +413,29 @@ export class DagGroup implements
 }
 
 /**
+ * Position in the node where the edge should be attached.
+ * Only relevant if using theme with edge mode set to 'snapped'.
+ */
+export interface SnapPoint {
+  /**
+   * Anchor point, in percentage of width/height of the node from which real
+   * edge attachment point is then offset from.
+   *
+   * Anchor is calculated from top-left of the node, and defaults to the
+   * corresponding edge (0 or 1) of the node in the layout axis, and center of
+   * the node (0.5) on the other axis.
+   */
+  horizontalPercent?: number;
+  verticalPercent?: number;
+  /**
+   * Offset, in px, from the anchor point, to where the edge is be attached.
+   * Both offsets default to 0.
+   */
+  horizontalOffset?: number;
+  verticalOffset?: number;
+}
+
+/**
  * Dag Edge relationship
  *
  * Looks like `{from: parentId, to: childId}`
@@ -436,6 +459,12 @@ export interface DagEdge {
   weight?: number;
   /** The number of ranks to keep between the source and target of the edge. */
   minlen?: number;
+  /**
+   * Only relevant for snapped edges.
+   * Edge mode can be set to 'snapped' in the theme.
+   */
+  startSnapPoint?: SnapPoint;
+  endSnapPoint?: SnapPoint;
 }
 
 /**

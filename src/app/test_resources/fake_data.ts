@@ -20,7 +20,7 @@
  * various testing scenarios
  */
 
-import {baseColors, CustomNode, DagNode, DagNodeSkeleton, DagSkeleton, repeatedMetaNodes, StateTable} from '../node_spec';
+import {baseColors, CustomNode, DagNode, DagNodeSkeleton, DagSkeleton, repeatedMetaNodes, SnapPoint, StateTable} from '../node_spec';
 
 /**
  * The standard Fake Graph that can be used by `DagNode.createFromSkeleton()` to
@@ -657,3 +657,69 @@ export function createDagSkeletonWithGroups(treatAsLoop: boolean): DagSkeleton {
     ] as DagNodeSkeleton[],
   };
 }
+
+export const fakeGraphWithEdgeOffsets: DagSkeleton = {
+  skeleton: [
+    {
+      id: 'node1',
+      type: 'execution',
+      next: [
+        {
+          id: 'node2',
+          type: 'execution',
+          edgeOpts: {
+            startSnapPoint: {
+              horizontalOffset: 5,
+              verticalOffset: 15,
+              horizontalPercent: 0.4,
+              verticalPercent: 0.6,
+            },
+            endSnapPoint: {
+              horizontalPercent: 0.5,
+              verticalPercent: 0.5,
+            },
+          },
+        },
+      ],
+    },
+    {
+      id: 'node2',
+      type: 'execution',
+      next: [
+        {
+          id: 'node3',
+          type: 'execution',
+          edgeOpts: {
+            startSnapPoint: {
+              horizontalOffset: 15,
+              verticalOffset: -5,
+            },
+            endSnapPoint: {
+              horizontalOffset: 30,
+              verticalPercent: 0.2,
+            },
+          },
+        },
+        {
+          id: 'node4',
+          type: 'execution',
+          edgeOpts: {
+            startSnapPoint: {},
+            endSnapPoint: {
+              horizontalAnchor: -0.1,
+              verticalAnchor: -0.1,
+            },
+          },
+        },
+      ],
+    },
+    {
+      id: 'node3',
+      type: 'execution',
+    },
+    {
+      id: 'node4',
+      type: 'execution',
+    },
+  ] as DagNodeSkeleton[],
+};
