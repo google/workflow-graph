@@ -222,7 +222,7 @@ export type EnhancedDagGroup = DagGroup&Dimension&Point&{
  * edges positions are moved based this distance.
  */
 const REVERSE_EDGE_CONTROL_DISTANCE = 200;
-type Orientation = 'center'|'right'|'left';
+type Orientation = 'center'|'right'|'left'|'bottom';
 
 /**
  * Renders the workflow DAG.
@@ -713,11 +713,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     const margin = this.getGraphMargin();
     const rightMostPointX = Math.max(
         ...this.getAllGraphItemsCoordinateForAxisAndOrientation('x', 'right'));
-    const topMostPointY =
-        Math.max(...this.getAllGraphItemsCoordinateForAxisAndOrientation('y'));
+    const topMostPointY = Math.max(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('y', 'bottom'));
     this.graphWidth = rightMostPointX + this.nodePad + margin['right'];
-    this.graphHeight =
-        topMostPointY + nodeHeight / 2 + this.nodePad + margin['bottom'];
+    this.graphHeight = topMostPointY + this.nodePad + margin['bottom'];
     this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
   }
 
@@ -760,11 +759,14 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   getAllGraphItemsCoordinateForAxisAndOrientation(
       dim: 'x'|'y', orient: Orientation = 'center'): number[] {
-    const {getNodeWidth, iconSpaceWidth} = this.dims;
+    const {getNodeWidth, height, iconSpaceWidth} = this.dims;
     let nodeOff = (node: CustomNode|DagNode|DagGroup) => {
       const type = this.getNodeType(node);
       if (type === 'group' || node instanceof CustomNode) {
         return (dim === 'x' ? node.width : node.height) / 2;
+      }
+      if (orient === 'bottom' && dim === 'y') {
+        return node.height / 2;
       }
       if (orient === 'center' || dim !== 'x') return 0;
       if (type === 'artifact' && this.collapsed) return iconSpaceWidth;
