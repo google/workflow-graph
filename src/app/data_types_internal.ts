@@ -85,6 +85,9 @@ export interface LayoutOptions {
 
   /** The number of pixels that separate nodes within a layer. */
   nodeSeparation?: number;
+
+  /** If set to true, graph will be centered in the canvas. */
+  centerDag?: boolean;
 }
 
 /**
@@ -201,6 +204,7 @@ export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
   edgeSeparation: 4,
   rankSeparation: NODE_VERTICAL_SPACING,
   nodeSeparation: NODE_HORIZONTAL_SPACING,
+  centerDag: false,
 };
 
 /**

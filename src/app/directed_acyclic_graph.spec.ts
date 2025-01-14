@@ -26,6 +26,7 @@ import {ScreenshotTest} from '../screenshot_test';
 import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
+import {DEFAULT_LAYOUT_OPTIONS} from './data_types_internal';
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
@@ -210,6 +211,30 @@ describe('Directed Acyclic Graph Renderer', () => {
 
       it('renders correctly', async () => {
         await screenShot.expectMatch(`graph_loading`);
+      });
+    });
+
+
+    describe('with centerDag enabled', () => {
+      let fixture: ComponentFixture<TestComponent>;
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(TestComponent);
+        const graphSpec = Node.createFromSkeleton(
+            fakeGraphWithEdgeOffsets.skeleton, fakeGraphWithEdgeOffsets.state);
+        fixture.componentRef.setInput('graph', graphSpec);
+        fixture.componentRef.setInput('layout', {
+          centerDag: true,
+        });
+        fixture.detectChanges();
+      });
+
+      afterEach(fakeAsync(() => {
+        fixture.destroy();
+      }));
+
+      it('renders correctly', async () => {
+        await screenShot.expectMatch(`graph_with_center_dag`);
       });
     });
 

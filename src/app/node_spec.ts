@@ -640,6 +640,8 @@ export class DagNode implements
   x = -1;
   /** Y Position, Value of `-1` represents an unset value */
   y = -1;
+  xOffset = 0;
+  yOffset = 0;
   width = 0;
   height = 0;
   cssTransform = '';
