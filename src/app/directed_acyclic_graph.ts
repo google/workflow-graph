@@ -135,6 +135,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   graphHeight: number = 0;
   graphX: number = 0;
   graphY: number = 0;
+  canvasDims: GraphDims = {width: 0, height: 0};
   private $graphPanning = false;
   graphPanningCtx?: GraphPanContext;
   graphResetPan: Point = {x: 0, y: 0};
@@ -165,6 +166,13 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   }
   get graphPanning() {
     return this.$graphPanning;
+  }
+
+  getDagWrapperDims() {
+    return {
+      height: this.dagWrapper?.nativeElement?.offsetHeight || 0,
+      width: this.dagWrapper?.nativeElement?.offsetWidth || 0,
+    };
   }
 
   // State props
@@ -763,6 +771,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
 
   handleResizeWithEvent(resizeEventData: ResizeEventData) {
     this.lastResizeEv = resizeEventData;
+    this.canvasDims = this.getDagWrapperDims();
     this.handleResize();
   }
 

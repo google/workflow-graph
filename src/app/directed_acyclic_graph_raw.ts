@@ -252,6 +252,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   nodeMap: NodeMap = {nodes: {}, groups: {}};
   graphWidth: number = 0;
   graphHeight: number = 0;
+  canvasDims: GraphDims = {width: 0, height: 0};
   hoveredNode?: DagNode|DagGroup;
   hoveredNodeFromNode?: DagNode|DagGroup;
   hoveredNodeFromBadge?: DagNode|DagGroup;
@@ -426,6 +427,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       ...DEFAULT_LAYOUT_OPTIONS,
       ...layout || {},
     };
+
     this.updateGraphLayout();
   }
 
@@ -439,6 +441,12 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   @Input() isPanning: boolean = false;
+
+  @Input('canvasDims')
+  set onCanvasDimsSet(dims: GraphDims|undefined) {
+    this.canvasDims = dims || {width: 0, height: 0};
+    this.updateGraphLayout();
+  }
 
   constructor(
       private readonly differs: KeyValueDiffers,
@@ -720,6 +728,22 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     this.graphResize.emit({width: this.graphWidth, height: this.graphHeight});
   }
 
+  getGraphDims() {
+    const leftMostPointX = Math.min(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('x', 'left'));
+    const rightMostPointX = Math.max(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('x', 'right'));
+    const topMostPointY = Math.max(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('y', 'bottom'));
+    const bottomMostPointY = Math.min(
+        ...this.getAllGraphItemsCoordinateForAxisAndOrientation('y', 'bottom'));
+
+    return {
+      width: (rightMostPointX - leftMostPointX),
+      height: (topMostPointY - bottomMostPointY),
+    };
+  }
+
   getGraphMargin() {
     const {graphMargin} = this.dims;
     return Object.fromEntries(
@@ -733,14 +757,37 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
     const xOffset = Math.min(
         ...this.getAllGraphItemsCoordinateForAxisAndOrientation('x', 'left'));
+
+    const centerOffset = {x: 0, y: 0};
+
+    console.log('centerDag', this.layout.centerDag);
+    if (this.layout.centerDag) {
+      const graphDims = this.getGraphDims();
+      const canvasCenterPoint = {
+        x: this.canvasDims.width / 2,
+        y: this.canvasDims.height / 2,
+      };
+      const graphCenterPoint = {
+        x: graphDims.width / 2,
+        y: graphDims.height / 2,
+      };
+      if (graphDims.width < this.canvasDims.width) {
+        centerOffset.x = canvasCenterPoint.x - graphCenterPoint.x;
+        margin['left'] = 0;
+      }
+      if (graphDims.height < this.canvasDims.height) {
+        centerOffset.y = canvasCenterPoint.y - graphCenterPoint.y;
+        margin['top'] = 0;
+      }
+    }
     for (const node of this.nodes) {
-      node.x += -xOffset + this.nodePad + margin['left'];
-      node.y += this.nodePad + margin['top'];
+      node.x += -xOffset + this.nodePad + margin['left'] + centerOffset.x;
+      node.y += this.nodePad + margin['top'] + centerOffset.y;
       node.cssTransform = getTransformTranslateString(node.x, node.y);
     }
     for (const group of this.groups) {
-      group.x += -xOffset + this.nodePad + margin['left'];
-      group.y += this.nodePad + margin['top'];
+      group.x += -xOffset + this.nodePad + margin['left'] + centerOffset.x;
+      group.y += this.nodePad + margin['top'] + centerOffset.y;
       group.cssTransform =
           getTransformTranslateString(group.x, group.y + group.padY! / 2);
     }
@@ -749,8 +796,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
         this.snapEdgeConnectionPoints(edge);
       } else {
         for (const p of edge.points || []) {
-          p.x += -xOffset + this.nodePad + margin['left'];
-          p.y += this.nodePad + margin['top'];
+          p.x += -xOffset + this.nodePad + margin['left'] + centerOffset.x;
+          p.y += this.nodePad + margin['top'] + centerOffset.y;
         }
       }
       this.resnapPointsForGroups(edge);
