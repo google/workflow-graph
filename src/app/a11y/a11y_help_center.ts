@@ -47,28 +47,32 @@ import {ShortcutService} from './shortcut.service';
 export class AccessibilityHelpCenter implements OnInit, OnDestroy {
   // TODO: Remapping shortcuts b/289193145
   displayedColumns: string[] = ['enabled', 'desc', 'shortcut' /*, 'edit'*/];
-  dataSource = Object.values(this.shortcutService.shortcuts);
-  form = this.fb.group({
-    shortcuts: this.fb.group(
-        this.dataSource.reduce(
-            (a, {name, enabled, shortcut}) => {
-              return {...a, [name]: this.fb.group({enabled, shortcut})};
-            },
-            {}) as {
-          [key: string]: FormGroup<
-              {enabled: FormControl<boolean>, shortcut: FormControl<string>}>
-        }),
-    disableAnimations: new FormControl<boolean>(
-        !!this.userConfigService.config?.value?.a11y?.disableAnimations),
-  });
-  destroy = new Subject<void>();
+  dataSource;
+  form;
+  destroy;
   allEnabled = false;
   someEnabled = false;
 
   constructor(
       private readonly userConfigService: UserConfigService,
       private readonly shortcutService: ShortcutService,
-      private readonly fb: FormBuilder) {}
+      private readonly fb: FormBuilder) {
+    this.dataSource = Object.values(this.shortcutService.shortcuts);
+    this.form = this.fb.group({
+      shortcuts: this.fb.group(
+          this.dataSource.reduce(
+              (a, {name, enabled, shortcut}) => {
+                return {...a, [name]: this.fb.group({enabled, shortcut})};
+              },
+              {}) as {
+            [key: string]: FormGroup<
+                {enabled: FormControl<boolean>, shortcut: FormControl<string>}>
+          }),
+      disableAnimations: new FormControl<boolean>(
+          !!this.userConfigService.config?.value?.a11y?.disableAnimations),
+    });
+    this.destroy = new Subject<void>();
+  }
 
   ngOnInit() {
     this.updateCheckboxStates();

@@ -35,26 +35,28 @@ import {Theme} from './data_types_internal';
   ],
 })
 export class ColorThemeLoader {
-  private readonly theme: Observable<Theme|undefined> =
-      this.dagStateService.features$.pipe(
-          map(features => features.theme), distinctUntilChanged());
-  readonly prefersColorSchemeDarkMediaQuery: MediaQueryList = window.matchMedia(
-      '(prefers-color-scheme: dark)',
-  );
-  private readonly deviceColorSchemeDarkChange: Observable<boolean> =
-      fromEvent<MediaQueryListEvent>(
-          this.prefersColorSchemeDarkMediaQuery,
-          'change',
-          )
-          .pipe(
-              map((event) => event.matches),
-              startWith(this.prefersColorSchemeDarkMediaQuery.matches),
-          );
+  private readonly theme: Observable<Theme|undefined>;
+  readonly prefersColorSchemeDarkMediaQuery: MediaQueryList;
+  private readonly deviceColorSchemeDarkChange: Observable<boolean>;
 
   constructor(
       private readonly dagStateService: DagStateService,
       @Inject(DOCUMENT) private readonly document: Document,
       private readonly destroyRef: DestroyRef) {
+    this.theme = this.dagStateService.features$.pipe(
+        map(features => features.theme), distinctUntilChanged());
+    this.prefersColorSchemeDarkMediaQuery = window.matchMedia(
+        '(prefers-color-scheme: dark)',
+    );
+    this.deviceColorSchemeDarkChange =
+        fromEvent<MediaQueryListEvent>(
+            this.prefersColorSchemeDarkMediaQuery,
+            'change',
+            )
+            .pipe(
+                map((event) => event.matches),
+                startWith(this.prefersColorSchemeDarkMediaQuery.matches),
+            );
     combineLatest([this.theme, this.deviceColorSchemeDarkChange])
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(([theme, isDeviceColorDark]) => {
