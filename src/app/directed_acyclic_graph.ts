@@ -814,7 +814,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   windowPan(newPosition: Point, ignoreOffset = false) {
     // Calculating the graph's offset from the top and left edges of the
     // available canvas, when the zoom is under 1.
-    if (!ignoreOffset) {
+    if (!ignoreOffset && !this.features.freePanning) {
       const offsets = this.zoom >= 1 ? {x: 0, y: 0} : {
         x: (this.graphWidth * this.zoom - this.graphWidth) / -2,
         y: (this.graphHeight * this.zoom - this.graphHeight) / -2,
@@ -828,9 +828,11 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
           newPosition.y, -offsets.y,
           this.graphHeight * Math.max(this.zoom, 1) - this.lastResizeEv.height -
               offsets.y);
-    } else {
+    } else if (ignoreOffset) {
       this.graphX = newPosition.x;
       this.graphY = newPosition.y;
+    } else {
+      this.freeWindowPan(newPosition);
     }
     this.applyShifts();
   }

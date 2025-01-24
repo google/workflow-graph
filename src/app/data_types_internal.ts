@@ -468,6 +468,11 @@ export interface FeatureToggleOptions {
   naturalScrolling?: boolean;
 
   /**
+   * This option enables free panning behavior
+   */
+  freePanning?: boolean;
+
+  /**
    * Hides the progress cell in the toolbar. Defaults to `false`.
    */
   hideProgressCell?: boolean;
@@ -504,6 +509,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   enableShortcuts: false,
   enableCenterCameraOnFocus: true,
   naturalScrolling: false,
+  freePanning: false,
   hideProgressCell: false,
   disableLoadingMaterialStyles: false,
   theme: 'light',
