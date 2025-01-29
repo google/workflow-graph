@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import {DOCUMENT} from '@angular/common';
-import {Component, DestroyRef, Inject, ViewEncapsulation} from '@angular/core';
+import { Component, DestroyRef, ViewEncapsulation, inject } from '@angular/core';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {combineLatest, fromEvent, Observable} from 'rxjs';
 import {distinctUntilChanged, map, startWith} from 'rxjs/operators';
@@ -35,6 +35,10 @@ import {Theme} from './data_types_internal';
   ],
 })
 export class ColorThemeLoader {
+  private readonly dagStateService = inject(DagStateService);
+  private readonly document = inject<Document>(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
+
   private readonly theme: Observable<Theme|undefined> =
       this.dagStateService.features$.pipe(
           map(features => features.theme), distinctUntilChanged());
@@ -51,10 +55,7 @@ export class ColorThemeLoader {
               startWith(this.prefersColorSchemeDarkMediaQuery.matches),
           );
 
-  constructor(
-      private readonly dagStateService: DagStateService,
-      @Inject(DOCUMENT) private readonly document: Document,
-      private readonly destroyRef: DestroyRef) {
+  constructor() {
     combineLatest([this.theme, this.deviceColorSchemeDarkChange])
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(([theme, isDeviceColorDark]) => {
