@@ -16,7 +16,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
@@ -45,6 +45,10 @@ import {ShortcutService} from './shortcut.service';
   ],
 })
 export class AccessibilityHelpCenter implements OnInit, OnDestroy {
+  private readonly userConfigService = inject(UserConfigService);
+  private readonly shortcutService = inject(ShortcutService);
+  private readonly fb = inject(FormBuilder);
+
   // TODO: Remapping shortcuts b/289193145
   displayedColumns: string[] = ['enabled', 'desc', 'shortcut' /*, 'edit'*/];
   dataSource = Object.values(this.shortcutService.shortcuts);
@@ -64,11 +68,6 @@ export class AccessibilityHelpCenter implements OnInit, OnDestroy {
   destroy = new Subject<void>();
   allEnabled = false;
   someEnabled = false;
-
-  constructor(
-      private readonly userConfigService: UserConfigService,
-      private readonly shortcutService: ShortcutService,
-      private readonly fb: FormBuilder) {}
 
   ngOnInit() {
     this.updateCheckboxStates();
