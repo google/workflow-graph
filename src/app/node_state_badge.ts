@@ -16,7 +16,7 @@
  */
 
 import {CommonModule} from '@angular/common';
-import {Component, Input, NgModule} from '@angular/core';
+import { Component, Input, NgModule, inject } from '@angular/core';
 
 import {ColorThemeLoader} from './color_theme_loader';
 import {DEFAULT_THEME, IconConfig, isNoState, type NodeState} from './data_types_internal';
@@ -32,6 +32,8 @@ import {WorkflowGraphIconModule} from './icon_wrapper';
   templateUrl: 'node_state_badge.ng.html',
 })
 export class DagNodeStateBadge {
+  private readonly translationsService = inject(TranslationsService);
+
   theme = DEFAULT_THEME;
 
   @Input() nodeState!: NodeState;
@@ -45,8 +47,6 @@ export class DagNodeStateBadge {
   labelForState = labelForState(this.translationsService);
 
   isNoState = isNoState;
-
-  constructor(private readonly translationsService: TranslationsService) {}
 }
 
 export {type NodeState};
