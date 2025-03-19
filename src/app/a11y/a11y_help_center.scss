@@ -1,7 +1,17 @@
+@use 'third_party/javascript/angular_components/material' as mat;
+
 :host {
-  --mat-table-header-container-height: 45px;
-  --mat-table-row-item-container-height: 45px;
-  --mdc-checkbox-state-layer-size: 40px;
+  @include mat.table-overrides(
+    (
+      header-container-height: 45px,
+      row-item-container-height: 45px,
+    )
+  );
+  @include mat.checkbox-overrides(
+    (
+      state-layer-size: 40px,
+    )
+  );
 
   table {
     margin-bottom: 24px;

@@ -1,3 +1,5 @@
+@use 'third_party/javascript/angular_components/material' as mat;
+
 /*
  * Dag toolbar base style definitions
  */
@@ -62,7 +64,11 @@
   }
 
   .mat-mdc-slide-toggle {
-    --mdc-switch-state-layer-size: 32px;
+    @include mat.slide-toggle-overrides(
+      (
+        state-layer-size: 32px,
+      )
+    );
   }
 
   &.toggler > * {
@@ -73,8 +79,12 @@
     }
   }
   .icon-btn {
-    --mat-standard-button-toggle-height: 28px;
-    --mat-standard-button-toggle-shape: 50%;
+    @include mat.button-toggle-overrides(
+      (
+        height: 28px,
+        shape: 50%,
+      )
+    );
     width: 28px;
     height: 28px;
     line-height: 28px;
