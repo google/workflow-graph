@@ -1,6 +1,9 @@
 <nav [ngClass]="['toolbar', graphState]">
   <ng-container *ngFor="let customToggleTemplate of leftAlignedCustomToolbarToggleTemplates">
-    <div class="cell toggler">
+    <div
+      class="cell toggler"
+      [class.flex]="customToggleTemplate === fillerCustomToolbarToggleTemplate"
+    >
       <ng-container
         *ngTemplateOutlet="customToggleTemplate; context: {
           nodes,
@@ -9,7 +12,7 @@
       ></ng-container>
     </div>
   </ng-container>
-  <div *ngIf="rightAlignMainControls" class="flex"></div>
+  <div *ngIf="fillerCustomToolbarToggleTemplate === null && rightAlignMainControls" class="flex"></div>
   <ng-container *ngVar="labelGenerator(this, 'graphState') as label">
     <div class="cell state" *ngIf="label !== false">
       <workflow-graph-icon icon="info"></workflow-graph-icon>
@@ -138,7 +141,10 @@
     </button>
   </div>
   <ng-container *ngFor="let customToggleTemplate of customToolbarToggleTemplates">
-    <div class="cell toggler">
+    <div
+      class="cell toggler"
+      [class.flex]="customToggleTemplate === fillerCustomToolbarToggleTemplate"
+    >
       <ng-container
         *ngTemplateOutlet="customToggleTemplate; context: {
           nodes,
@@ -147,9 +153,12 @@
       ></ng-container>
     </div>
   </ng-container>
-  <div *ngIf="!rightAlignMainControls" class="flex"></div>
+  <div *ngIf="fillerCustomToolbarToggleTemplate === null && !rightAlignMainControls" class="flex"></div>
   <ng-container *ngFor="let customToggleTemplate of rightAlignedCustomToolbarToggleTemplates">
-    <div class="cell toggler">
+    <div
+      class="cell toggler"
+      [class.flex]="customToggleTemplate === fillerCustomToolbarToggleTemplate"
+    >
       <ng-container *ngTemplateOutlet="customToggleTemplate; context: {
         nodes,
         groups
