@@ -86,6 +86,17 @@ describe('DagToolbar', () => {
       });
     });
 
+    describe('With filler template', () => {
+      beforeEach(fakeAsync(() => {
+        fixture.componentInstance.enableFillerTemplate();
+        fixture.detectChanges();
+      }));
+
+      it('Renders correctly (screenshot)', async () => {
+        await screenShot.expectMatch('renders_correctly_with_filler_template');
+      });
+    });
+
     it('Calculated node states correctly', () => {
       expect(toolbar.graphState).toBe('Runtime');
       expect(toolbar.completedSteps).toBe(1);
@@ -158,33 +169,53 @@ describe('DagToolbar', () => {
         [nodes]="nodes" [expanded]="true"
         [rightAlignedCustomToolbarToggleTemplates]="rightAlignedTemplates"
         [features]="features"
+        [fillerCustomToolbarToggleTemplate]="fillerTemplate"
       ></ai-dag-toolbar>
     </div>
     <ng-template #rightAlignedTemplate>
       <button id="rightButton"> Click me</button>
+    </ng-template>
+    <ng-template #rectangleTemplate>
+      <div class="rectangle"></div>
     </ng-template>`,
   providers: [
     //  STATE_SERVICE_PROVIDER,
   ],
   styles: [`
     .container {
-      height: 400px;
-      width: 400px;
+      height: 100px;
+      width: 1200px;
+      background-color: gray;
+    }
+    .rectangle {
+      background-color: red;
+      min-width: 50px;
+      flex-grow: 1;
+      height: 30px;
     }`],
+
   // TODO: Make this AOT compatible. See b/352713444
   jit: true,
-
 })
 class TestComponent {
   @ViewChild('dagToolbar', {static: false}) dagToolbar!: DagToolbar;
   nodes: DagNode[] = FAKE_DATA;
   @ViewChild('rightAlignedTemplate', {static: false})
   rightAlignedTemplate?: TemplateRef<{}>;
+  @ViewChild('rectangleTemplate', {static: false})
+  rectangleTemplate?: TemplateRef<{}>;
 
   rightAlignedTemplates: Array<TemplateRef<{}>> = [];
 
+  fillerTemplate: TemplateRef<{}>|null = null;
+
+  enableFillerTemplate() {
+    this.fillerTemplate = this.rectangleTemplate!;
+  }
+
   ngAfterViewInit() {
     this.rightAlignedTemplates.push(this.rightAlignedTemplate!);
+    this.rightAlignedTemplates.push(this.rectangleTemplate!);
   }
 
   features = {...defaultFeatures, enableShortcuts: true};

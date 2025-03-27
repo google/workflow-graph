@@ -134,6 +134,7 @@ export class DagToolbar {
   private $customToolbarToggleTemplates: TemplateRef<any>[] = [];
   private $leftAlignedCustomToolbarToggleTemplates: TemplateRef<any>[] = [];
   private $rightAlignedCustomToolbarToggleTemplates: TemplateRef<any>[] = [];
+  private $fillerCustomToolbarToggleTemplate: TemplateRef<any>|null = null;
 
   @Input() enableMinimap = true;
   @Output() enableMinimapChange = new EventEmitter();
@@ -220,6 +221,15 @@ export class DagToolbar {
   }
   get rightAlignedCustomToolbarToggleTemplates() {
     return this.$rightAlignedCustomToolbarToggleTemplates;
+  }
+
+  @Input('fillerCustomToolbarToggleTemplate')
+  set fillerCustomToolbarToggleTemplate(template: TemplateRef<any>|null) {
+    this.$fillerCustomToolbarToggleTemplate = template;
+    this.cdr.detectChanges();
+  }
+  get fillerCustomToolbarToggleTemplate() {
+    return this.$fillerCustomToolbarToggleTemplate;
   }
 
   constructor(
