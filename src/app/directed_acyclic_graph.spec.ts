@@ -19,7 +19,6 @@ import {CdkDragMove} from '@angular/cdk/drag-drop';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {Component, EventEmitter, Input, ViewChild} from '@angular/core';
 import {ComponentFixture, fakeAsync, flush, TestBed, tick, waitForAsync} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
 
 import {ScreenshotTest} from '../screenshot_test';
 
@@ -28,7 +27,6 @@ import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
-import {TEST_IMPORTS, TEST_PROVIDERS} from './test_providers';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithEdgeOffsets} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
@@ -140,7 +138,7 @@ describe('Directed Acyclic Graph Renderer', () => {
         fixture.destroy();
       }));
 
-      function setup(
+      async function setup(
           options: {hideControlNodeOnExpand?: boolean,
                     expanded?: boolean} = {}) {
         const {
@@ -153,16 +151,17 @@ describe('Directed Acyclic Graph Renderer', () => {
             Node.createFromSkeleton(skeleton.skeleton, skeleton.state);
         fixture.componentRef.setInput('graph', graphSpec);
         fixture.detectChanges();
+        await fixture.whenStable();
       }
 
       it('renders correctly', async () => {
-        setup();
+        await setup();
         await screenShot.expectMatch(`graph_custom_control_node`);
       });
 
       it('renders correctly with group expanded and control hidden',
          async () => {
-           setup({expanded: true});
+           await setup({expanded: true});
            await screenShot.expectMatch(
                `graph_expanded_with_custom_control_node_hidden`);
          });
