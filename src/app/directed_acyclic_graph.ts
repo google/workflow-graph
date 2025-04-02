@@ -20,7 +20,7 @@ import {CdkDragEnd, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cd
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Optional, Output, TemplateRef, ViewChild} from '@angular/core';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
+import * as dagre from '@dagrejs/dagre';
 import {Subject, Subscription} from 'rxjs';
 import {takeUntil, throttleTime} from 'rxjs/operators';
 

@@ -19,7 +19,7 @@ import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {CdkDrag, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnDestroy, OnInit, Optional, Output, QueryList, TemplateRef, ViewChildren} from '@angular/core';
-import * as dagre from 'dagre';  // from //third_party/javascript/typings/dagre
+import * as dagre from '@dagrejs/dagre';
 import {Subscription} from 'rxjs';
 
 import {DagStateService} from './dag-state.service';
