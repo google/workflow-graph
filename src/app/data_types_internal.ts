@@ -489,6 +489,16 @@ export interface FeatureToggleOptions {
    * Custom themes can override the theme behavior.
    */
   theme?: Theme;
+
+  /**
+   * Whether the layout should respect the order of the nodes in the graph
+   * instead of optimizing for space according to the layout algorithm.
+   * See https://github.com/dagrejs/dagre/issues/189 for more details on the
+   * underlying issue.
+   *
+   * Defaults to `false`.
+   */
+  respectNodeOrder?: boolean;
 }
 /**
  * Default set of functionality to enable / disable in the DAG Component
@@ -513,6 +523,7 @@ export const defaultFeatures: FeatureToggleOptions = {
   hideProgressCell: false,
   disableLoadingMaterialStyles: false,
   theme: 'light',
+  respectNodeOrder: false,
 };
 
 /**

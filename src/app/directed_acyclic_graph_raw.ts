@@ -637,7 +637,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     for (const node of this.nodes) {
       g.setNode(node.id, setNodeSizeProps(node, this.dims, this.collapsed));
     }
-    dagre.layout(g);
+
+    dagre.layout(g, {
+      disableOptimalOrderHeuristic: this.features.respectNodeOrder ?? false
+    });
 
 
     this.positionAllElementsOnGraph();
@@ -697,7 +700,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       g.setEdge(e.from, e.to, e);
     }
 
-    dagre.layout(g);
+    dagre.layout(g, {
+      disableOptimalOrderHeuristic: this.features.respectNodeOrder ?? false
+    });
 
     this.positionAllElementsOnGraph();
     this.updateGraphSize();
