@@ -326,11 +326,12 @@ describe('Directed Acyclic Graph Raw', () => {
     }));
 
     it('`ensureNode` behaves as expected', fakeAsync(async () => {
-         renderer.nodes = [
+         fixture.componentInstance.graph.nodes = [
            new DagNode('a', 'execution', 'CANCELLED'),
            new DagNode('b', 'artifact'),
          ];
-         renderer.edges = [{from: 'a', to: 'b'}];
+         fixture.componentInstance.graph.edges = [{from: 'a', to: 'b'}];
+         fixture.detectChanges();
          flush();
 
          expect(renderer.ensureNode('a')).toBeDefined();
@@ -341,7 +342,7 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('`animatedEdge` behaves as expected', fakeAsync(async () => {
-         renderer.nodes = [
+         fixture.componentInstance.graph.nodes = [
            new DagNode('root', 'execution', 'SUCCEEDED'),
            new DagNode('a1', 'execution', 'CANCELLED'),
            new DagNode('a2', 'execution', 'RUNNING'),
@@ -349,7 +350,7 @@ describe('Directed Acyclic Graph Raw', () => {
            new DagNode('b2', 'artifact', 'NO_STATE_RUNTIME'),
            new DagNode('c', 'execution', 'NO_STATE_STATIC'),
          ];
-         const edges = renderer.edges = [
+         const edges = fixture.componentInstance.graph.edges = [
            {from: 'root', to: 'a1'},
            {from: 'root', to: 'a2'},
            {from: 'a1', to: 'b1'},
@@ -359,6 +360,7 @@ describe('Directed Acyclic Graph Raw', () => {
            {from: 'b1', to: 'c'},
            {from: 'b2', to: 'c'},
          ];
+         fixture.detectChanges();
          flush();
 
          expect(renderer.animatedEdge(edges[0])).toBe(false);
@@ -371,11 +373,12 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('`selectNodeById` behaves as expected', fakeAsync(async () => {
-         renderer.nodes = [
+         fixture.componentInstance.graph.nodes = [
            new DagNode('a', 'execution', 'CANCELLED'),
          ];
-         renderer.edges = [];
+         fixture.componentInstance.graph.edges = [];
          spyOn(renderer.selectedNodeChange, 'emit');
+         fixture.detectChanges();
          flush();
 
          expect(renderer.selectNodeById()).toBeFalse();
@@ -388,13 +391,14 @@ describe('Directed Acyclic Graph Raw', () => {
        }));
 
     it('`pendingOrStatic` behaves as expected', fakeAsync(async () => {
-         renderer.nodes = [
+         fixture.componentInstance.graph.nodes = [
            new DagNode('a', 'execution', 'CANCELLED'),
            new DagNode('b', 'execution', 'NO_STATE_RUNTIME'),
            new DagNode('c', 'execution', 'NO_STATE_STATIC'),
            new DagNode('d', 'execution', 'PENDING'),
          ];
-         renderer.edges = [];
+         fixture.componentInstance.graph.edges = [];
+         fixture.detectChanges();
          flush();
 
          expect(renderer.pendingOrStatic('a'))
