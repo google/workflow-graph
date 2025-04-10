@@ -481,7 +481,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['nodes'] || changes['edges'] || changes['groups']) {
-      this.updateGraphLayoutAndReselect();
+      // The update must be done on the next tick or use cases that use both
+      // DirectedAcyclicGraph.selectedNode and
+      // DirectedAcyclicGraph.selectedNodeChange will break.
+      setTimeout(() => this.updateGraphLayoutAndReselect(), 50)
     }
   }
 
