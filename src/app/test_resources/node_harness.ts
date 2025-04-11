@@ -88,4 +88,9 @@ export class DagNodeElHarness extends ComponentHarness {
     const host = await this.host();
     return host.getAttribute(attributeName);
   }
+
+  async isSelected(): Promise<boolean> {
+    const host = await this.host();
+    return host.hasClass('selected-node');
+  }
 }

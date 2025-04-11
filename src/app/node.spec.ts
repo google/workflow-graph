@@ -71,11 +71,10 @@ describe('DAG Node', () => {
        }));
 
     it('Selection and data binding for nodes works', fakeAsync(async () => {
-         const host = await harness.host();
-         expect(await host.hasClass('selected-node')).toBeFalse();
+         expect(await harness.isSelected()).toBeFalse();
 
          fixture.componentInstance.isSelected = true;
-         expect(await host.hasClass('selected-node')).toBeTrue();
+         expect(await harness.isSelected()).toBeTrue();
        }));
 
     it('Mouse interactions toggle appropriate hover classes and emit',
