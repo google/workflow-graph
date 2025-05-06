@@ -1381,6 +1381,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return edge.color || this.theme.edgeColor;
   }
 
+  getEdgeLabelColor(edge: DagEdge) {
+    return edge.labelColor || this.theme.edgeLabelColor;
+  }
+
   fetchIcon = (icon: NodeIcon, key: keyof NodeIcon) => fetchIcon(icon, key);
 
   isDagreInit = (element: DagNode|DagEdge|DagGroup) =>

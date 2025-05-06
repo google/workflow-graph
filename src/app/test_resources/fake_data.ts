@@ -723,3 +723,51 @@ export const fakeGraphWithEdgeOffsets: DagSkeleton = {
     },
   ] as DagNodeSkeleton[],
 };
+
+export const fakeGraphWithColoredLabels: DagSkeleton = {
+  skeleton: [
+    {
+      id: 'node1',
+      type: 'execution',
+      next: [
+        {
+          id: 'node2',
+          type: 'execution',
+          edgeOpts: {
+            label: 'label1',
+            labelColor: 'red',
+          },
+        },
+      ],
+    },
+    {
+      id: 'node2',
+      type: 'execution',
+      next: [
+        {
+          id: 'node3',
+          type: 'execution',
+          edgeOpts: {
+            label: 'label2',
+            labelColor: '#00ffcc',
+          },
+        },
+        {
+          id: 'node4',
+          type: 'execution',
+          edgeOpts: {
+            label: 'label3',
+          },
+        },
+      ],
+    },
+    {
+      id: 'node3',
+      type: 'execution',
+    },
+    {
+      id: 'node4',
+      type: 'execution',
+    },
+  ] as DagNodeSkeleton[],
+};

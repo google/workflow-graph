@@ -598,6 +598,7 @@ export interface DagTheme {
   statusColors: StatusPalette;
   statusBg: StatusPalette;
   edgeColor: string;
+  edgeLabelColor: string;
   edgeStyle: EdgeStyle;
   edgeToMarkerStyle: MarkerStyle;
   edgeFromMarkerStyle: MarkerStyle;
@@ -719,6 +720,7 @@ export const DEFAULT_THEME: DagTheme = {
     ['FAILED', baseColors['bg']['red']],
   ]),
   edgeColor: baseColors['blue'],
+  edgeLabelColor: 'var(--workflow-graph-color-surface-on-surface)',
   edgeStyle: 'dagre',
   edgeToMarkerStyle: 'circle',
   edgeFromMarkerStyle: 'circle',

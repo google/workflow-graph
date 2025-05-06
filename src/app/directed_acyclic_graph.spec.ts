@@ -28,7 +28,7 @@ import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
-import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithEdgeOffsets} from './test_resources/fake_data';
+import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithColoredLabels, fakeGraphWithEdgeOffsets} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
@@ -229,6 +229,25 @@ describe('Directed Acyclic Graph Renderer', () => {
         await screenShot.expectMatch(`graph_with_edge_offsets`);
       });
     });
+
+    describe('with custom label color', () => {
+      let fixture: ComponentFixture<TestComponent>;
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(TestComponent);
+        const graphSpec = Node.createFromSkeleton(
+            fakeGraphWithColoredLabels.skeleton,
+            fakeGraphWithColoredLabels.state);
+        fixture.componentRef.setInput('graph', graphSpec);
+        fixture.componentRef.setInput(
+            'theme', generateTheme({edgeLabelColor: 'yellow'}));
+        fixture.detectChanges();
+      });
+
+      it('renders correctly', async () => {
+        await screenShot.expectMatch(`graph_with_colored_labels`);
+      })
+    })
   });
 });
 

@@ -446,6 +446,7 @@ export interface DagEdge {
   label?: string;
   points?: Point[];
   color?: string;
+  labelColor?: string;
   toMarkerStyle?: MarkerStyle;  // circle by default.
   fromMarkerStyle?: MarkerStyle;  // circle by default.
   /**
