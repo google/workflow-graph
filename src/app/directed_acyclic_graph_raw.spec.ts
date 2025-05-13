@@ -151,6 +151,18 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(fixture.componentInstance.dagRaw.groups[1].expanded).toBe(true);
        }));
 
+    it('Correctly sends click events for edge labels',
+       waitForAsync(async () => {
+         const spy = jasmine.createSpy('edgeLabelClick');
+         fixture.componentInstance.dagRaw.edgeLabelClick.subscribe(spy);
+         const edgeLabel = await harness.getEdgeLabel('storage (red-edge)');
+
+         await edgeLabel.click();
+
+         expect(spy).toHaveBeenCalledWith(
+             jasmine.objectContaining({from: 'BigTable', to: 'AutoML Tables'}));
+       }));
+
     // SKIP-PUBLIC
     xit('Groups with expanded attribute are expanded on load',
        waitForAsync(async () => {

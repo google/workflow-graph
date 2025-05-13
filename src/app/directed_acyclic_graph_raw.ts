@@ -406,6 +406,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return this.$selectedNode;
   }
   @Output() selectedNodeChange = new EventEmitter<SelectedNode|null>();
+  @Output() edgeLabelClick = new EventEmitter<DagEdge>();
 
   @Input() features = createDAGFeatures();
   @Input('collapsed')

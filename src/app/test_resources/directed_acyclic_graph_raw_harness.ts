@@ -158,4 +158,11 @@ export class DagRawHarness extends ComponentHarness {
   async getEdges(selector = '') {
     return this.locatorForAll('.edge-group' + selector)();
   }
+
+  /**
+   * Get an edge label by its text content.
+   */
+  async getEdgeLabel(labelText: string) {
+    return this.locatorFor(`.edge-label[edge-label="${labelText}"]`)();
+  }
 }
