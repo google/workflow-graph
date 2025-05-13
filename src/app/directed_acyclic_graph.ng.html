@@ -70,6 +70,7 @@
       (mouseleave)="mousedown = false"
       [class.animate-movement]="animateMove && !graphPanning"
       [resolveReference]="resolveReference"
+      (edgeLabelClick)="edgeLabelClick.emit($event)"
     />
   </section>
 </figure>

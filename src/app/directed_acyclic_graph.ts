@@ -254,6 +254,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   @Output() selectedNodeChange = new EventEmitter<SelectedNode|null>();
   @Output() groupIterationChanged = new EventEmitter<GroupIterationRecord>();
   @Output() onGroupExpandToggled = new EventEmitter<GroupToggleEvent>();
+  @Output() edgeLabelClick = new EventEmitter<DagEdge>();
 
   @Input() hoveredEdge?: DagEdge;
 
