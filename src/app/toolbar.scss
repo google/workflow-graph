@@ -23,9 +23,10 @@
 }
 
 // allow the toolbar to scroll at high zoom levels
-.ai-dag-toolbar {
-  overflow-x: scroll;
+:host {
+  overflow-x: auto;
   overflow-y: hidden;
+  flex-shrink: 0;
 }
 
 .toolbar {
