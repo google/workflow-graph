@@ -1110,6 +1110,16 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     }
   }
 
+  getAllBezierControlPointsForSnappedEdge(edge: DagEdge):
+      [Point, Point, Point, Point] {
+    const start = edge.points![0];
+    const end = edge.points![edge.points!.length - 1];
+    const [m1, m2] = this.hasEdgeInReversedDirection(start, end) ?
+        this.getControlPointsForReversedEdge(start, end) :
+        this.getControlPointsForBezierCurve(start, end);
+    return [start, m1, m2, end];
+  }
+
   buildPath(edge: DagEdge|undefined): string {
     if (!edge || !edge.points) return '';
     const pts = edge.points;
@@ -1119,10 +1129,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     const end = {x: xs.pop(), y: ys.pop()};
 
     if (this.theme.edgeStyle === 'snapped') {
-      const [m1, m2] =
-          this.hasEdgeInReversedDirection(start as Point, end as Point) ?
-          this.getControlPointsForReversedEdge(start as Point, end as Point) :
-          this.getControlPointsForBezierCurve(start as Point, end as Point);
+      const [_1, m1, m2, _2] =
+          this.getAllBezierControlPointsForSnappedEdge(edge)
       return `M${start.x} ${start.y} C${m1.x} ${m1.y} ${m2.x} ${m2.y} ${
           end.x} ${end.y}`;
     }
@@ -1134,6 +1142,15 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     // Builds a spline curve from all points given to us by Dagre.
     return `M${start.x},${start.y} S${middlePoints.join(' ')} ${end.x},${
         end.y}`;
+  }
+
+  getEdgeMidpoint(edge: DagEdge) {
+    const start = edge.points![0];
+    const end = edge.points![edge.points!.length - 1];
+    return {
+      x: (start.x + end.x) / 2,
+      y: (start.y + end.y) / 2,
+    };
   }
 
   /**
@@ -1203,6 +1220,44 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return bezierPoints;
   }
 
+  /**
+   * Derivative of a cubic Bezier curve at the given t value
+   *
+   * Each dimension can be calculated separately
+   */
+  cubicBezierDerivative(
+      p1: number, p2: number, p3: number, p4: number, t: number) {
+    const invT = 1 - t;
+    return (
+        -3 * Math.pow(invT, 2) * p1 + 3 * Math.pow(invT, 2) * p2 -
+        6 * t * invT * p2 - 3 * Math.pow(t, 2) * p3 + 6 * t * invT * p3 +
+        3 * Math.pow(t, 2) * p4);
+  };
+
+  getLabelEdgeRotationString(edge: DagEdge): string {
+    // Only snapped edges are supported for rotated labels
+    if (this.theme.edgeStyle !== 'snapped') {
+      return '';
+    }
+    const allPoints = this.getAllBezierControlPointsForSnappedEdge(edge);
+
+    // Get both dimensions into separate vectors
+    const xs = allPoints.map(p => p.x) as [number, number, number, number];
+    const ys = allPoints.map(p => p.y) as [number, number, number, number];
+
+    // Calculate the derivative of each dimension
+    const dX = this.cubicBezierDerivative(...xs, 0.5);
+    const dY = this.cubicBezierDerivative(...ys, 0.5);
+
+    // Calculate the angle between the two dimensions
+    const angle = Math.atan2(dY, dX);
+    // We do not want to display text "upside down", so rotate 180 degrees if it
+    // helps
+    const readableAngle =
+        Math.abs(angle) < Math.PI / 2 ? angle : angle + Math.PI;
+    return `rotate(${readableAngle}rad)`;
+  }
+
   getMiddleEdgePoint(edge: DagEdge): PointWithTransform|undefined {
     const {points = []} = edge;
     if (points.length < 1) {
@@ -1237,7 +1292,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       return {
         x: midPoint.x,
         y: midPoint.y,
-        cssTransform: getTransformTranslateString(midPoint.x, midPoint.y)
+        cssTransform: getTransformTranslateString(midPoint.x, midPoint.y) +
+            (edge.alignLabelToTangent ? this.getLabelEdgeRotationString(edge) :
+                                        ''),
       } as PointWithTransform;
     }
     // This code path is impossible

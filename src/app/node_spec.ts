@@ -466,6 +466,8 @@ export interface DagEdge {
    */
   startSnapPoint?: SnapPoint;
   endSnapPoint?: SnapPoint;
+  /** Place the label tangent to the edge. Only works for snapped edges. */
+  alignLabelToTangent?: boolean;
 }
 
 /**
