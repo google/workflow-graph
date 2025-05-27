@@ -81,7 +81,17 @@
     [style.color]="getEdgeLabelColor(l.edge)"
     [attr.edge-label]="l.label"
   >
-    {{ l.label }}
+    <workflow-graph-icon
+      *ngIf="l.icon"
+      [icon]="l.icon.name"
+      [iconset]="l.icon.iconset ?? 'common'"
+      size="small"
+      class="edge-label-icon"
+    >
+    </workflow-graph-icon>
+    <span class="edge-label-text">
+      {{ l.label }}
+    </span>
   </figcaption>
   <ng-container *ngFor="let nodeOrGroup of a11ySortedNodes; trackBy: nodeOrGroupTrack">
     <ng-container *ngIf="getNodeType(nodeOrGroup) !== 'group'">

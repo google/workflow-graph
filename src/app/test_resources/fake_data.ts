@@ -820,3 +820,62 @@ export const fakeGraphWithRotatedLabels: DagSkeleton = {
     },
   ] as DagNodeSkeleton[],
 };
+
+export const fakeGraphWithLabelIcons: DagSkeleton = {
+  skeleton: [
+    {
+      id: 'node1',
+      type: 'execution',
+      next: [
+        {
+          id: 'node2',
+          type: 'execution',
+          edgeOpts: {
+            labelColor: 'red',
+            icon: {
+              name: 'search',
+              iconset: 'common',
+            },
+          },
+        },
+      ],
+    },
+    {
+      id: 'node2',
+      type: 'execution',
+      next: [
+        {
+          id: 'node3',
+          type: 'execution',
+          edgeOpts: {
+            label: 'label2',
+            labelColor: '#00ffcc',
+            icon: {
+              name: 'delete',
+              iconset: 'common',
+            },
+          },
+        },
+        {
+          id: 'node4',
+          type: 'execution',
+          edgeOpts: {
+            label: 'label3',
+            icon: {
+              name: 'add',
+              iconset: 'common',
+            },
+          },
+        },
+      ],
+    },
+    {
+      id: 'node3',
+      type: 'execution',
+    },
+    {
+      id: 'node4',
+      type: 'execution',
+    },
+  ] as DagNodeSkeleton[],
+};

@@ -443,6 +443,7 @@ export interface SnapPoint {
 export interface DagEdge {
   from: string;
   to: string;
+  icon?: IconConfig;
   label?: string;
   points?: Point[];
   color?: string;

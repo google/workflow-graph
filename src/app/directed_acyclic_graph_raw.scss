@@ -377,7 +377,7 @@
     font-size: 14px;
     max-width: 12em;
     @include offsetCenter;
-    display: inline-block;
+    display: flex;
     padding: 1px 2px;
     background: var(--workflow-graph-color-surface);
     color: var(--workflow-graph-color-surface-on-surface);
@@ -389,6 +389,10 @@
     user-select: none;
     &:hover {
       z-index: 1;
+    }
+
+    .edge-label-text, .edge-label-icon {
+      margin: auto;
     }
   }
 }

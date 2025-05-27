@@ -28,7 +28,7 @@ import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
-import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithColoredLabels, fakeGraphWithEdgeOffsets, fakeGraphWithRotatedLabels} from './test_resources/fake_data';
+import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithColoredLabels, fakeGraphWithEdgeOffsets, fakeGraphWithLabelIcons, fakeGraphWithRotatedLabels} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
@@ -265,6 +265,22 @@ describe('Directed Acyclic Graph Renderer', () => {
 
       it('renders correctly', async () => {
         await screenShot.expectMatch(`graph_with_rotated_labels`);
+      })
+    })
+
+    describe('with label icons', () => {
+      let fixture: ComponentFixture<TestComponent>;
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(TestComponent);
+        const graphSpec = Node.createFromSkeleton(
+            fakeGraphWithLabelIcons.skeleton, fakeGraphWithLabelIcons.state);
+        fixture.componentRef.setInput('graph', graphSpec);
+        fixture.detectChanges();
+      });
+
+      it('renders correctly', async () => {
+        await screenShot.expectMatch(`graph_with_label_icons`);
       })
     })
   });

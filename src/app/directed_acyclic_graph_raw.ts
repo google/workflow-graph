@@ -1191,16 +1191,20 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     return n.id;
   }
 
-  /** Get the correct list of edges that have a label and valid mid-point */
+  /**
+   * Get the correct list of edges that have a label or icon and valid
+   * mid-point
+   */
   getEdgeLabels() {
     return this.edges
         .map(e => ({
                id: `${e.from}->${e.to}`,
                label: e.label,
+               icon: e.icon,
                edge: e,
                mid: this.getMiddleEdgePoint(e),
              }))
-        .filter(({label, mid}) => label && mid);
+        .filter(({label, icon, mid}) => (label || icon) && mid);
   }
 
   calculateBezierCurvePoints(points: Point[]): Point[] {
