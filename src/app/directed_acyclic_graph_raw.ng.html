@@ -70,29 +70,33 @@
       </g>
     </ng-container>
   </svg>
-  <figcaption
-    aria-hidden="true"
-    class="edge-label fade-in"
+  <div
+    class="edge-label-positioner"
     *ngFor="let l of getEdgeLabels(); trackBy: edgeLabelTrack"
-    (mouseenter)="setEdgeHover(l.edge, true)"
-    (mouseleave)="setEdgeHover(l.edge, false)"
-    (click)="edgeLabelClick.emit(l.edge)"
     [style.transform]="l.mid?.cssTransform"
-    [style.color]="getEdgeLabelColor(l.edge)"
-    [attr.edge-label]="l.label"
   >
-    <workflow-graph-icon
-      *ngIf="l.icon"
-      [icon]="l.icon.name"
-      [iconset]="l.icon.iconset ?? 'common'"
-      size="small"
-      class="edge-label-icon"
+    <figcaption
+      aria-hidden="true"
+      class="edge-label fade-in"
+      (mouseenter)="setEdgeHover(l.edge, true)"
+      (mouseleave)="setEdgeHover(l.edge, false)"
+      (click)="edgeLabelClick.emit(l.edge)"
+      [style.color]="getEdgeLabelColor(l.edge)"
+      [attr.edge-label]="l.label"
     >
-    </workflow-graph-icon>
-    <span class="edge-label-text">
-      {{ l.label }}
-    </span>
-  </figcaption>
+      <workflow-graph-icon
+        *ngIf="l.icon"
+        [icon]="l.icon.name"
+        [iconset]="l.icon.iconset ?? 'common'"
+        [size]="l.icon.size ?? 'small'"
+        class="edge-label-icon"
+      >
+      </workflow-graph-icon>
+      <span class="edge-label-text">
+        {{ l.label }}
+      </span>
+    </figcaption>
+  </div>
   <ng-container *ngFor="let nodeOrGroup of a11ySortedNodes; trackBy: nodeOrGroupTrack">
     <ng-container *ngIf="getNodeType(nodeOrGroup) !== 'group'">
       <ng-template *ngTemplateOutlet="renderNode; context: {$implicit: nodeOrGroup}"></ng-template>

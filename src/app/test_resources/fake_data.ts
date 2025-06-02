@@ -833,8 +833,9 @@ export const fakeGraphWithLabelIcons: DagSkeleton = {
           edgeOpts: {
             labelColor: 'red',
             icon: {
-              name: 'search',
-              iconset: 'common',
+              name: 'BIGQUERY_SECTION',
+              iconset: 'shelllogos',
+              size: 'medium',
             },
           },
         },

@@ -26,6 +26,7 @@ import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
+import {IconsetList} from './icons_service';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithColoredLabels, fakeGraphWithEdgeOffsets, fakeGraphWithLabelIcons, fakeGraphWithRotatedLabels} from './test_resources/fake_data';
@@ -276,6 +277,8 @@ describe('Directed Acyclic Graph Renderer', () => {
         const graphSpec = Node.createFromSkeleton(
             fakeGraphWithLabelIcons.skeleton, fakeGraphWithLabelIcons.state);
         fixture.componentRef.setInput('graph', graphSpec);
+        fixture.componentRef.setInput(
+            'additionalIconsets', [['shelllogos', 'medium', 179]]);
         fixture.detectChanges();
       });
 
@@ -298,6 +301,7 @@ describe('Directed Acyclic Graph Renderer', () => {
           [loading]="loading"
           [customNodeTemplates]="{'outlineBasic': outlineBasic}"
           [theme]="theme"
+          [additionalIconsets]="additionalIconsets"
       >
       </ai-dag-renderer>
     </div>
@@ -340,4 +344,5 @@ class TestComponent {
   @Input() followNode: NodeRef|null = null;
   @Input() loading = false;
   @Input() theme = generateTheme({});
+  @Input() additionalIconsets: IconsetList[] = [];
 }

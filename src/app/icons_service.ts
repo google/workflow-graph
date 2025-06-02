@@ -66,12 +66,14 @@ export const sizeMap: IconSizeMap = {
  *
  * Looks like [`iconset`, `iconSize, `version`]
  */
-type IconsetList = [string, IconSizes, number];
+export type IconsetList = [string, IconSizes, number];
 
 /** Service used to register DAG icons with Material registry */
 @Injectable({providedIn: 'root'})
 export class DagIconsService {
   private isInitialized = false;
+  private readonly registeredAdditionalIconsetVersions =
+      new Map<string, number>();
 
   constructor(
       private readonly iconRegistry: MatIconRegistry,
@@ -99,5 +101,18 @@ export class DagIconsService {
     });
 
     this.isInitialized = true;
+  }
+
+  registerAdditionalIcons(icons: IconsetList[]) {
+    icons.forEach(([iconset, size, version]) => {
+      const iconsetId = `${iconset}-${size}`;
+      if (this.registeredAdditionalIconsetVersions.get(iconsetId) === version) {
+        return;
+      }
+      console.log('registering additional icons', iconset, size, version);
+      const url = this.sanitizer.sanitizeUrl(iconset, size, version);
+      this.iconRegistry.addSvgIconSetInNamespace(iconsetId, url);
+      this.registeredAdditionalIconsetVersions.set(iconsetId, version);
+    });
   }
 }

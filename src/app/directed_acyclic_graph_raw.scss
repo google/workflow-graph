@@ -371,12 +371,16 @@
     opacity: 0;
   }
 
-  .edge-label {
+  .edge-label-positioner {
     transition: transform $graph-change-speed;
     position: absolute;
+    @include offsetCenter;
+  }
+
+  .edge-label {
+    transition: transform $graph-change-speed;
     font-size: 14px;
     max-width: 12em;
-    @include offsetCenter;
     display: flex;
     padding: 1px 2px;
     background: var(--workflow-graph-color-surface);
