@@ -85,7 +85,7 @@
       *ngIf="l.icon"
       [icon]="l.icon.name"
       [iconset]="l.icon.iconset ?? 'common'"
-      size="small"
+      [size]="l.icon.size ?? 'small'"
       class="edge-label-icon"
     >
     </workflow-graph-icon>
