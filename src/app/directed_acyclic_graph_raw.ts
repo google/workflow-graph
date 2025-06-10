@@ -407,6 +407,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
   @Output() selectedNodeChange = new EventEmitter<SelectedNode|null>();
   @Output() edgeLabelClick = new EventEmitter<DagEdge>();
+  @Output() hoveredEdgeChange = new EventEmitter<DagEdge|undefined>();
 
   @Input() features = createDAGFeatures();
   @Input('collapsed')
@@ -993,8 +994,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   setEdgeHover(edge: DagEdge, state: boolean) {
     if (this.hoveredEdge === edge && !state) {
       this.hoveredEdge = undefined;
+      this.hoveredEdgeChange.emit(undefined);
     } else {
       this.hoveredEdge = edge;
+      this.hoveredEdgeChange.emit(edge);
     }
     this.cdr.detectChanges();
   }
