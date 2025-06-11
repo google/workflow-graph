@@ -71,6 +71,7 @@
       [class.animate-movement]="animateMove && !graphPanning"
       [resolveReference]="resolveReference"
       (edgeLabelClick)="edgeLabelClick.emit($event)"
+      (hoveredEdgeChange)="hoveredEdgeChange.emit($event)"
     />
   </section>
 </figure>
