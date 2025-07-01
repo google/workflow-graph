@@ -612,6 +612,54 @@ export function createDagSkeletonWithCustomGroups(expanded: boolean):
   };
 }
 
+export function createDagSkeletonWithNormalGroups(expanded: boolean):
+    DagSkeleton {
+  return {
+    skeleton: [{
+      id: 'client',
+      type: 'execution',
+      next: [
+        {
+          id: 'normalGroup',
+          type: 'group',
+          definition: [
+            {
+              id: 'node1',
+              type: 'execution',
+              next: [
+                {
+                  id: 'node2',
+                  type: 'execution',
+                },
+              ],
+            },
+          ],
+          next: [
+            {
+              id: 'backend',
+              type: 'execution',
+            },
+          ],
+        },
+      ],
+    } as DagNodeSkeleton],
+    state: {
+      'client': {
+        state: 'NO_STATE_RUNTIME',
+      },
+      'backend': {
+        state: 'NO_STATE_RUNTIME',
+      },
+      'normalGroup': {
+        state: 'NO_STATE_RUNTIME',
+        displayName: 'Custom group node',
+        hasControlNode: true,
+        expanded,
+      },
+    } as StateTable,
+  };
+}
+
 export function createDagSkeletonWithGroups(treatAsLoop: boolean): DagSkeleton {
   return {
     state: {

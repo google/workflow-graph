@@ -25,10 +25,11 @@ import {ScreenshotTest} from '../screenshot_test';
 import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
+import {type LayoutOptions, RankDirection} from './data_types_internal';
 import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
-import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
+import {DagEdge, DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
-import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithColoredLabels, fakeGraphWithEdgeOffsets, fakeGraphWithLabelIcons, fakeGraphWithRotatedLabels} from './test_resources/fake_data';
+import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, createDagSkeletonWithNormalGroups, fakeGraph, fakeGraphWithColoredLabels, fakeGraphWithEdgeOffsets, fakeGraphWithLabelIcons, fakeGraphWithRotatedLabels} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
@@ -167,6 +168,46 @@ describe('Directed Acyclic Graph Renderer', () => {
          });
     });
 
+    describe('with internal edges', () => {
+      let fixture: ComponentFixture<TestComponent>;
+
+      afterEach(fakeAsync(() => {
+        fixture.destroy();
+      }));
+
+      async function setup(options: {
+        hideControlNodeOnExpand?: boolean,
+        expanded?: boolean,
+        internalEdges?: DagEdge[]
+      } = {}) {
+        const {
+          hideControlNodeOnExpand = false,
+          expanded = false,
+          internalEdges = [],
+        } = options;
+        fixture = TestBed.createComponent(TestComponent);
+        const skeleton = createDagSkeletonWithNormalGroups(expanded);
+        const graphSpec =
+            Node.createFromSkeleton(skeleton.skeleton, skeleton.state);
+        fixture.componentRef.setInput('internalEdges', internalEdges);
+        fixture.componentRef.setInput(
+            'rankDirection', RankDirection.LEFT_TO_RIGHT);
+        fixture.componentRef.setInput('graph', graphSpec);
+        fixture.detectChanges();
+        await fixture.whenStable();
+      }
+
+      it('renders correctly with group expanded and internal edges visible',
+         async () => {
+           await setup({
+             expanded: true,
+             internalEdges: [{from: 'client', to: 'node1'}]
+           });
+           fixture.detectChanges();
+           await fixture.whenStable();
+           await screenShot.expectMatch(`graph_expanded_with_internal_edges`);
+         });
+    });
     describe('with group labels', () => {
       let fixture: ComponentFixture<TestComponent>;
 
@@ -298,6 +339,8 @@ describe('Directed Acyclic Graph Renderer', () => {
           [loading]="loading"
           [customNodeTemplates]="{'outlineBasic': outlineBasic}"
           [theme]="theme"
+          [internalEdges]="internalEdges"
+          [layout]="layout"
       >
       </ai-dag-renderer>
     </div>
@@ -337,7 +380,14 @@ describe('Directed Acyclic Graph Renderer', () => {
 class TestComponent {
   @ViewChild('dagRender', {static: false}) dagRender!: DirectedAcyclicGraph;
   @Input() graph: GraphSpec = FAKE_DATA;
+  @Input() internalEdges: DagEdge[] = [];
+  @Input() rankDirection: RankDirection = RankDirection.TOP_TO_BOTTOM;
   @Input() followNode: NodeRef|null = null;
   @Input() loading = false;
   @Input() theme = generateTheme({});
+  get layout(): LayoutOptions {
+    return {
+      rankDirection: this.rankDirection
+    }
+  }
 }
