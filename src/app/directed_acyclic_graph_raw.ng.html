@@ -12,6 +12,19 @@
   *ngIf="visible"
 >
   <svg class="edge canvas" aria-hidden="true">
+            <ng-container *ngFor="let item of externalTargets | keyvalue">
+      <ng-container *ngFor="let node of nodes">
+        <path
+          *ngIf="node.id.startsWith('__proxy_in_')&& node.id.endsWith(item.key)"
+          class="line proxy-line"
+          [attr.d]="buildProxyPath(item.value.point,{x:node.x, y:node.y})"
+          stroke="grey"
+          stroke-width="2"
+          fill="none"
+          style="stroke-dasharray: 5, 5;"
+        />
+      </ng-container>
+    </ng-container>
     <ng-container *ngFor="let e of edges; trackBy: edgeTrack">
       <g
         *ngIf="isDagreInit(e)"
@@ -366,6 +379,8 @@
           (graphResize)="storeSubDagDims($event, group)"
           [resolveReference]="resolveReference"
           [visible]="isGroupExpanded(group)"
+          [externalTargets]="getExternalTargetsForGroup(group)"
+          [internalEdges]="internalEdges"
         ></ai-dag-raw>
         <ng-container *ngIf="!!(group.treatAsLoop && group._cachedSelection)">
           <ai-dag-raw
@@ -429,4 +444,19 @@
       </button>
     </div>
   </ng-container>
+</ng-template>
+
+<ng-template #defaultProxyNodeTemplate let-node="node">
+  <div
+    [style.width.px]="node.width"
+    [style.height.px]="node.height"
+    [style.background]="'#666'"
+    [style.border-radius]="'50%'"
+    [style.display]="'flex'"
+    [style.align-items]="'center'"
+    [style.justify-content]="'center'"
+    title="Connection Point"
+  >
+    <!-- No text content -->
+  </div>
 </ng-template>
