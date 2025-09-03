@@ -1,3 +1,5 @@
+// g3-format-prettier
+import {provideZoneChangeDetection} from '@angular/core';
 /**
  * @license
  * Copyright 2022 Google LLC
@@ -22,13 +24,13 @@ import {provideAnimations} from '@angular/platform-browser/animations';
 import {AppComponent} from './app.component';
 import {DagModePageModule} from './demo_page/demo_page';
 
+@NgModule({providers: [provideZoneChangeDetection()]})
+export class ZoneChangeDetectionModule {}
+
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, DagModePageModule],
-  providers: [
-    provideAnimations(),
-  ],
-  bootstrap: [AppComponent]
+  imports: [ZoneChangeDetectionModule, BrowserModule, DagModePageModule],
+  providers: [provideAnimations()],
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}

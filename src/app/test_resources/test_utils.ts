@@ -1,3 +1,5 @@
+// g3-format-prettier
+import {NgModule, provideZoneChangeDetection} from '@angular/core';
 /**
  * @license
  * Copyright 2022 Google LLC
@@ -16,30 +18,30 @@
  */
 
 import {TestBed, TestModuleMetadata} from '@angular/core/testing';
-import {BrowserDynamicTestingModule, platformBrowserDynamicTesting} from '@angular/platform-browser-dynamic/testing';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
 
 import {TEST_IMPORTS, TEST_PROVIDERS} from '../test_providers';
+
+@NgModule({providers: [provideZoneChangeDetection()]})
+export class ZoneChangeDetectionModule {}
 
 /** Initialize TestBed */
 export async function initTestBed(moduleDef: TestModuleMetadata) {
   TestBed.resetTestEnvironment();
   TestBed.initTestEnvironment(
-      BrowserDynamicTestingModule, platformBrowserDynamicTesting(),
-      {teardown: {destroyAfterEach: true}});
+    [ZoneChangeDetectionModule, BrowserDynamicTestingModule],
+    platformBrowserDynamicTesting(),
+    {teardown: {destroyAfterEach: true}},
+  );
 
-  await TestBed
-      .configureTestingModule({
-        ...moduleDef,
-        imports: [
-          ...TEST_IMPORTS,
-          ...(moduleDef.imports || []),
-        ],
-        providers: [
-          ...TEST_PROVIDERS,
-          ...(moduleDef.providers || []),
-        ],
-      })
-      .compileComponents();
+  await TestBed.configureTestingModule({
+    ...moduleDef,
+    imports: [...TEST_IMPORTS, ...(moduleDef.imports || [])],
+    providers: [...TEST_PROVIDERS, ...(moduleDef.providers || [])],
+  }).compileComponents();
 }
 
 /**
