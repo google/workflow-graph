@@ -263,6 +263,12 @@
         transition: opacity 0.5s, transform 0.25s;
         transition-delay: $graph-change-speed;
       }
+      > .control-node-shadow.control-node-shadow-hidden {
+          display:none;
+          border: none;
+          background-color: transparent;
+          box-shadow: none;
+        }
     }
     > .sub-dag {
       color: initial;

@@ -174,6 +174,32 @@ describe('Directed Acyclic Graph Raw', () => {
          expect(fixture.componentInstance.dagRaw.groups[1].expanded).toBe(true);
        }));
 
+    it('hides control node shadow when hideControlNodeShadow is true',
+       fakeAsync(async () => {
+         const FAKE_DATA_WITH_SHADOW: GraphSpec = Node.createFromSkeleton(
+             [{
+               id: 'group1',
+               type: 'group',
+               definition: [{id: 'node1', type: 'execution'}],
+             }],
+             {
+               'group1': {
+                 hasControlNode: true,
+                 hideControlNodeShadow: true,
+               },
+             });
+
+         fixture.componentInstance.graph = FAKE_DATA_WITH_SHADOW;
+         fixture.detectChanges();
+         await fixture.whenStable();
+         fixture.componentInstance.dagRaw.updateGraphLayout();
+         fixture.componentInstance.dagRaw.detectChanges();
+
+         const shadowEl = await harness.getControlNodeShadow('group1');
+         expect(await shadowEl.hasClass('control-node-shadow-hidden'))
+             .toBe(true);
+       }));
+
     describe('natural scrolling', () => {
       beforeEach(() => {
         fixture.componentInstance.features.scrollToZoom = false;

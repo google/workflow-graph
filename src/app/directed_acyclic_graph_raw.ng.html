@@ -257,6 +257,7 @@
       >
         <div
           class="control-node-shadow"
+          [class.control-node-shadow-hidden]="getControlNodeFor(group).hideControlNodeShadow"
           [style.width.px]="getControlNodeFor(group).width"
           [style.height.px]="getControlNodeFor(group).height"
         ></div>

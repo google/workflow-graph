@@ -165,4 +165,14 @@ export class DagRawHarness extends ComponentHarness {
   async getEdgeLabel(labelText: string) {
     return this.locatorFor(`.edge-label[edge-label="${labelText}"]`)();
   }
+
+  /**
+   * Gets the control node shadow element for a given group.
+   * @param groupId The ID of the group.
+   * @returns A Promise for the TestElement representing the shadow element.
+   */
+  async getControlNodeShadow(groupId: string): Promise<TestElement> {
+    const groupA11yId = `a11y-id-for-group-${groupId}`;
+    return this.locatorFor(`[id="${groupA11yId}"] .control-node-shadow`)();
+  }
 }

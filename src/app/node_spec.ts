@@ -261,6 +261,7 @@ export class DagGroup implements
   descriptionTooltip = '';
   hasControlNode = false;
   hideControlNodeOnExpand = false;
+  hideControlNodeShadow = false;
   customControlNode?: CustomNode;
   treatAsLoop = false;
   conditionalQuery = '';
@@ -292,6 +293,7 @@ export class DagGroup implements
         modifiers = new Set<NodeModifier>(),
         hasControlNode = false,
         hideControlNodeOnExpand = false,
+        hideControlNodeShadow = false,
         customControlNode = undefined,
         expanded = false,
         stateTooltip = '',
@@ -322,6 +324,7 @@ export class DagGroup implements
       modifiers,
       hasControlNode,
       hideControlNodeOnExpand,
+      hideControlNodeShadow,
       customControlNode,
       expanded,
       stateTooltip,
@@ -535,6 +538,11 @@ export interface DagNodeMeta {
   callout?: NodeCallout;
 
   /**
+   * If true, the control node shadow will not be shown.
+   */
+  hideControlNodeShadow?: boolean;
+
+  /**
    * Used to denote artifact relationships to the current node from an outside
    * or separate context (where no edge can be drawn from source artifact to
    * current node).
@@ -647,6 +655,7 @@ export class DagNode implements
   width = 0;
   height = 0;
   cssTransform = '';
+  hideControlNodeShadow = false;
 
   constructor(
       id: string, type: NodeType, state: NodeState = 'NO_STATE_STATIC', {
@@ -661,6 +670,7 @@ export class DagNode implements
         stateTooltip = '',
         iconTooltip = '',
         subType = undefined,
+        hideControlNodeShadow,
         artifactRefs = [],
       }: GetOptionalParamsFor<DagNode> = {}) {
     Object.assign(this, {
@@ -678,6 +688,7 @@ export class DagNode implements
       callout,
       description,
       descriptionTooltip,
+      hideControlNodeShadow,
       artifactRefs,
     });
   }
@@ -783,6 +794,7 @@ export class DagNode implements
         height,
         hideEdgeMarkers,
         includeInStepCount,
+        hideControlNodeShadow,
         ...remains
       } = nodeMeta as DagCustomNodeMeta;
       assertCompleteDereference(
@@ -800,6 +812,7 @@ export class DagNode implements
         iconTooltip,
         subType,
         artifactRefs,
+        hideControlNodeShadow,
       });
       if (!templateRef) {
         if (width || height) {
@@ -826,6 +839,7 @@ export class DagNode implements
       callout,
       hasControlNode,
       hideControlNodeOnExpand,
+      hideControlNodeShadow,
       customControlNode,
       expanded,
       displayName,
@@ -853,6 +867,7 @@ export class DagNode implements
       conditionalQuery,
       hasControlNode,
       hideControlNodeOnExpand,
+      hideControlNodeShadow,
       customControlNode,
       expanded,
       modifiers,
