@@ -21,7 +21,7 @@ import {ComponentFixture, fakeAsync, TestBed, waitForAsync} from '@angular/core/
 
 import {GENERIC_ARTIFACT_ICON, IconConfig} from './data_types_internal';
 import {DagNodeEl, DagNodeModule} from './node';
-import {DagNode} from './node_spec';
+import {CustomNode, DagGroup, DagNode} from './node_spec';
 import {DagNodeElHarness} from './test_resources/node_harness';
 import {initTestBed} from './test_resources/test_utils';
 
@@ -125,6 +125,22 @@ describe('DAG Node', () => {
          expect(await textIcon!.getAttribute('style'))
              .toBe('font: 20px Verdana;');
        }));
+
+    it('should NOT throw an error for a custom control node in an expanded group', () => {
+      const customNode = new CustomNode(
+          new DagNode('control-id', 'execution'), 'template-ref', 100, 50);
+
+      const createGroup = () => {
+        new DagGroup('group-id', [], [], [], 'SUCCEEDED', {
+          hasControlNode: true,
+          customControlNode: customNode,
+          hideControlNodeOnExpand: false,
+        });
+      };
+
+      expect(createGroup).not.toThrow();
+    });
+
   });
 
   describe('Internals', () => {

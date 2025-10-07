@@ -26,7 +26,7 @@ import {createDAGFeatures} from './data_types_internal';
 import {DagRaw, DagRawModule} from './directed_acyclic_graph_raw';
 import {DagEdge, DagGroup, DagNode as Node, DagNode, GraphSpec} from './node_spec';
 import {DagRawHarness} from './test_resources/directed_acyclic_graph_raw_harness';
-import {fakeGraph} from './test_resources/fake_data';
+import {createDagSkeletonWithCustomGroups, fakeGraph} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
 
 const FAKE_DATA: GraphSpec =
@@ -347,6 +347,67 @@ describe('Directed Acyclic Graph Raw', () => {
         });
       });
     });
+
+    describe('UI with custom control nodes', () => {
+      let fixture: ComponentFixture<TestComponent>;
+      let harness: DagRawHarness;
+      let loader: HarnessLoader;
+
+      beforeEach(waitForAsync(async () => {
+        fixture = TestBed.createComponent(TestComponent);
+        loader = TestbedHarnessEnvironment.loader(fixture);
+      }));
+
+      it('should render the custom control node when group is expanded',
+         fakeAsync(async () => {
+           // Setup graph with a custom control node visible on expand
+           const FAKE_DATA = Node.createFromSkeleton(
+               createDagSkeletonWithCustomGroups(true, false).skeleton,
+               createDagSkeletonWithCustomGroups(true, false).state);
+           fixture.componentInstance.graph = FAKE_DATA;
+           fixture.detectChanges();
+           await fixture.whenStable();
+           fixture.componentInstance.dagRaw.updateGraphLayout();
+           fixture.componentInstance.dagRaw.detectChanges();
+           harness = await loader.getHarness(DagRawHarness);
+
+           flush();
+           fixture.detectChanges();
+
+           const group = fixture.componentInstance.dagRaw.groups[0];
+           const customControlNode = await harness.getNodeByType(
+               'custom', 'Custom group control node');
+           expect(customControlNode).toBeTruthy();
+         }));
+
+      it('should NOT render the custom control node when hideControlNodeOnExpand is true',
+         fakeAsync(async () => {
+           // Setup graph with a custom control node hidden on expand
+           const FAKE_DATA = Node.createFromSkeleton(
+               createDagSkeletonWithCustomGroups(false).skeleton,
+               createDagSkeletonWithCustomGroups(false).state);
+           fixture.componentInstance.graph = FAKE_DATA;
+           fixture.detectChanges();
+           await fixture.whenStable();
+           fixture.componentInstance.dagRaw.updateGraphLayout();
+           fixture.componentInstance.dagRaw.detectChanges();
+           harness = await loader.getHarness(DagRawHarness);
+
+           await harness.clickExpandToggle(0);
+           flush();
+           fixture.detectChanges();
+
+           let customNode = null;
+           try {
+             customNode = await harness.getNodeByType(
+                 'custom', 'Custom group control node');
+           } catch (e) {
+             // Expected to throw if not found
+           }
+           expect(customNode).toBeNull();
+         }));
+    });
+
   });
 
   describe('Internals', () => {

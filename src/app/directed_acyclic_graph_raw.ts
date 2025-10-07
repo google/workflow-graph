@@ -174,7 +174,11 @@ function setGroupSizeProps(
   let padY = 0;
   const {expandedDims} = expandedGroup;
   if (expandedGroups.has(group.id)) {
-    padY = showControlNode ? nodeHeight / 2 : 0;
+    if (showControlNode) {
+      padY = (group.customControlNode ? group.customControlNode.height : nodeHeight) / 2;
+    } else {
+      padY = 0;
+    }
     [width, height] = [
       Math.max(width, expandedDims?.width || 0),
       Math.max(height + padY, (expandedDims?.height || 0) + padY),

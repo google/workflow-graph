@@ -546,7 +546,7 @@ export const fakeGraph: DagSkeleton = {
 };
 
 /** Helper function to create a DAG skeleton with custom group control nodes */
-export function createDagSkeletonWithCustomGroups(expanded: boolean):
+export function createDagSkeletonWithCustomGroups(expanded: boolean, hideControlNodeOnExpand?: boolean):
     DagSkeleton {
   return {
     skeleton: [{
@@ -595,7 +595,7 @@ export function createDagSkeletonWithCustomGroups(expanded: boolean):
         displayName: 'Custom group node',
         groupLabel: 'Label for custom group',
         hasControlNode: true,
-        hideControlNodeOnExpand: true,
+        hideControlNodeOnExpand: hideControlNodeOnExpand ?? true,
         expanded,
         customControlNode: new CustomNode(
             new DagNode(

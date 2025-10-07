@@ -305,10 +305,6 @@ export class DagGroup implements
         artifactRefs = [],
         selectedLoopId,
       }: GetOptionalParamsFor<DagGroup> = {}) {
-    if (!!customControlNode && !hideControlNodeOnExpand) {
-      throw new Error(
-          'Custom control nodes are not supported in the expanded state');
-    }
     Object.assign(this, {
       id,
       nodes,
@@ -857,10 +853,6 @@ export class DagNode implements
     } = nodeMeta as DagGroupMeta;
     assertCompleteDereference(
         remains, 'Not all fields of DagGroup were assigned via Skeleton');
-    if (!!customControlNode && !hideControlNodeOnExpand) {
-      throw new Error(
-          'Custom control nodes are not supported in the expanded state');
-    }
     return new DagGroup(id, undefined, undefined, undefined, state, {
       description,
       descriptionTooltip,

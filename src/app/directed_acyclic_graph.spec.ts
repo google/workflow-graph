@@ -146,7 +146,7 @@ describe('Directed Acyclic Graph Renderer', () => {
           expanded = false,
         } = options;
         fixture = TestBed.createComponent(TestComponent);
-        const skeleton = createDagSkeletonWithCustomGroups(expanded)
+        const skeleton = createDagSkeletonWithCustomGroups(expanded, hideControlNodeOnExpand);
         const graphSpec =
             Node.createFromSkeleton(skeleton.skeleton, skeleton.state);
         fixture.componentRef.setInput('graph', graphSpec);
@@ -161,9 +161,16 @@ describe('Directed Acyclic Graph Renderer', () => {
 
       it('renders correctly with group expanded and control hidden',
          async () => {
-           await setup({expanded: true});
+           await setup({hideControlNodeOnExpand: true, expanded: true});
            await screenShot.expectMatch(
                `graph_expanded_with_custom_control_node_hidden`);
+         });
+
+      it('renders correctly with group expanded and control shown',
+         async () => {
+           await setup({hideControlNodeOnExpand: false, expanded: true});
+           await screenShot.expectMatch(
+               `graph_expanded_with_custom_control_node_shown`);
          });
     });
 
