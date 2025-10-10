@@ -555,6 +555,7 @@ export interface IconConfig {
   iconset?: string;
   color?: string;
   size?: 'small'|'medium'|'large';
+  cmIcon?: SVGSVGElement;  // optional cm-icon
 }
 
 /**
