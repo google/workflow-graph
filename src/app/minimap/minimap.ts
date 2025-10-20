@@ -94,9 +94,11 @@ export class Minimap implements OnChanges, OnInit {
 
     const zoom = this.stateService.zoom.value;
 
-    // Calculating the minimap area scale and size from a given width
-    this.width = this.sizeConfig.dims.minimapWidth;
-    this.scale = this.width / this.graphWidth;
+    // Calculating the minimap area scale and size, ensuring uniform scaling.
+    const minimapMaxDim = this.sizeConfig.dims.minimapWidth;
+    this.scale = Math.min(
+        minimapMaxDim / this.graphWidth, minimapMaxDim / this.graphHeight);
+    this.width = this.scale * this.graphWidth;
     this.height = this.scale * this.graphHeight;
 
     // Calculating the viewbox size by reducing the initial, visible window

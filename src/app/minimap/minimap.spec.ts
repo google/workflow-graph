@@ -55,8 +55,14 @@ describe('Minimap', () => {
     graphWidth: 2140.4,
     graphHeight: 1404.4,
   };
+  const tallDataset = {
+    graph,
+    graphWidth: 1404.4,
+    graphHeight: 2140.4,
+  };
 
-  const scale = MINIMAP_WIDTH / dataset.graphWidth;
+  const scale = Math.min(
+      MINIMAP_WIDTH / dataset.graphWidth, MINIMAP_WIDTH / dataset.graphHeight);
 
   beforeEach(waitForAsync(async () => {
     fixture = TestBed.createComponent(TestComponent);
@@ -106,6 +112,35 @@ describe('Minimap', () => {
       const minimap = await harness.getMinimap();
       const dimensions = await minimap.getDimensions();
       expect(dimensions.height).toBeCloseTo(dataset.graphHeight * scale, 1);
+    });
+
+    describe('Tall dataset', () => {
+      it('Height', async () => {
+        fixture.componentInstance.graphWidth = tallDataset.graphWidth;
+        fixture.componentInstance.graphHeight = tallDataset.graphHeight;
+        fixture.detectChanges();
+        const minimap = await harness.getMinimap();
+        const dimensions = await minimap.getDimensions();
+
+        expect(dimensions.height)
+            .toBeCloseTo(
+                tallDataset.graphHeight * scale,
+                1,
+            );
+      });
+
+      it('Width', async () => {
+        fixture.componentInstance.graphWidth = tallDataset.graphWidth;
+        fixture.componentInstance.graphHeight = tallDataset.graphHeight;
+        fixture.detectChanges();
+        const minimap = await harness.getMinimap();
+        const dimensions = await minimap.getDimensions();
+        expect(dimensions.width)
+            .toBeCloseTo(
+                tallDataset.graphWidth * scale,
+                1,
+            );
+      });
     });
   });
 
