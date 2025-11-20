@@ -47,6 +47,13 @@ export class DagNodeElHarness extends ComponentHarness {
         MatIconHarness.with({selector: '.icon-space .icon.right .mat-icon'}))();
   }
 
+  /**
+   * Returns the `<div>` element for the node state.
+   */
+  async nodeStateElement(): Promise<TestElement> {
+    return this.locatorFor('.icon-space.state')();
+  }
+
   /** Is the icon for the current node Text instead of SVG */
   async hasTextIcon() {
     const element =

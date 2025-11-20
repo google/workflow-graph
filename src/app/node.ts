@@ -227,7 +227,8 @@ export class DagNodeEl implements OnInit, OnDestroy {
       icon ? fetchIcon(icon, key) : '';
 
   isNoState = isNoState;
-  bgForState = (state: NodeState) => bgForState(state, this.theme);
+  bgForState = (state: NodeState) =>
+      this.node?.stateBgColor || bgForState(state, this.theme);
   iconForState = (state: NodeState) => iconForState(state, this.theme);
   isTextIcon = isTextIcon;
   convertStateToRuntime = convertStateToRuntime;

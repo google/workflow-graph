@@ -267,6 +267,7 @@ export class DagGroup implements
   conditionalQuery = '';
   callout: NodeCallout = '';
   modifiers = new Set<NodeModifier>();
+  stateBgColor = '';
   stateTooltip = '';
   iconTooltip = '';
   subType?: unknown;
@@ -296,6 +297,7 @@ export class DagGroup implements
         hideControlNodeShadow = false,
         customControlNode = undefined,
         expanded = false,
+        stateBgColor = '',
         stateTooltip = '',
         iconTooltip = '',
         treatAsLoop = false,
@@ -323,6 +325,7 @@ export class DagGroup implements
       hideControlNodeShadow,
       customControlNode,
       expanded,
+      stateBgColor,
       stateTooltip,
       iconTooltip,
       subType,
@@ -504,6 +507,7 @@ export interface GraphSpec {
 export interface DagNodeMeta {
   displayName?: string;
   state?: NodeState;
+  stateBgColor?: string;
   stateTooltip?: string;
   iconTooltip?: string;
   /**
@@ -633,6 +637,7 @@ export class DagNode implements
   type: NodeType = 'execution';
   subType: unknown;
   state: NodeState = 'NO_STATE_STATIC';
+  stateBgColor: string = '';
   stateTooltip: string = '';
   iconTooltip: string = '';
   conditionalQuery = '';
@@ -663,6 +668,7 @@ export class DagNode implements
         conditionalQuery = '',
         modifiers = new Set<NodeModifier>(),
         callout = '',
+        stateBgColor = '',
         stateTooltip = '',
         iconTooltip = '',
         subType = undefined,
@@ -673,6 +679,7 @@ export class DagNode implements
       id,
       type,
       state,
+      stateBgColor,
       stateTooltip,
       iconTooltip,
       icon: icon ? {...icon} : icon,
@@ -775,6 +782,7 @@ export class DagNode implements
         displayName,
         icon,
         state,
+        stateBgColor,
         stateTooltip,
         iconTooltip,
         options,
@@ -804,6 +812,7 @@ export class DagNode implements
         conditionalQuery,
         modifiers,
         callout,
+        stateBgColor,
         stateTooltip,
         iconTooltip,
         subType,
@@ -840,6 +849,7 @@ export class DagNode implements
       expanded,
       displayName,
       groupLabel,
+      stateBgColor,
       stateTooltip,
       iconTooltip,
       subType,
@@ -866,6 +876,7 @@ export class DagNode implements
       callout,
       displayName,
       groupLabel,
+      stateBgColor,
       stateTooltip,
       iconTooltip,
       subType,
