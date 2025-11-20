@@ -168,6 +168,35 @@ describe('DAG Node', () => {
          const style = await stateElement.getAttribute('style');
          expect(style).toContain(`background: ${customBgColor}`);
        }));
+
+    it('Allows overriding the state icon color for a node',
+       fakeAsync(async () => {
+         const customStateIconColor = 'rgb(128, 0, 128)';
+         const node = new DagNode('c', 'execution', 'FAILED', {
+           stateIconColor: customStateIconColor,
+         });
+         fixture.componentInstance.fakeNode = node;
+
+         const stateElement = await harness.nodeStateElement();
+         const style = await stateElement.getAttribute('style');
+         expect(style).toContain(`color: ${customStateIconColor}`);
+       }));
+
+    it('Allows overriding the state icon color for a group',
+       fakeAsync(async () => {
+         const customStateIconColor = 'rgb(128, 0, 128)';
+         const group = new DagGroup('group-id', [], [], [], 'FAILED', {
+           stateIconColor: customStateIconColor,
+           hasControlNode: true,
+         });
+         fixture.componentInstance.fakeNode = group.generateControlNode()!;
+         fixture.detectChanges();
+
+         const stateElement = await harness.nodeStateElement();
+         const style = await stateElement.getAttribute('style');
+         expect(style).toContain(`color: ${customStateIconColor}`);
+       }));
+
   });
 
   describe('Internals', () => {

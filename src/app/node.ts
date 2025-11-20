@@ -214,8 +214,10 @@ export class DagNodeEl implements OnInit, OnDestroy {
 
   getNodeStateColor(node: DagNode) {
     const {state, icon} = node;
-    return isNoState(state) ?
-        icon!.color :
+    if (isNoState(state)) {
+      return icon!.color;
+    }
+    return node.stateIconColor ||
         this.fetchIcon(this.iconForState(state), 'color');
   }
 
