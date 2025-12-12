@@ -29,7 +29,7 @@ import {fetchIcon, generateFullIconFor} from './icon_util';
 import {WorkflowGraphIconModule} from './icon_wrapper';
 import {DagNodeModule} from './node';
 import {NodeRefBadgeModule} from './node_ref_badge';
-import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, GroupToggleEvent, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode, SnapPoint} from './node_spec';
+import {CustomNode, type DagEdge, DagGroup, DagNode, GroupIterationRecord, GroupToggleEvent, isCustomNode, isDagreInit, isSamePath, NodeMap, NodeRef, NodeType, Point, type SelectedNode, SnapPoint} from './node_spec';
 import {UserConfigService} from './user_config.service';
 import {debounce, isPinch} from './util_functions';
 
@@ -141,7 +141,7 @@ function setNodeSizeProps(
     condensedIconWidth,
   } = dims;
 
-  if (node instanceof CustomNode) return node;
+  if (isCustomNode(node)) return node;
   let width = getNodeWidth(node.state, node.conditionalQuery);
   const isCollapsedArtifact = node.type === 'artifact' && collapsed;
   if (isCollapsedArtifact) {
@@ -522,14 +522,18 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 
   /** Fetch cached DagNode for Group */
   getControlNodeFor(group: DagGroup): DagNode|CustomNode {
-    const controlNode = this.controlNodes[group.id];
+    // If a custom control node is explicitly defined on the group, use it
+    // directly. This ensures we don't rely on the controlNodes cache which
+    // might be stale or incomplete during certain update cycles.
     if (!!group.customControlNode) return group.customControlNode as CustomNode;
 
+    const controlNode = this.controlNodes[group.id];
     return controlNode as DagNode;
   }
 
   /** Fetch cached DagNode for Group */
-  getCustomControlNodeFor(group: DagGroup) {
+  getCustomControlNodeFor(group: DagGroup): CustomNode|undefined {
+    if (group.customControlNode) return group.customControlNode;
     return this.controlNodes[group.id] as CustomNode;
   }
 
@@ -597,10 +601,21 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   isCustomNode(node: DagNode|CustomNode): node is CustomNode {
-    return node instanceof CustomNode;
+    return isCustomNode(node);
   }
 
-  getCustomNodeTemplateFor(node: CustomNode) {
+  getCustomNodeTemplateName(node: DagNode|CustomNode): string|undefined {
+    return this.isCustomNode(node) ? node.templateRef : undefined;
+  }
+
+  getCustomNodeTemplateFor(node: DagNode|CustomNode):
+      TemplateRef<any>|undefined {
+    // We use the isCustomNode type guard here to safely access CustomNode
+    // properties. This is important because the node passed in might be a
+    // standard DagNode (e.g. from getControlNodeFor), and we need to avoid
+    // runtime errors when accessing properties like `templateRef` which only
+    // exist on CustomNode.
+    if (!this.isCustomNode(node)) return undefined;
     const {templateRef} = node;
     return this.customNodeTemplates[templateRef];
   }
@@ -773,7 +788,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     const {getNodeWidth, height, iconSpaceWidth} = this.dims;
     let nodeOff = (node: CustomNode|DagNode|DagGroup) => {
       const type = this.getNodeType(node);
-      if (type === 'group' || node instanceof CustomNode) {
+      if (type === 'group' || isCustomNode(node)) {
         return (dim === 'x' ? node.width : node.height) / 2;
       }
       if (orient === 'bottom' && dim === 'y') {
@@ -1382,8 +1397,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       point,
       this.getNodeType(currPt),
       this.pendingOrStatic(to) ? 'pending-or-static' : '',
-      currPt instanceof CustomNode ? 'custom-node-type' : '',
-      currPt instanceof CustomNode && currPt.hideEdgeMarkers ? 'hidden' : '',
+      isCustomNode(currPt) ? 'custom-node-type' : '',
+      isCustomNode(currPt) && currPt.hideEdgeMarkers ? 'hidden' : '',
     ];
   }
 

@@ -24,7 +24,7 @@ import {MatSelectHarness} from '@angular/material/select/testing';
 import {DagStateService} from './dag-state.service';
 import {createDAGFeatures} from './data_types_internal';
 import {DagRaw, DagRawModule} from './directed_acyclic_graph_raw';
-import {DagEdge, DagGroup, DagNode as Node, DagNode, GraphSpec} from './node_spec';
+import {CustomNode, DagEdge, DagGroup, DagNode as Node, DagNode, GraphSpec} from './node_spec';
 import {DagRawHarness} from './test_resources/directed_acyclic_graph_raw_harness';
 import {createDagSkeletonWithCustomGroups, fakeGraph} from './test_resources/fake_data';
 import {initTestBed} from './test_resources/test_utils';
@@ -530,6 +530,38 @@ describe('Directed Acyclic Graph Raw', () => {
 
          expect(renderer.a11ySortedNodes).toEqual([]);
        }));
+
+    it('`getCustomControlNodeFor` returns custom control node if available',
+       () => {
+         const baseNode = new DagNode('ctrl', 'execution');
+         const customControlNode =
+             new CustomNode(baseNode, 'ctrlTemplate', 200, 100);
+         const group = new DagGroup(
+             'group1', [], [], [], 'NO_STATE_STATIC',
+             {hasControlNode: true, customControlNode});
+
+         const result = renderer.getCustomControlNodeFor(group);
+         expect(result).toBe(customControlNode);
+       });
+
+    it('`getCustomNodeTemplateFor` returns template for CustomNode', () => {
+      const baseNode = new DagNode('node', 'execution');
+      const customNode = new CustomNode(baseNode, 'testTemplate', 100, 50);
+      const mockTemplate = {} as any;
+      renderer.customNodeTemplates = {'testTemplate': mockTemplate};
+
+      const result = renderer.getCustomNodeTemplateFor(customNode);
+      expect(result).toBe(mockTemplate);
+    });
+
+    it('`getCustomNodeTemplateFor` returns undefined for non-CustomNode',
+       () => {
+         const node = new DagNode('node', 'execution');
+         renderer.customNodeTemplates = {'testTemplate': {} as any};
+
+         const result = renderer.getCustomNodeTemplateFor(node);
+         expect(result).toBeUndefined();
+       });
   });
 });
 

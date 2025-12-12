@@ -152,9 +152,9 @@
       [style.overflow]="'none'"
       (wheel)="onNodeWheel($event)"
     >
-      <ng-container *ngIf="getCustomNodeTemplateFor(node)">
+      <ng-container *ngIf="getCustomNodeTemplateFor(node) as template">
         <ng-container
-          *ngTemplateOutlet="getCustomNodeTemplateFor(node); context: {
+          *ngTemplateOutlet="template; context: {
           node,
           nodes,
           edges,
@@ -169,7 +169,7 @@
         <div class="custom-node-error" role="alert" tabindex="0">
           <span
             >Could not find the <code>templateRef</code> specified for
-            <code>{{ node.id }}</code> (template: <code>{{ node.templateRef }}</code
+            <code>{{ node.id }}</code> (template: <code>{{ getCustomNodeTemplateName(node) }}</code
             >)
           </span>
         </div>
@@ -306,24 +306,24 @@
             [style.overflow]="'none'"
             (wheel)="onNodeWheel($event)"
           >
-            <ng-container *ngIf="getCustomNodeTemplateFor(getCustomControlNodeFor(group))">
+            <ng-container *ngIf="getCustomNodeTemplateFor(getControlNodeFor(group)) as template">
               <ng-container
-                *ngTemplateOutlet="getCustomNodeTemplateFor(getCustomControlNodeFor(group)); context: {
+                *ngTemplateOutlet="template; context: {
                 node: getControlNodeFor(group),
                 nodes,
                 edges,
                 updateDAG,
                 isPanning,
                 updateGraphLayoutFromNodesChange,
-                toggleSelection: customNodeToggleSelectionCurry(getCustomControlNodeFor(group))
+                toggleSelection: customNodeToggleSelectionCurry(getControlNodeFor(group))
               }"
               ></ng-container>
             </ng-container>
-            <ng-container *ngIf="!getCustomNodeTemplateFor(getCustomControlNodeFor(group))">
+            <ng-container *ngIf="!getCustomNodeTemplateFor(getControlNodeFor(group))">
               <div class="custom-node-error" role="alert" tabindex="0">
                 <span
                   >Could not find the <code>templateRef</code> specified for
-                  <code>{{ group.id }}</code> (template: <code>{{ group.templateRef }}</code
+                  <code>{{ group.id }}</code> (template: <code>{{ getCustomNodeTemplateName(getControlNodeFor(group)) }}</code
                   >)
                 </span>
               </div>

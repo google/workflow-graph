@@ -955,6 +955,18 @@ export class CustomNode extends DagNode implements CustomNodeProps {
   }
 }
 
+/**
+ * Checks if a node is a CustomNode, using duck typing to be robust against
+ * import path mismatches.
+ */
+export function isCustomNode(node: DagNode|CustomNode|DagGroup|undefined|null):
+    node is CustomNode {
+  return !!node &&
+      (node instanceof CustomNode ||
+       (!!(node as CustomNode).templateRef &&
+        typeof (node as CustomNode).clone === 'function'));
+}
+
 
 /**
  * DAG Nodes, with ancestry within (for implementations not using Dagre or D3)

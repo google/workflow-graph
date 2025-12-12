@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {DagNode, DagNodeMeta, DagNodeSkeleton, NodeType} from './node_spec';
+import {CustomNode, DagGroup, DagNode, DagNodeMeta, DagNodeSkeleton, isCustomNode, NodeType} from './node_spec';
 
 describe('DirectedAcyclicGraph NodeSpec', () => {
   it('Constructs a node correctly', () => {
@@ -79,5 +79,110 @@ describe('DirectedAcyclicGraph NodeSpec', () => {
       },
       groups: {},
     });
+  });
+
+  describe('isCustomNode', () => {
+    it('returns true for a CustomNode instance', () => {
+      // Arrange
+      const node = new DagNode('test', 'execution');
+      const customNode = new CustomNode(node, 'testTemplate', 100, 50);
+
+      // Act
+      const result = isCustomNode(customNode);
+
+      // Assert
+      expect(result).toBeTrue();
+    });
+
+    it('returns true for a duck-typed CustomNode', () => {
+      // Arrange
+      const duckNode = {
+        id: 'test',
+        type: 'execution',
+        templateRef: 'testTemplate',
+        clone: () => duckNode,
+      } as unknown as CustomNode;
+
+      // Act
+      const result = isCustomNode(duckNode);
+
+      // Assert
+      expect(result).toBeTrue();
+    });
+
+    it('returns false for a standard DagNode', () => {
+      // Arrange
+      const node = new DagNode('test', 'execution');
+
+      // Act
+      const result = isCustomNode(node);
+
+      // Assert
+      expect(result).toBeFalse();
+    });
+
+    it('returns false for a DagGroup', () => {
+      // Arrange
+      const group = new DagGroup('group1');
+
+      // Act
+      const result = isCustomNode(group);
+
+      // Assert
+      expect(result).toBeFalse();
+    });
+
+    it('returns false for undefined', () => {
+      // Act
+      const result = isCustomNode(undefined);
+
+      // Assert
+      expect(result).toBeFalse();
+    });
+
+    it('returns false for null', () => {
+      // Act
+      const result = isCustomNode(null);
+
+      // Assert
+      expect(result).toBeFalse();
+    });
+  });
+
+  describe('DagGroup Custom Control Node', () => {
+    it('generateControlNode returns the custom control node if provided',
+       () => {
+         // Arrange
+         const baseNode = new DagNode('ctrl', 'execution');
+         const customControlNode =
+             new CustomNode(baseNode, 'ctrlTemplate', 200, 100);
+         const group = new DagGroup(
+             'group1', [], [], [], 'NO_STATE_STATIC',
+             {hasControlNode: true, customControlNode});
+
+         // Act
+         const generatedNode = group.generateControlNode();
+
+         // Assert
+         expect(generatedNode).toBe(customControlNode);
+         expect(group.width).toBe(200);
+         expect(group.height).toBe(100);
+       });
+
+    it('generateControlNode creates a standard node if no custom node provided',
+       () => {
+         // Arrange
+         const group = new DagGroup('group1', [], [], [], 'NO_STATE_STATIC', {
+           hasControlNode: true,
+         });
+
+         // Act
+         const generatedNode = group.generateControlNode();
+
+         // Assert
+         expect(generatedNode).toBeInstanceOf(DagNode);
+         expect(generatedNode).not.toBeInstanceOf(CustomNode);
+         expect(generatedNode!.id).toBe('group1');
+       });
   });
 });

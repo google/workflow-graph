@@ -23,7 +23,7 @@ import {takeUntil} from 'rxjs/operators';
 
 import {DagStateService} from '../dag-state.service';
 import {convertStateToRuntime, defaultFeatures, type MinimapPosition, SVG_ELEMENT_SIZE} from '../data_types_internal';
-import {CustomNode, DagGroup, DagNode, Point, type SelectedNode} from '../node_spec';
+import {CustomNode, DagGroup, DagNode, isCustomNode, Point, type SelectedNode} from '../node_spec';
 
 /** Minimap component for Workflow Graph. */
 @Component({
@@ -149,8 +149,8 @@ export class Minimap implements OnChanges, OnInit {
   }
 
   getCustomMinimapNodeTemplateForNode(node: DagNode): TemplateRef<any>|null {
-    if (node instanceof CustomNode) {
-      const templateRefName = node.minimapTemplateRef;
+    if (isCustomNode(node)) {
+      const templateRefName = (node as CustomNode).minimapTemplateRef;
       if (!templateRefName) return null;
       return this.customMinimapNodeTemplates[templateRefName];
     }
@@ -158,8 +158,8 @@ export class Minimap implements OnChanges, OnInit {
   }
 
   hasCustomMinimapNodeTemplateForNode(node: DagNode): boolean {
-    if (node instanceof CustomNode) {
-      return !!node.minimapTemplateRef;
+    if (isCustomNode(node)) {
+      return !!(node as CustomNode).minimapTemplateRef;
     }
     return false;
   }

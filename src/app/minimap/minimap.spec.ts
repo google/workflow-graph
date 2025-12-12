@@ -23,7 +23,7 @@ import {ScreenshotTest} from '../../screenshot_test';
 import {ColorThemeLoader} from '../color_theme_loader';
 import {STATE_SERVICE_PROVIDER} from '../dag-state.service.provider';
 import {MinimapPosition} from '../data_types_internal';
-import {GraphSpec} from '../node_spec';
+import {CustomNode, DagNode, GraphSpec} from '../node_spec';
 import {MinimapHarness} from '../test_resources/minimap_harness';
 import {initTestBed} from '../test_resources/test_utils';
 
@@ -178,6 +178,74 @@ describe('Minimap', () => {
       const style = await contentElement.getAttribute('style');
       expect(style).toContain(`transform: scale(${zoom})`);
     });
+  });
+
+  describe('Custom Nodes', () => {
+    it('getCustomMinimapNodeTemplateForNode returns template for CustomNode with minimapTemplateRef',
+       () => {
+         const baseNode = new DagNode('node', 'execution');
+         const customNode = new CustomNode(
+             baseNode, 'mainTemplate', 100, 50,
+             {minimapTemplateRef: 'miniTemplate'});
+         const mockTemplate = {} as any;
+         minimapRenderer.customMinimapNodeTemplates = {
+           'miniTemplate': mockTemplate
+         };
+
+         const result =
+             minimapRenderer.getCustomMinimapNodeTemplateForNode(customNode);
+         expect(result).toBe(mockTemplate);
+       });
+
+    it('getCustomMinimapNodeTemplateForNode returns null for CustomNode without minimapTemplateRef',
+       () => {
+         const baseNode = new DagNode('node', 'execution');
+         const customNode = new CustomNode(baseNode, 'mainTemplate', 100, 50);
+
+         const result =
+             minimapRenderer.getCustomMinimapNodeTemplateForNode(customNode);
+         expect(result).toBeNull();
+       });
+
+    it('getCustomMinimapNodeTemplateForNode returns null for standard DagNode',
+       () => {
+         const node = new DagNode('node', 'execution');
+
+         const result =
+             minimapRenderer.getCustomMinimapNodeTemplateForNode(node);
+         expect(result).toBeNull();
+       });
+
+    it('hasCustomMinimapNodeTemplateForNode returns true for CustomNode with minimapTemplateRef',
+       () => {
+         const baseNode = new DagNode('node', 'execution');
+         const customNode = new CustomNode(
+             baseNode, 'mainTemplate', 100, 50,
+             {minimapTemplateRef: 'miniTemplate'});
+
+         const result =
+             minimapRenderer.hasCustomMinimapNodeTemplateForNode(customNode);
+         expect(result).toBeTrue();
+       });
+
+    it('hasCustomMinimapNodeTemplateForNode returns false for CustomNode without minimapTemplateRef',
+       () => {
+         const baseNode = new DagNode('node', 'execution');
+         const customNode = new CustomNode(baseNode, 'mainTemplate', 100, 50);
+
+         const result =
+             minimapRenderer.hasCustomMinimapNodeTemplateForNode(customNode);
+         expect(result).toBeFalse();
+       });
+
+    it('hasCustomMinimapNodeTemplateForNode returns false for standard DagNode',
+       () => {
+         const node = new DagNode('node', 'execution');
+
+         const result =
+             minimapRenderer.hasCustomMinimapNodeTemplateForNode(node);
+         expect(result).toBeFalse();
+       });
   });
 
   describe('Viewbox position', () => {
