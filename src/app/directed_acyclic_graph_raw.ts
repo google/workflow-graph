@@ -18,7 +18,7 @@
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {CdkDrag, CdkDragMove, CdkDragStart, DragDropModule} from '@angular/cdk/drag-drop';
 import {CommonModule} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnChanges, OnDestroy, OnInit, Optional, Output, QueryList, SimpleChanges, TemplateRef, ViewChildren} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, Input, KeyValueDiffer, KeyValueDiffers, NgModule, OnChanges, OnDestroy, OnInit, Optional, Output, QueryList, SimpleChanges, TemplateRef, ViewChild, ViewChildren} from '@angular/core';
 import * as dagre from '@dagrejs/dagre';
 import {Subscription} from 'rxjs';
 
@@ -273,6 +273,8 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   private objDiffers:
       {[s: string]: KeyValueDiffer<string, DagNode|DagGroup>} = {};
   memoizedEdgeCurvePoints: {[key: string]: Array<{x: number, y: number}>} = {};
+  private externalTargetsCache = new Map<
+      string, Map<string, {nodes: string[], point: Point, type: 'in'|'out'}>>();
 
   isDragging = false;
 
@@ -360,6 +362,12 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
    */
   @Input() visible = true;
 
+  @Input() internalEdges: DagEdge[] = [];
+  @Input()
+  externalTargets:
+      Map<string, {nodes: string[], point: Point, type: 'in'|'out'}> =
+          new Map();
+
   @Input('nodes')
   set nodes(nodes: DagNode[]) {
     // Avoid pointer/reference stability, so that angular will pick up the
@@ -391,6 +399,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   get groups(): EnhancedDagGroup[] {
     return this.$groups as EnhancedDagGroup[];
   }
+
+  @ViewChild('defaultProxyNodeTemplate', {static: true})
+  defaultProxyNodeTemplate!: TemplateRef<any>;
 
   @ViewChildren('subDag') subDags?: QueryList<DagRaw>;
 
@@ -486,7 +497,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['nodes'] || changes['edges'] || changes['groups']) {
+    if (changes['nodes'] || changes['edges'] || changes['groups'] ||
+        changes['externalTargets']) {
+      this.generateRenderableData();
       this.updateGraphLayoutAndReselect();
     }
   }
@@ -540,6 +553,176 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   showControlNode(group: DagGroup) {
     return group.hasControlNode &&
         !(group.hideControlNodeOnExpand && this.isGroupExpanded(group));
+  }
+  /**
+   * Converts a point in the parent's coordinates to the child's coordinates.
+   * Limitations:
+   * - The layout must be left to right or right to left then only it works
+   * properly.
+   * - This method only works when the group has default template.
+   * - With custom node template the x coordinate is not properly converted.
+   */
+  convertParentPointToChild(point: Point, groupId: string): Point|undefined {
+    const group = this.nodeMap.groups[groupId]?.group as EnhancedDagGroup;
+
+    if (!group || group.x === undefined || group.y === undefined) {
+      console.error(`Group ${groupId} not found or not yet positioned.`);
+      return undefined;
+    }
+
+    // group.x and group.y are the center of the group in the parent's
+    // coordinates.
+    const groupOriginX = group.x - group.width / 2;
+    const groupOriginY = group.y - group.height / 2;
+
+    // The padY is added to the height, and the group content is shifted down
+    // by padY So, we need to account for this shift.
+    const offsetY = group.padY ? group.padY : 0;
+
+    return {
+      x: point.x - groupOriginX,
+      y: point.y - groupOriginY - offsetY,
+    };
+  }
+  /**
+   * Calculates which nodes inside a given group are targeted by edges
+   * originating outside of that group.
+   * Limitations:
+   * - For the logic to work one of the endpoints of internal edges should be
+   * outside a group.
+   * - In cases where both nodes are in different groups then we can't show
+   * mapping between them.
+   */
+  getExternalTargetsForGroup(group: DagGroup):
+      Map<string, {nodes: string[], point: Point, type: 'in'|'out'}> {
+    const targetsMap =
+        new Map<string, {nodes: string[], point: Point, type: 'in' | 'out'}>();
+    if (!group) return targetsMap;
+    const cachedResult = this.externalTargetsCache.get(group.id);
+    if (cachedResult) {
+      return cachedResult;
+    }
+    // Create a Set of all node/group IDs that are inside the target group
+    // for
+    // fast lookups.
+    const internalIds = new Set([
+      ...group.nodes.map(n => n.id),
+      ...group.groups.map(g => g.id),
+    ]);
+
+    // Find edges that cross the boundary into or out of the group.
+    for (const edge of this.edges) {
+      const sourceIsInternal = internalIds.has(edge.from);
+      const targetIsInternal = internalIds.has(edge.to);
+      const sourceIsGroup = edge.from === group.id;
+      const targetIsGroup = edge.to === group.id;
+
+      // An incoming edge has an external source and targets the group.
+      if (!sourceIsInternal && targetIsGroup && edge.points?.length) {
+        let intersectionPoint = edge.points[edge.points.length - 1];
+
+        const childIntersectionPoint = this.convertParentPointToChild(
+            intersectionPoint,
+            group.id,
+        );
+        if (childIntersectionPoint) {
+          intersectionPoint = childIntersectionPoint;
+          if (!targetsMap.has(edge.from)) {
+            targetsMap.set(
+                edge.from, {nodes: [], point: intersectionPoint, type: 'in'});
+          }
+        }
+      }
+      // An outgoing edge has the group as source and targets an external node.
+      else if (sourceIsGroup && !targetIsInternal && edge.points?.length) {
+        let intersectionPoint = edge.points[0];
+
+        const childIntersectionPoint = this.convertParentPointToChild(
+            intersectionPoint,
+            group.id,
+        );
+        if (childIntersectionPoint) {
+          intersectionPoint = childIntersectionPoint;
+          if (!targetsMap.has(edge.to)) {
+            targetsMap.set(
+                edge.to, {nodes: [], point: intersectionPoint, type: 'out'});
+          }
+        }
+      }
+    }
+
+    // Find internal nodes connected to the external nodes
+    for (const edge of this.internalEdges) {
+      const sourceIsExternal = targetsMap.has(edge.from);
+      const targetIsInternal = internalIds.has(edge.to);
+      const sourceIsInternal = internalIds.has(edge.from);
+      const targetIsExternal = targetsMap.has(edge.to);
+
+      if (sourceIsExternal && targetIsInternal) {
+        targetsMap.get(edge.from)!.nodes.push(edge.to);
+      } else if (sourceIsInternal && targetIsExternal) {
+        targetsMap.get(edge.to)!.nodes.push(edge.from);
+      }
+    }
+    // Remove entries with no node connections
+    for (const [key, value] of targetsMap.entries()) {
+      if (value.nodes.length === 0) {
+        targetsMap.delete(key);
+      }
+    }
+
+    this.externalTargetsCache.set(group.id, targetsMap);
+    return targetsMap;
+  }
+
+  generateRenderableData() {
+    // Remove existing proxy nodes and edges
+    this.nodes = this.nodes.filter(node => !node.id.startsWith('__proxy_in_'));
+    this.edges =
+        this.edges.filter(edge => !edge.from.startsWith('__proxy_in_'));
+    this.edges = this.edges.filter(edge => !edge.to.startsWith('__proxy_in_'))
+
+    let proxyNodes: DagNode[] = [];
+    let proxyEdges: DagEdge[] = [];
+    // Start with the original data
+    // If there are external targets, create and inject the proxy node and
+    // edges
+    if (this.externalTargets && this.externalTargets.size > 0) {
+      // Sort the external targets based on the Y coordinate of their
+      // intersection point
+      const sortedTargetIds =
+          Array.from(this.externalTargets.keys()).sort((a, b) => {
+            const pointY_A = this.externalTargets.get(a)!.point.y;
+            const pointY_B = this.externalTargets.get(b)!.point.y;
+            return pointY_A - pointY_B;
+          });
+
+      for (const targetId of sortedTargetIds) {
+        const targetData = this.externalTargets.get(targetId)!;
+        const PROXY_NODE_ID = `__proxy_in_${targetId}`;
+        const proxyNode = new CustomNode(
+            new DagNode(PROXY_NODE_ID, 'artifact'),
+            'proxyNode',  // Or your custom template ref
+            5,            // Width
+            5,            // Height
+        );
+        proxyNodes.push(proxyNode);
+        for (let j = 0; j < targetData.nodes.length; j++) {
+          const targetNodeId = targetData.nodes[j];
+          const PROXY_EDGE_ID = `${PROXY_NODE_ID}_${targetNodeId}`;
+          const isOutgoing = targetData.type === 'out';
+          const proxyEdge = {
+            from: isOutgoing ? targetNodeId : PROXY_NODE_ID,
+            to: isOutgoing ? PROXY_NODE_ID : targetNodeId,
+            style: 'dashed',
+          };
+          proxyEdges.push(proxyEdge);
+        }
+      }
+      // Add the new elements to our renderable arrays
+      this.nodes = [...proxyNodes, ...this.nodes];
+      this.edges = [...this.edges, ...proxyEdges];
+    }
   }
 
   showGroupLabel(group: DagGroup) {
@@ -617,6 +800,9 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
     // exist on CustomNode.
     if (!this.isCustomNode(node)) return undefined;
     const {templateRef} = node;
+    if (templateRef === 'proxyNode' && !this.customNodeTemplates['proxyNode']) {
+      return this.defaultProxyNodeTemplate;
+    }
     return this.customNodeTemplates[templateRef];
   }
 
@@ -691,7 +877,7 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       this.cdr.detectChanges();
       return;
     }
-
+    this.externalTargetsCache.clear();
     this.getNodesAndWatch();
     const g = new dagre.graphlib.Graph();
     this.dagreGraph = g;
@@ -1101,6 +1287,12 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
       {x: start.x, y: (start.y + end.y) / 2},
       {x: end.x, y: (start.y + end.y) / 2},
     ];
+  }
+
+  buildProxyPath(start: Point, end: Point): string {
+    const [cp1, cp2] = this.getControlPointsForBezierCurve(start, end);
+    return `M${start.x},${start.y} C${cp1.x},${cp1.y} ${cp2.x},${cp2.y} ${
+        end.x},${end.y}`;
   }
 
   /**
