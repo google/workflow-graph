@@ -183,6 +183,7 @@ export function iconForState(state: NodeState, theme: DagTheme): IconConfig|
       break;
 
     case 'FAILED':
+    case 'BROKEN':
       icon = {name: 'status-error', iconset: 'cloud_ai'};
       break;
 
@@ -221,6 +222,9 @@ export function labelForState(translationsService: TranslationsService):
 
       case 'FAILED':
         return translationsService.translateMessage('nodeStateFailed');
+
+      case 'BROKEN':
+        return translationsService.translateMessage('nodeStateBroken');
 
       case 'PENDING':
         return translationsService.translateMessage('nodeStatePending');

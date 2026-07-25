@@ -34,6 +34,7 @@ export const NODE_STATE_TRANSLATIONS = {
   'nodeStateNotTriggered': 'Not Triggered',
   'nodeStateCompleted': 'Completed',
   'nodeStateFailed': 'Failed',
+  'nodeStateBroken': 'Broken',
   'nodeStateDisabled': 'Disabled',
   'nodeStateUnknown': 'Unknown',
 };

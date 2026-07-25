@@ -39,6 +39,11 @@ const MSG_WORKFLOW_GRAPH_NODE_STATE_CANCELLED = goog.getMsg('Cancelled');
 const MSG_WORKFLOW_GRAPH_NODE_STATE_FAILED = goog.getMsg('Failed');
 
 /**
+ * @desc Label for an execution that is broken.
+ */
+const MSG_WORKFLOW_GRAPH_NODE_STATE_BROKEN = goog.getMsg('Broken');
+
+/**
  * @desc Label for an execution that is currently in progress.
  */
 const MSG_WORKFLOW_GRAPH_NODE_STATE_RUNNING = goog.getMsg('Running');
@@ -92,6 +97,7 @@ export const TRANSLATIONS: Translations = {
   'nodeStateNotTriggered': MSG_WORKFLOW_GRAPH_NODE_STATE_NOT_TRIGGERED,
   'nodeStateCompleted': MSG_WORKFLOW_GRAPH_NODE_STATE_COMPLETED,
   'nodeStateFailed': MSG_WORKFLOW_GRAPH_NODE_STATE_FAILED,
+  'nodeStateBroken': MSG_WORKFLOW_GRAPH_NODE_STATE_BROKEN,
   'nodeStateDisabled': MSG_WORKFLOW_GRAPH_NODE_STATE_DISABLED,
   'nodeStateUnknown': MSG_WORKFLOW_GRAPH_NODE_STATE_UNKNOWN,
 };

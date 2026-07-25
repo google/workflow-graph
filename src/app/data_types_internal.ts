@@ -317,7 +317,8 @@ export type RuntimeState = 'Static'|'Runtime';
  */
 export type NodeState = 'NO_STATE_STATIC'|'NO_STATE_RUNTIME'|'CANCELLED'|
     'CANCELLING'|'CANCEL_PENDING'|'FAILED'|'PENDING'|'RUNNING'|'SKIPPED'|
-    'SUCCEEDED'|'TIMEOUT'|'NOT_TRIGGERED'|'DISABLED'|'PAUSED'|'UNKNOWN';
+    'SUCCEEDED'|'TIMEOUT'|'NOT_TRIGGERED'|'DISABLED'|'PAUSED'|'UNKNOWN'|
+    'BROKEN';
 
 type State2Priority = {
   [state in NodeState]: number;
@@ -339,6 +340,7 @@ export const STATE_PRIORITY: State2Priority = {
   'CANCELLING': 3,
   'TIMEOUT': 4,
   'FAILED': 4,
+  'BROKEN': 4,
   'CANCELLED': 5,
   'DISABLED': 5,
   'PAUSED': 5,
@@ -705,6 +707,7 @@ export const DEFAULT_THEME: DagTheme = {
     ...['RUNNING', 'SKIPPED', 'SUCCEEDED'].map(s => [s, baseColors['green']]),
     ...['TIMEOUT', 'PAUSED'].map(s => [s, baseColors['yellow']]),
     ['FAILED', baseColors['red']],
+    ['BROKEN', baseColors['red']],
     ...['CANCELLED', 'NOT_TRIGGERED', 'DISABLED', 'UNKNOWN'].map(
         s => [s, baseColors['gray']]),
     ...['NO_STATE_RUNTIME', 'NO_STATE_STATIC'].map(s => [s, '']),
@@ -718,6 +721,7 @@ export const DEFAULT_THEME: DagTheme = {
     ...['NO_STATE_RUNTIME', 'NO_STATE_STATIC'].map(k => [k, 'transparent']),
     ...['TIMEOUT', 'PAUSED'].map(k => [k, baseColors['bg']['yellow']]),
     ['FAILED', baseColors['bg']['red']],
+    ['BROKEN', baseColors['bg']['red']],
   ]),
   edgeColor: baseColors['blue'],
   edgeLabelColor: 'var(--workflow-graph-color-surface-on-surface)',
@@ -748,6 +752,7 @@ export const CLASSIC_THEME: DagTheme = generateTheme({
     ...['RUNNING', 'SKIPPED', 'SUCCEEDED'].map(s => [s, '#34A853']),
     ['TIMEOUT', '#F9AB00'],
     ['FAILED', '#E94235'],
+    ['BROKEN', '#E94235'],
     ...['CANCELLED', 'NOT_TRIGGERED'].map(s => [s, '#818181']),
     ...['NO_STATE_RUNTIME', 'NO_STATE_STATIC'].map(s => [s, '']),
   ]),
@@ -760,6 +765,7 @@ export const CLASSIC_THEME: DagTheme = generateTheme({
     ...['NO_STATE_RUNTIME', 'NO_STATE_STATIC'].map(k => [k, 'transparent']),
     ['TIMEOUT', baseColors['bg']['yellow']],
     ['FAILED', baseColors['bg']['red']],
+    ['BROKEN', baseColors['bg']['red']],
   ]),
   edgeColor: '#1A73E8',
 });
