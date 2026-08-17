@@ -125,7 +125,3 @@
     @include text-styles;
   }
 }
-
-:host ::ng-deep .custom-toolbar-toggle .mat-slide-toggle-content {
-  min-width: max-content;
-}
