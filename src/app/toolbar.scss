@@ -27,16 +27,18 @@
   overflow-x: auto;
   overflow-y: hidden;
   flex-shrink: 0;
+  background: var(--workflow-graph-color-surface);
 }
 
 .toolbar {
   width: 100%;
+  min-width: max-content;
   display: flex;
   padding: 0.25em;
   height: $toolbar-height;
   font-size: 1em;
   align-items: center;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid var(--workflow-graph-color-hairline);
   z-index: 1;
   font-family: $default-font;
   background: var(--workflow-graph-color-surface);
