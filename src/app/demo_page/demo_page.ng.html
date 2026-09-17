@@ -239,6 +239,7 @@
         <mat-label>Status Icons</mat-label>
         <select
           [(ngModel)]="statusIcons"
+          (change)="setCurrDataset()"
           matNativeControl
         >
           <option
