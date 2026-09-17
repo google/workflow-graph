@@ -1500,6 +1500,15 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
 }
 
 function willScroll(node: Element, event: WheelEvent) {
+  if (typeof window !== 'undefined' && window.getComputedStyle) {
+    const style = window.getComputedStyle(node);
+    const overflowX = style.overflowX;
+    const overflowY = style.overflowY;
+    if ((overflowX === 'hidden' || overflowX === 'visible' || overflowX === 'none') &&
+        (overflowY === 'hidden' || overflowY === 'visible' || overflowY === 'none')) {
+      return false;
+    }
+  }
   return willScrollX(node, event) || willScrollY(node, event);
 }
 
