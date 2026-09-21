@@ -48,7 +48,7 @@ import {debounce} from './util_functions';
     '[class.persist-expansion]': 'persistExpanse',
     '[class.collapses]': 'collapsed',
     '[attr.aria-label]': 'getA11yLabel(node)',
-    '[attr.aria-checked]': '"" + isSelected',
+    '[attr.aria-pressed]': '"" + isSelected',
     '[attr.type]': 'node.type',
     '[attr.state]': 'classNameState(node.state)',
     '[attr.runtime]': 'convertStateToRuntime(node.state).toLowerCase()',
