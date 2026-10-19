@@ -144,13 +144,13 @@ export class ZoomingLayer implements OnInit, OnDestroy {
   }
 
   private zoomOnWheel($e: WheelEvent) {
-    const {min, max} = this.zoomStepConfig;
+    const {min, max, step, scrollStepPerDelta = SCROLL_STEP_PER_DELTA} = this.zoomStepConfig;
     const invSign = $e.deltaY > 0 ? -1 : 1;
     let newZoom = this.stateService.zoom.value +
         invSign *
             Math.min(
-                SCROLL_STEP_PER_DELTA * Math.abs($e.deltaY),
-                this.zoomStepConfig.step);
+                scrollStepPerDelta * Math.abs($e.deltaY),
+                step);
     newZoom = clampVal(newZoom, min, max);
 
     const container = this.dagWrapper.nativeElement.getBoundingClientRect();
