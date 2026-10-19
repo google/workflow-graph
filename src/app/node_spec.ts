@@ -43,7 +43,7 @@ export type IconStyle = 'normal'|'inverted';
 /**
  * Modifiers that can be applied to a `DagNode` or `DagGroup`
  */
-export type NodeModifier = 'deleted';
+export type NodeModifier = 'deleted'|'added'|'changed';
 
 /**
  * Arbitrary key value storage per node
