@@ -46,7 +46,7 @@ const cssVars = {
   host: {
     '[attr.title]': 'node.getNodeDisplayName()',
     '[attr.aria-label]': 'getA11yLabel(node)',
-    '[attr.aria-checked]': '"" + selected',
+    '[attr.aria-pressed]': '"" + selected',
     '[attr.type]': 'node.type',
     '[attr.state]': 'node.state.toLowerCase()',
     '[attr.runtime]': 'convertStateToRuntime(node.state).toLowerCase()',
