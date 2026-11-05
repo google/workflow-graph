@@ -151,10 +151,10 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   protected readonly rootDagClass = 'root-dag';
 
   @Input()
-  set zoom(zoom: number) {
-    this.stateService.zoom.next(zoom);
+  set zoom(zoom: number|undefined) {
+    this.stateService.zoom.next(zoom ?? 1);
   }
-  get zoom() {
+  get zoom(): number {
     return this.stateService.zoom.value;
   }
 
@@ -177,10 +177,10 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   lastResizeEv: ResizeEventData = {width: 0, height: 0};
 
   @Input('theme')
-  set theme(theme: DagTheme) {
-    this.stateService.setTheme(theme);
+  set theme(theme: DagTheme|undefined) {
+    this.stateService.setTheme(theme ?? DEFAULT_THEME);
   }
-  get theme() {
+  get theme(): DagTheme {
     return this.themeConfig;
   }
 
@@ -211,42 +211,45 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   }
 
   @Input('nodes')
-  set nodes(nodes: DagNode[]) {
+  set nodes(nodes: DagNode[]|undefined) {
+    nodes = nodes ?? [];
     if (this.optimizeForOrm) this.copyDagreInit(this.nodes, nodes);
     this.$nodes = nodes;
     this.isListCrudUpdated(nodes) || this.markGraphDirty();
   }
-  get nodes() {
+  get nodes(): DagNode[] {
     return this.$nodes;
   }
   @Input('groups')
-  set groups(groups: DagGroup[]) {
+  set groups(groups: DagGroup[]|undefined) {
+    groups = groups ?? [];
     if (this.optimizeForOrm) this.copyDagreInit(this.groups, groups);
     this.$groups = groups;
     this.validateOutdatedSelection();
     this.isListCrudUpdated(groups) || this.markGraphDirty();
   }
-  get groups() {
+  get groups(): DagGroup[] {
     return this.$groups;
   }
 
   @Input('edges')
-  set edges(edges: DagEdge[]) {
+  set edges(edges: DagEdge[]|undefined) {
+    edges = edges ?? [];
     if (this.optimizeForOrm) this.copyDagreInit(this.edges, edges);
     this.$edges = edges;
     this.isListCrudUpdated(edges) || this.markGraphDirty();
   }
-  get edges() {
+  get edges(): DagEdge[] {
     return this.$edges;
   }
 
   // This type of initialization is okay here, as we only care about emitting
   // when an internal piece of code changes this variable.
   @Input('selectedNode')
-  set selectedNode(n: SelectedNode|null) {
-    this.stateService.setSelectedNode(n);
+  set selectedNode(n: SelectedNode|null|undefined) {
+    this.stateService.setSelectedNode(n ?? null);
   }
-  get selectedNode() {
+  get selectedNode(): SelectedNode|null {
     return this.$selectedNode;
   }
   @Output() isPanning = new EventEmitter<boolean>();
@@ -262,7 +265,8 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
   @Input() followNode: NodeRef|null = null;
 
   @Input('features')
-  set features(f: FeatureToggleOptions) {
+  set features(f: FeatureToggleOptions|undefined) {
+    f = f ?? defaultFeatures;
     const {scrollToZoom, naturalScrolling} = f;
     if (scrollToZoom && naturalScrolling) {
       throw new Error(
@@ -273,7 +277,7 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
     this.propagateFeatures();
     this.stateService.setFeatures(f);
   }
-  get features() {
+  get features(): FeatureToggleOptions {
     return this.$features;
   }
 

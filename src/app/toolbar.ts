@@ -156,43 +156,44 @@ export class DagToolbar {
   @Input() rightAlignMainControls = false;
 
   @Input('features')
-  set features(f: FeatureToggleOptions) {
-    this.$features = f;
+  set features(f: FeatureToggleOptions|undefined) {
+    this.$features = f ?? defaultFeatures;
     this.propagateFeatures();
     this.detectChanges();
   }
-  get features() {
+  get features(): FeatureToggleOptions {
     return this.$features;
   }
 
   @Input('zoomStepConfig')
-  set zoomStepConfig(z: ZoomConfig) {
-    this.$zoomStepConfig = z;
+  set zoomStepConfig(z: ZoomConfig|undefined) {
+    this.$zoomStepConfig = z ?? defaultZoomConfig;
     this.detectChanges();
   }
-  get zoomStepConfig() {
+  get zoomStepConfig(): ZoomConfig {
     return this.$zoomStepConfig;
   }
 
   @Input() labelGenerator = fakeLabelGenerator;
   @Input('theme')
-  set theme(theme: DagTheme) {
+  set theme(theme: DagTheme|undefined) {
+    theme = theme ?? DEFAULT_THEME;
     this.themeConfig = theme;
     this.icon = iconForState(this.finalState || 'NO_STATE_RUNTIME', theme);
   }
-  get theme() {
+  get theme(): DagTheme {
     return this.themeConfig;
   }
 
   @Input('nodes')
-  set nodes(nodes: Array<DagNode|CustomNode>) {
-    this.$nodes = nodes;
+  set nodes(nodes: Array<DagNode|CustomNode>|undefined) {
+    this.$nodes = nodes ?? [];
     this.calculateStepMetrics();
   }
 
   @Input('groups')
-  set groups(groups: DagGroup[]) {
-    this.$groups = groups;
+  set groups(groups: DagGroup[]|undefined) {
+    this.$groups = groups ?? [];
     this.calculateStepMetrics();
   }
 

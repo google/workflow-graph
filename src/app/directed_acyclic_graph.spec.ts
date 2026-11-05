@@ -25,7 +25,8 @@ import {ScreenshotTest} from '../screenshot_test';
 import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
+import {defaultFeatures} from './data_types_internal';
+import {DEFAULT_THEME, DirectedAcyclicGraph, DirectedAcyclicGraphModule, generateTheme} from './directed_acyclic_graph';
 import {DagNode as Node, type GraphSpec, type NodeRef} from './node_spec';
 import {DirectedAcyclicGraphHarness} from './test_resources/directed_acyclic_graph_harness';
 import {createDagSkeletonWithCustomGroups, createDagSkeletonWithGroups, fakeGraph, fakeGraphWithColoredLabels, fakeGraphWithEdgeOffsets, fakeGraphWithLabelIcons, fakeGraphWithRotatedLabels} from './test_resources/fake_data';
@@ -67,6 +68,45 @@ describe('Directed Acyclic Graph Renderer', () => {
       expect(fixture.componentInstance.dagRender.nodes).toBeDefined();
       expect(fixture.componentInstance.dagRender.edges).toBeDefined();
       expect(harness).toBeDefined();
+    });
+
+    it('falls back to defaults when undefined inputs are passed', () => {
+      const dag = fixture.componentInstance.dagRender;
+      const customTheme = generateTheme({edgeLabelColor: 'red'});
+      const selected = {node: FAKE_DATA.nodes[0], path: []};
+      const customFeatures = {...defaultFeatures, scrollToZoom: false};
+
+      dag.zoom = 2;
+      dag.theme = customTheme;
+      dag.nodes = FAKE_DATA.nodes;
+      dag.groups = FAKE_DATA.groups;
+      dag.edges = FAKE_DATA.edges;
+      dag.selectedNode = selected;
+      dag.features = customFeatures;
+
+      expect(dag.zoom).toBe(2);
+      expect(dag.theme).toEqual(customTheme);
+      expect(dag.nodes.length).toBeGreaterThan(0);
+      expect(dag.groups.length).toBeGreaterThan(0);
+      expect(dag.edges.length).toBeGreaterThan(0);
+      expect(dag.selectedNode).toEqual(selected);
+      expect(dag.features).toEqual(customFeatures);
+
+      dag.zoom = undefined;
+      dag.theme = undefined;
+      dag.nodes = undefined;
+      dag.groups = undefined;
+      dag.edges = undefined;
+      dag.selectedNode = undefined;
+      dag.features = undefined;
+
+      expect(dag.zoom).toBe(1);
+      expect(dag.theme).toEqual(DEFAULT_THEME);
+      expect(dag.nodes).toEqual([]);
+      expect(dag.groups).toEqual([]);
+      expect(dag.edges).toEqual([]);
+      expect(dag.selectedNode).toBeNull();
+      expect(dag.features).toEqual(defaultFeatures);
     });
 
     it('Nodes and groups are ordered by their coordinates in the DOM (for tab key navigation)',
