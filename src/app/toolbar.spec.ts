@@ -25,8 +25,9 @@ import {ScreenshotTest} from '../screenshot_test';
 import {ColorThemeLoader} from './color_theme_loader';
 import {DagStateService} from './dag-state.service';
 import {STATE_SERVICE_PROVIDER} from './dag-state.service.provider';
-import {defaultFeatures} from './data_types_internal';
-import {DagNode} from './node_spec';
+import {defaultFeatures, defaultZoomConfig} from './data_types_internal';
+import {DEFAULT_THEME, generateTheme} from './directed_acyclic_graph';
+import {DagGroup, DagNode} from './node_spec';
 import {A11yHelpCenterHarness} from './test_resources/a11y_help_center_harness';
 import {initTestBed} from './test_resources/test_utils';
 import {DagToolbarHarness} from './test_resources/toolbar_harness';
@@ -157,6 +158,37 @@ describe('DagToolbar', () => {
       const button = await toolbarHarness.getZoomResetButton();
       await button.click();
       expect(stateService.zoomReset.next).toHaveBeenCalled();
+    });
+
+    it('falls back to defaults when undefined inputs are passed', () => {
+      const customFeatures = {...defaultFeatures, scrollToZoom: false};
+      const customZoomConfig = {...defaultZoomConfig, max: 5};
+      const customTheme = generateTheme({edgeLabelColor: 'red'});
+      const customGroups = [new DagGroup('G1', [FAKE_DATA[0]])];
+
+      toolbar.features = customFeatures;
+      toolbar.zoomStepConfig = customZoomConfig;
+      toolbar.theme = customTheme;
+      toolbar.nodes = FAKE_DATA;
+      toolbar.groups = customGroups;
+
+      expect(toolbar.features).toEqual(customFeatures);
+      expect(toolbar.zoomStepConfig).toEqual(customZoomConfig);
+      expect(toolbar.theme).toEqual(customTheme);
+      expect(toolbar.$nodes).toEqual(FAKE_DATA);
+      expect(toolbar.$groups).toEqual(customGroups);
+
+      toolbar.features = undefined;
+      toolbar.zoomStepConfig = undefined;
+      toolbar.theme = undefined;
+      toolbar.nodes = undefined;
+      toolbar.groups = undefined;
+
+      expect(toolbar.features).toEqual(defaultFeatures);
+      expect(toolbar.zoomStepConfig).toEqual(defaultZoomConfig);
+      expect(toolbar.theme).toEqual(DEFAULT_THEME);
+      expect(toolbar.$nodes).toEqual([]);
+      expect(toolbar.$groups).toEqual([]);
     });
   });
 });

@@ -19,7 +19,7 @@ import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {Component, EventEmitter, Input, NgModule, Output, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 
-import {defaultFeatures, type Logger} from './data_types_internal';
+import {defaultFeatures, type FeatureToggleOptions, type Logger} from './data_types_internal';
 import {type DagreOptions, DirectedAcyclicGraph, DirectedAcyclicGraphModule, type MinimapPosition} from './directed_acyclic_graph';
 import {type DagEdge, DagNode, GraphSpec, type NodeRef, SelectedNode} from './node_spec';
 import {DagScaffoldModule} from './scaffold';
@@ -68,19 +68,72 @@ export class WorkflowGraphWrapper implements WorkflowGraphProps {
     edges: [],
     groups: [],
   };
-  @Input() enableToolbar = true;
-  @Input() enableMinimap = true;
-  @Input() features = defaultFeatures;
-  @Input() expandedMode = false;
-  @Input() loading = false;
-  @Input() optimizeForOrm = false;
+  private $enableToolbar = true;
+  private $enableMinimap = true;
+  private $features: FeatureToggleOptions = defaultFeatures;
+  private $expandedMode = false;
+  private $loading = false;
+  private $optimizeForOrm = false;
+  private $minimapPosition: MinimapPosition = 'top';
+  private $zoom = 1;
+
+  @Input()
+  set enableToolbar(value: boolean) {
+    this.$enableToolbar = value ?? true;
+  }
+  get enableToolbar(): boolean {
+    return this.$enableToolbar;
+  }
+
+  @Input()
+  set enableMinimap(value: boolean) {
+    this.$enableMinimap = value ?? true;
+  }
+  get enableMinimap(): boolean {
+    return this.$enableMinimap;
+  }
+
+  @Input()
+  set features(value: FeatureToggleOptions) {
+    this.$features = value ?? defaultFeatures;
+  }
+  get features(): FeatureToggleOptions {
+    return this.$features;
+  }
+
+  @Input()
+  set expandedMode(value: boolean) {
+    this.$expandedMode = value ?? false;
+  }
+  get expandedMode(): boolean {
+    return this.$expandedMode;
+  }
+
+  @Input()
+  set loading(value: boolean) {
+    this.$loading = value ?? false;
+  }
+  get loading(): boolean {
+    return this.$loading;
+  }
+
+  @Input()
+  set optimizeForOrm(value: boolean) {
+    this.$optimizeForOrm = value ?? false;
+  }
+  get optimizeForOrm(): boolean {
+    return this.$optimizeForOrm;
+  }
+
   @Input()
   set dagSpec(value: DagSpec) {
+    if (!value) return;
     this.graphSpec =
         DagNode.createFromSkeleton(value.skeleton, value.meta || {});
   }
   @Input()
   set selectedNode(node: NodeRef|null) {
+    if (!this.graph) return;
     const resolvedNode = node && this.graph.resolveReference(node);
 
     if (resolvedNode) {
@@ -96,8 +149,20 @@ export class WorkflowGraphWrapper implements WorkflowGraphProps {
   @Input() hoveredEdge?: DagEdge;
   @Input() layout?: DagreOptions;
   @Input() logger?: Logger;
-  @Input() minimapPosition: MinimapPosition = 'top';
-  @Input() zoom: number = 1;
+  @Input()
+  set minimapPosition(value: MinimapPosition) {
+    this.$minimapPosition = value ?? 'top';
+  }
+  get minimapPosition(): MinimapPosition {
+    return this.$minimapPosition;
+  }
+  @Input()
+  set zoom(value: number) {
+    this.$zoom = value ?? 1;
+  }
+  get zoom(): number {
+    return this.$zoom;
+  }
   @Input() userConfig?: UserConfig;
   @Output() readonly userConfigChange = new EventEmitter<UserConfig>();
 
