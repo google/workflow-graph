@@ -686,6 +686,10 @@ export class DagRaw implements DoCheck, OnInit, OnDestroy {
   }
 
   updateGraphLayoutSync() {
+    if (!this.visible) {
+      return;
+    }
+
     if (!this.nodes.length && !this.groups.length) {
       this.a11ySortedNodes = [];
       this.cdr.detectChanges();
