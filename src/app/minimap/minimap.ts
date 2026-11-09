@@ -178,7 +178,6 @@ export class Minimap implements OnChanges, OnInit {
   }
 
   keyboardPan(event: KeyboardEvent) {
-    event.preventDefault();
     const scrollAmt = 10;
 
     switch (event.key) {
@@ -197,7 +196,7 @@ export class Minimap implements OnChanges, OnInit {
       default:
         return;
     }
-
+    event.preventDefault();
     this.panByMinimapPos({x: this.viewboxX, y: this.viewboxY});
   }
 
