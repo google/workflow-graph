@@ -202,6 +202,8 @@ export class DirectedAcyclicGraph implements OnInit, OnDestroy {
    */
   @Input() optimizeForOrm = false;
 
+  @Input() internalEdges: DagEdge[] = [];
+
   @Input('sizeConfig')
   set sizeConfig(config) {
     this.$sizeConfig = config;
